@@ -1,0 +1,16 @@
+package com.maxzamota.springbootexample.repository.jpa;
+
+import com.maxzamota.springbootexample.model.Customer;
+import org.springframework.context.annotation.Primary;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+import java.util.Collection;
+
+@Repository("jpa")
+@Primary
+public interface CustomerRepository extends JpaRepository<Customer, Integer> {
+    boolean existsCustomerByEmail(String email);
+    boolean existsCustomerById(Integer id);
+    Collection<Customer> findCustomersByEmail(String email);
+}
