@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class TestcontainersTestTest extends AbstractTestcontainersTest {
+public class TestcontainersTest extends AbstractTestcontainersTest {
 
     @Test
     void canStartPostgresDB() {

@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
@@ -29,7 +30,7 @@ public class CustomerService {
         return this.customerRepository.findAll();
     }
 
-    public Collection<Customer> sortedCustomers(Collection<Customer> customers, CustomerSortType sortType) {
+    public Collection<Customer> sortedCustomers(Collection<Customer> customers, @NonNull CustomerSortType sortType) {
         return switch (sortType) {
             case CustomerSortType.BY_AGE_ASC -> customers.stream()
                     .sorted(
@@ -55,13 +56,13 @@ public class CustomerService {
                                     .thenComparing(Customer::getAge)
                                     .thenComparing(Customer::getName)
                     ).toList();
-            case BY_NAME_ASC -> customers.stream()
+            case CustomerSortType.BY_NAME_ASC -> customers.stream()
                     .sorted(
                             Comparator.comparing(Customer::getName)
                                     .thenComparing(Customer::getId)
                                     .thenComparing(Customer::getAge)
                     ).toList();
-            case BY_NAME_DESC -> customers.stream()
+            case CustomerSortType.BY_NAME_DESC -> customers.stream()
                     .sorted(
                             Comparator.comparing(Customer::getName).reversed()
                                     .thenComparing(Customer::getId)
@@ -94,7 +95,11 @@ public class CustomerService {
         if (!this.customerRepository.existsCustomerById(customer.getId())) {
             throw new ResourceNotFoundException("Customer with id={%s} not found!".formatted(customer.getId()));
         }
-        if (customer.equals(customerRepository.findById(customer.getId()))) {
+        if (customer.equals(
+                this.customerRepository
+                        .findById(customer.getId())
+                        .orElseGet(() -> null))
+        ) {
             return customer;
         }
         if (!this.customerRepository.findCustomersByEmail(customer.getEmail())

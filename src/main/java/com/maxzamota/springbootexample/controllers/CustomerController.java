@@ -1,4 +1,4 @@
-package com.maxzamota.springbootexample.controller;
+package com.maxzamota.springbootexample.controllers;
 
 import com.maxzamota.springbootexample.dto.CustomerDto;
 import com.maxzamota.springbootexample.enums.CustomerSortType;
