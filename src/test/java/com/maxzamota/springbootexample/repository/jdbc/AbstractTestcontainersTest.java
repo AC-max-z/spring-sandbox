@@ -1,4 +1,4 @@
-package com.maxzamota.springbootexample;
+package com.maxzamota.springbootexample.repository.jdbc;
 
 import org.flywaydb.core.Flyway;
 import org.junit.jupiter.api.BeforeAll;
@@ -13,7 +13,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 import javax.sql.DataSource;
 
 @Testcontainers
-public abstract class AbstractTestcontainers {
+public abstract class AbstractTestcontainersTest {
 
     @BeforeAll
     static void beforeAll() {
@@ -49,7 +49,7 @@ public abstract class AbstractTestcontainers {
     }
 
     protected static DataSource getDataSource() {
-        DataSourceBuilder builder = DataSourceBuilder.create()
+        DataSourceBuilder<?> builder = DataSourceBuilder.create()
                 .driverClassName(postgreSQLContainer.getDriverClassName())
                 .url(postgreSQLContainer.getJdbcUrl())
                 .username(postgreSQLContainer.getUsername())

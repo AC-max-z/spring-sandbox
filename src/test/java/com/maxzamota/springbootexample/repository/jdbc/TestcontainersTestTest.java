@@ -1,11 +1,11 @@
-package com.maxzamota.springbootexample;
+package com.maxzamota.springbootexample.repository.jdbc;
 
 import org.junit.jupiter.api.Test;
 
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class TestcontainersTest extends AbstractTestcontainers {
+public class TestcontainersTestTest extends AbstractTestcontainersTest {
 
     @Test
     void canStartPostgresDB() {

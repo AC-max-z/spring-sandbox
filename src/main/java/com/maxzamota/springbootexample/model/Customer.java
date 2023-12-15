@@ -22,6 +22,7 @@ public class Customer {
     @Id
     @Column(nullable = false, name = "id", unique = true)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @ToString.Include
     private Integer id;
 
     @Column(nullable = false)

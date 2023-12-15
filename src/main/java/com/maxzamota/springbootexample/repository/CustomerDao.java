@@ -13,4 +13,5 @@ public interface CustomerDao {
     boolean existsCustomerById(Integer id);
     void deleteById(Integer id);
     Collection<Customer> findCustomersByEmail(String email);
+    void clear();
 }

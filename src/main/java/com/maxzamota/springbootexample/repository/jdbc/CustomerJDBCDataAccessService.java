@@ -37,25 +37,16 @@ public class CustomerJDBCDataAccessService implements CustomerDao {
                     customer.getAge(),
                     customer.getId()
             );
-            return customer;
+            return this.findById(customer.getId()).orElseThrow();
         }
         var insertQuery = """
                 INSERT INTO customer(name, email, age)
                 VALUES (?, ?, ?)
                 """;
-        var selectQuery = """
-                SELECT *
-                FROM customer
-                WHERE email = ?
-                """;
         this.jdbcTemplate.update(insertQuery, customer.getName(), customer.getEmail(), customer.getAge());
-        return this.jdbcTemplate.query(
-                        selectQuery,
-                        this.customerRowMapper,
-                        customer.getEmail()
-                ).stream()
+        return this.findCustomersByEmail(customer.getEmail()).stream()
                 .findFirst()
-                .orElse(customer);
+                .orElseThrow();
 
     }
 
@@ -118,5 +109,13 @@ public class CustomerJDBCDataAccessService implements CustomerDao {
                 WHERE email = ?
                 """;
         return this.jdbcTemplate.query(query, this.customerRowMapper, email);
+    }
+
+    @Override
+    public void clear() {
+        var query = """
+                TRUNCATE TABLE customer
+                """;
+        this.jdbcTemplate.batchUpdate(query);
     }
 }
