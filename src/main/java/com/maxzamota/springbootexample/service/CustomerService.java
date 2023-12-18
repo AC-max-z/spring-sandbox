@@ -30,50 +30,21 @@ public class CustomerService {
         return this.customerRepository.findAll();
     }
 
-    public Collection<Customer> sortedCustomers(Collection<Customer> customers, @NonNull CustomerSortType sortType) {
+    public Collection<Customer> sortedCustomers(@NonNull CustomerSortType sortType) {
         return switch (sortType) {
-            case CustomerSortType.BY_AGE_ASC -> customers.stream()
-                    .sorted(
-                            Comparator.comparingInt(Customer::getAge)
-                                    .thenComparing(Customer::getId)
-                                    .thenComparing(Customer::getName)
-                    ).toList();
-            case CustomerSortType.BY_AGE_DESC -> customers.stream()
-                    .sorted(
-                            Comparator.comparingInt(Customer::getAge).reversed()
-                                    .thenComparing(Customer::getId)
-                                    .thenComparing(Customer::getName)
-                    ).toList();
-            case CustomerSortType.BY_ID_ASC -> customers.stream()
-                    .sorted(
-                            Comparator.comparingInt(Customer::getId)
-                                    .thenComparing(Customer::getAge)
-                                    .thenComparing(Customer::getName)
-                    ).toList();
-            case CustomerSortType.BY_ID_DESC -> customers.stream()
-                    .sorted(
-                            Comparator.comparingInt(Customer::getId).reversed()
-                                    .thenComparing(Customer::getAge)
-                                    .thenComparing(Customer::getName)
-                    ).toList();
-            case CustomerSortType.BY_NAME_ASC -> customers.stream()
-                    .sorted(
-                            Comparator.comparing(Customer::getName)
-                                    .thenComparing(Customer::getId)
-                                    .thenComparing(Customer::getAge)
-                    ).toList();
-            case CustomerSortType.BY_NAME_DESC -> customers.stream()
-                    .sorted(
-                            Comparator.comparing(Customer::getName).reversed()
-                                    .thenComparing(Customer::getId)
-                                    .thenComparing(Customer::getAge)
-                    ).toList();
+            case CustomerSortType.BY_AGE_ASC -> this.customerRepository.findAllByOrderByAgeAsc();
+            case CustomerSortType.BY_AGE_DESC -> this.customerRepository.findAllByOrderByAgeDesc();
+            case CustomerSortType.BY_ID_ASC -> this.customerRepository.findAllByOrderByIdAsc();
+            case CustomerSortType.BY_ID_DESC -> this.customerRepository.findAllByOrderByIdDesc();
+            case CustomerSortType.BY_NAME_ASC -> this.customerRepository.findAllByOrderByNameAsc();
+            case CustomerSortType.BY_NAME_DESC -> this.customerRepository.findAllByOrderByNameDesc();
         };
     }
 
     public Customer getCustomerById(Integer id) {
         return this.customerRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Customer with id={%s} not found!".formatted(id)));
+                .orElseThrow(() -> new ResourceNotFoundException("Customer with id={%s} not found!"
+                        .formatted(id)));
     }
 
     public Customer save(Customer customer) {
@@ -93,7 +64,8 @@ public class CustomerService {
 
     public Customer updateById(Customer customer) {
         if (!this.customerRepository.existsCustomerById(customer.getId())) {
-            throw new ResourceNotFoundException("Customer with id={%s} not found!".formatted(customer.getId()));
+            throw new ResourceNotFoundException("Customer with id={%s} not found!"
+                    .formatted(customer.getId()));
         }
         if (customer.equals(
                 this.customerRepository

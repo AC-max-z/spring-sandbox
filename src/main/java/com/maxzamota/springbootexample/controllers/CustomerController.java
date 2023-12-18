@@ -13,7 +13,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Collection;
-import java.util.Objects;
 
 @RestController
 @RequestMapping("/api/v1/customer")
@@ -33,15 +32,13 @@ public class CustomerController implements EntityController<Integer, Customer, C
     public ResponseEntity<Collection<Customer>> getAll(
             @RequestParam(required = false, name = "sort") String sortType
     ) {
-        Collection<Customer> customers = this.customerService.getAllCustomers();
-        if (Objects.nonNull(sortType)) {
-            CustomerSortType customerSortType = CustomerSortType.BY_ID_ASC;
-            try {
-                customerSortType = CustomerSortType.valueOf(sortType);
-            } catch (IllegalArgumentException ignored) {
-            } finally {
-                customers = this.customerService.sortedCustomers(customers, customerSortType);
-            }
+        Collection<Customer> customers;
+        CustomerSortType customerSortType = CustomerSortType.BY_ID_ASC;
+        try {
+            customerSortType = CustomerSortType.valueOf(sortType);
+        } catch (IllegalArgumentException | NullPointerException ignored) {
+        } finally {
+            customers = this.customerService.sortedCustomers(customerSortType);
         }
         return new ResponseEntity<>(customers, HttpStatus.OK);
     }
