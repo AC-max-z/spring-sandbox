@@ -17,7 +17,8 @@ public class CustomerGenerator {
         Faker faker = new Faker();
         String firstName = faker.name().firstName();
         String lastName = faker.name().lastName();
-        String email = firstName + "." + lastName + "-" + UUID.randomUUID() + "@" + faker.internet().domainName();
+        String email = firstName + "." + lastName + "-"
+                + UUID.randomUUID() + "@" + faker.internet().domainName();
         this.customer = new Customer(
                 firstName + " " + lastName,
                 email,
@@ -45,7 +46,7 @@ public class CustomerGenerator {
         return this;
     }
 
-    public Customer build() {
+    public Customer generate() {
         return this.customer;
     }
 

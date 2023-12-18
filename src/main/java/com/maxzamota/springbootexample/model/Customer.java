@@ -42,4 +42,23 @@ public class Customer {
         this.email = email;
         this.age = age;
     }
+
+    public Customer(CustomerBuilder builder) {
+        this.id = builder.id;
+        this.name = builder.name;
+        this.email = builder.email;
+        this.age = builder.age;
+    }
+
+    @Setter
+    public static class CustomerBuilder {
+        private Integer id;
+        private String name;
+        private String email;
+        private Integer age;
+
+        public Customer build() {
+            return new Customer(this);
+        }
+    }
 }

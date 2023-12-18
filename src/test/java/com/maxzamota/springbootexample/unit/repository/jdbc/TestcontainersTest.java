@@ -1,4 +1,4 @@
-package com.maxzamota.springbootexample.repository.jdbc;
+package com.maxzamota.springbootexample.unit.repository.jdbc;
 
 import org.junit.jupiter.api.Test;
 

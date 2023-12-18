@@ -1,8 +1,16 @@
 package com.maxzamota.springbootexample.dto;
 
-public record CustomerDto(
-        String name,
-        String email,
-        Integer age
-) {
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
+@Setter
+public class CustomerDto {
+    private String name;
+    private String email;
+    private Integer age;
 }
