@@ -67,6 +67,9 @@ tasks {
             maxFailures.set(20)
             failOnPassedAfterRetry.set(true)
         }
+        systemProperties["junit.jupiter.execution.parallel.enabled"] = true
+        systemProperties["junit.jupiter.execution.parallel.mode.default"] = "concurrent"
+        maxParallelForks = Runtime.getRuntime().availableProcessors()
     }
 
     register("unit-tests", Test::class.java) {
