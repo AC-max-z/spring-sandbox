@@ -1,6 +1,6 @@
 package com.maxzamota.springbootexample.unit.repository.mappers;
 
-import com.maxzamota.springbootexample.generators.CustomerGenerator;
+import com.maxzamota.springbootexample.util.generators.CustomerGenerator;
 import com.maxzamota.springbootexample.model.Customer;
 import com.maxzamota.springbootexample.repository.mappers.CustomerRowMapper;
 import io.qameta.allure.Allure;

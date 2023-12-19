@@ -1,7 +1,7 @@
 package com.maxzamota.springbootexample.unit.repository.jdbc;
 
 import com.github.javafaker.Faker;
-import com.maxzamota.springbootexample.generators.CustomerGenerator;
+import com.maxzamota.springbootexample.util.generators.CustomerGenerator;
 import com.maxzamota.springbootexample.model.Customer;
 import com.maxzamota.springbootexample.repository.jdbc.CustomerJDBCDataAccessService;
 import com.maxzamota.springbootexample.repository.mappers.CustomerRowMapper;

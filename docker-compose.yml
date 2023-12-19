@@ -1,4 +1,5 @@
 services:
+
   db:
     container_name: postgres
     image: postgres
@@ -11,6 +12,19 @@ services:
     ports:
       - "5433:5432"
     networks:
+      - db
+    restart: unless-stopped
+
+  spring-sandbox-api:
+    container_name: spring-sandbox-api
+    image: acidcommunism69/spring-sandbox-api
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/customer
+    ports:
+      - "8081:3001"
+    networks:
+      - db
+    depends_on:
       - db
     restart: unless-stopped
 

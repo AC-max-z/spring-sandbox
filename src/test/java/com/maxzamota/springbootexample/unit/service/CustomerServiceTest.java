@@ -3,7 +3,7 @@ package com.maxzamota.springbootexample.unit.service;
 import com.maxzamota.springbootexample.enums.CustomerSortType;
 import com.maxzamota.springbootexample.exception.DuplicateResourceException;
 import com.maxzamota.springbootexample.exception.ResourceNotFoundException;
-import com.maxzamota.springbootexample.generators.CustomerGenerator;
+import com.maxzamota.springbootexample.util.generators.CustomerGenerator;
 import com.maxzamota.springbootexample.model.Customer;
 import com.maxzamota.springbootexample.repository.jpa.CustomerRepository;
 import com.maxzamota.springbootexample.service.CustomerService;

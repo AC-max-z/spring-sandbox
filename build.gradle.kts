@@ -10,6 +10,7 @@ plugins {
     id("io.spring.dependency-management") version "1.1.4"
     id("io.freefair.lombok")
     id("org.gradle.test-retry") version "1.5.8"
+    id("com.google.cloud.tools.jib") version "3.4.0"
 }
 
 group = "com.maxzamota"
@@ -101,4 +102,29 @@ tasks {
             includeTags("jpa")
         }
     }
+}
+
+jib {
+    from {
+        image = "eclipse-temurin:21"
+        platforms {
+            platform {
+                architecture = "amd64"
+                os = "linux"
+            }
+            platform {
+                architecture = "arm64"
+                os = "linux"
+            }
+        }
+    }
+    to {
+        image = "docker.io/acidcommunism69/spring-sandbox-api:${version}"
+        setTags(listOf("latest"))
+        setCredHelper("desktop")
+    }
+//    container {
+//        ports = listOf()
+//        jvmFlags = listOf()
+//    }
 }

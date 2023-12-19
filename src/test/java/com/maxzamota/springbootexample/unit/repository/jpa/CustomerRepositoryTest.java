@@ -1,7 +1,7 @@
 package com.maxzamota.springbootexample.unit.repository.jpa;
 
 import com.github.javafaker.Faker;
-import com.maxzamota.springbootexample.generators.CustomerGenerator;
+import com.maxzamota.springbootexample.util.generators.CustomerGenerator;
 import com.maxzamota.springbootexample.unit.repository.jdbc.AbstractTestcontainersTest;
 import com.maxzamota.springbootexample.repository.jpa.CustomerRepository;
 import io.qameta.allure.*;

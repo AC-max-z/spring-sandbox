@@ -1,4 +1,4 @@
-package com.maxzamota.springbootexample.generators;
+package com.maxzamota.springbootexample.util.generators;
 
 import com.github.javafaker.Faker;
 import com.maxzamota.springbootexample.model.Customer;

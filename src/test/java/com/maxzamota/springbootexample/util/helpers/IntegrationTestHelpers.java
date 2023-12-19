@@ -1,4 +1,4 @@
-package com.maxzamota.springbootexample.helpers;
+package com.maxzamota.springbootexample.util.helpers;
 
 import com.maxzamota.springbootexample.dto.CustomerDto;
 import com.maxzamota.springbootexample.model.Customer;

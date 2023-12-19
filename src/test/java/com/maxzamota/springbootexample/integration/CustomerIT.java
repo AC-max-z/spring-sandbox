@@ -1,8 +1,8 @@
 package com.maxzamota.springbootexample.integration;
 
 import com.maxzamota.springbootexample.dto.CustomerDto;
-import com.maxzamota.springbootexample.generators.CustomerGenerator;
-import com.maxzamota.springbootexample.helpers.IntegrationTestHelpers;
+import com.maxzamota.springbootexample.util.generators.CustomerGenerator;
+import com.maxzamota.springbootexample.util.helpers.IntegrationTestHelpers;
 import com.maxzamota.springbootexample.model.Customer;
 import io.qameta.allure.*;
 import org.junit.jupiter.api.*;
@@ -30,8 +30,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Epic("Customer management integration tests")
 @Tags({
         @Tag("integration-test"),
-        @Tag("customer"),
-        @Tag("positive")
+        @Tag("customer")
 })
 @Severity(SeverityLevel.BLOCKER)
 public class CustomerIT {
