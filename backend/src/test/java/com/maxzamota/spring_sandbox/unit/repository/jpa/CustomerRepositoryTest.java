@@ -29,8 +29,6 @@ class CustomerRepositoryTest extends AbstractTestcontainersTest {
 
     @Autowired
     private CustomerRepository classUnderTest;
-    @Autowired
-    private ApplicationContext ctx;
     private final Faker faker = new Faker();
 
     @BeforeEach
