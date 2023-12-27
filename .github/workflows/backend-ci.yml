@@ -12,10 +12,10 @@ jobs:
     runs-on: ubuntu-latest
     services:
       postgres:
-        image: postgres:latest
+        image: postgres
         env:
-          POSTGRES_USER: mzamota
-          POSTGRES_PASSWORD: password
+          POSTGRES_USER: ${{ secrets.PG_USERNAME }}
+          POSTGRES_PASSWORD: ${{ secrets.PG_PASSWORD }}
           POSTGRES_DB: customer
         ports:
           - 5433:5432
