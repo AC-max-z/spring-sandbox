@@ -30,12 +30,12 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 @Severity(SeverityLevel.BLOCKER)
 class CustomerDataAccessServiceTest extends AbstractTestcontainersTest {
 
-    private CustomerJDBCDataAccessService serviceUnderTest;
-    private final CustomerRowMapper customerRowMapper = new CustomerRowMapper();
+    private static CustomerJDBCDataAccessService serviceUnderTest;
+    private final static CustomerRowMapper customerRowMapper = new CustomerRowMapper();
     private final Faker faker = new Faker();
 
-    @BeforeEach
-    void setUp() {
+    @BeforeAll
+    static void setUp() {
         serviceUnderTest = new CustomerJDBCDataAccessService(
                 getJdbcTemplate(),
                 customerRowMapper
@@ -53,9 +53,9 @@ class CustomerDataAccessServiceTest extends AbstractTestcontainersTest {
     void findAllNegative() {
         Allure.suite("Customer repository JDBC unit tests");
         // Arrange
-        this.serviceUnderTest.clear();
+        serviceUnderTest.clear();
         // Act
-        var customers = this.serviceUnderTest.findAll();
+        var customers = serviceUnderTest.findAll();
         // Assert
         assertThat(customers).isEmpty();
     }
@@ -71,7 +71,7 @@ class CustomerDataAccessServiceTest extends AbstractTestcontainersTest {
     void findAll() {
         Allure.suite("Customer repository JDBC unit tests");
         // Arrange
-        var savedCustomer = this.serviceUnderTest.save(new CustomerGenerator().generate());
+        var savedCustomer = serviceUnderTest.save(new CustomerGenerator().generate());
         // Act
         Collection<Customer> actualCustomers = serviceUnderTest.findAll();
         // Assert
@@ -92,9 +92,9 @@ class CustomerDataAccessServiceTest extends AbstractTestcontainersTest {
     void selectCustomerById() {
         Allure.suite("Customer repository JDBC unit tests");
         // Arrange
-        var savedCustomer = this.serviceUnderTest.save(new CustomerGenerator().generate());
+        var savedCustomer = serviceUnderTest.save(new CustomerGenerator().generate());
         // Act
-        Optional<Customer> actualCustomer = this.serviceUnderTest.findById(savedCustomer.getId());
+        Optional<Customer> actualCustomer = serviceUnderTest.findById(savedCustomer.getId());
         // Assert
         assertThat(actualCustomer)
                 .isPresent()
@@ -116,7 +116,7 @@ class CustomerDataAccessServiceTest extends AbstractTestcontainersTest {
         // Arrange
         Integer id = -1;
         // Act
-        Optional<Customer> actualCustomer = this.serviceUnderTest.findById(id);
+        Optional<Customer> actualCustomer = serviceUnderTest.findById(id);
         // Assert
         assertThat(actualCustomer).isNotPresent();
     }
@@ -132,9 +132,9 @@ class CustomerDataAccessServiceTest extends AbstractTestcontainersTest {
     void existsCustomerByEmail() {
         Allure.suite("Customer repository JDBC unit tests");
         // Arrange
-        Customer customer = this.serviceUnderTest.save(new CustomerGenerator().generate());
+        Customer customer = serviceUnderTest.save(new CustomerGenerator().generate());
         // Act
-        var customerExistsByEmail = this.serviceUnderTest.existsCustomerByEmail(customer.getEmail());
+        var customerExistsByEmail = serviceUnderTest.existsCustomerByEmail(customer.getEmail());
         // Assert
         assertThat(customerExistsByEmail).isTrue();
     }
@@ -153,7 +153,7 @@ class CustomerDataAccessServiceTest extends AbstractTestcontainersTest {
         String nonExistentEmail = faker.name().firstName() + "." + faker.name().lastName()
                 + "-" + UUID.randomUUID() + "@" + faker.internet().domainName();
         // Act
-        Boolean customerExistsByEmail = this.serviceUnderTest.existsCustomerByEmail(nonExistentEmail);
+        Boolean customerExistsByEmail = serviceUnderTest.existsCustomerByEmail(nonExistentEmail);
         // Assert
         assertThat(customerExistsByEmail).isFalse();
     }
@@ -169,9 +169,9 @@ class CustomerDataAccessServiceTest extends AbstractTestcontainersTest {
     void existsCustomerById() {
         Allure.suite("Customer repository JDBC unit tests");
         // Arrange
-        Customer customer = this.serviceUnderTest.save(new CustomerGenerator().generate());
+        Customer customer = serviceUnderTest.save(new CustomerGenerator().generate());
         // Act
-        Boolean customerExistsById = this.serviceUnderTest.existsCustomerById(customer.getId());
+        Boolean customerExistsById = serviceUnderTest.existsCustomerById(customer.getId());
         // Assert
         assertThat(customerExistsById).isTrue();
     }
@@ -189,7 +189,7 @@ class CustomerDataAccessServiceTest extends AbstractTestcontainersTest {
         // Arrange
         Integer id = -2;
         // Act
-        Boolean customerExistsById = this.serviceUnderTest.existsCustomerById(id);
+        Boolean customerExistsById = serviceUnderTest.existsCustomerById(id);
         // Assert
         assertThat(customerExistsById).isFalse();
     }
@@ -205,9 +205,9 @@ class CustomerDataAccessServiceTest extends AbstractTestcontainersTest {
     void findCustomersByEmail() {
         Allure.suite("Customer repository JDBC unit tests");
         // Arrange
-        var customer = this.serviceUnderTest.save(new CustomerGenerator().generate());
+        var customer = serviceUnderTest.save(new CustomerGenerator().generate());
         // Act
-        var actualCustomers = this.serviceUnderTest.findCustomersByEmail(customer.getEmail());
+        var actualCustomers = serviceUnderTest.findCustomersByEmail(customer.getEmail());
         // Assert
         assertThat(actualCustomers)
                 .usingRecursiveFieldByFieldElementComparator()
@@ -226,9 +226,9 @@ class CustomerDataAccessServiceTest extends AbstractTestcontainersTest {
         Allure.suite("Customer repository JDBC unit tests");
         // Arrange
         // Act
-        var customer = this.serviceUnderTest.save(new CustomerGenerator().generate());
+        var customer = serviceUnderTest.save(new CustomerGenerator().generate());
         // Assert
-        var getCustomerById = this.serviceUnderTest.findById(customer.getId());
+        var getCustomerById = serviceUnderTest.findById(customer.getId());
         assertThat(getCustomerById)
                 .isNotNull()
                 .get()
@@ -247,12 +247,12 @@ class CustomerDataAccessServiceTest extends AbstractTestcontainersTest {
     void saveUpdateSuccess() {
         Allure.suite("Customer repository JDBC unit tests");
         // Arrange
-        var initialCustomer = this.serviceUnderTest.save(
+        var initialCustomer = serviceUnderTest.save(
                 new CustomerGenerator()
                         .generate()
         );
         // Act
-        var updatedCustomer = this.serviceUnderTest.save(
+        var updatedCustomer = serviceUnderTest.save(
                 new CustomerGenerator()
                         .withId(initialCustomer.getId())
                         .withName(initialCustomer.getName())
@@ -280,11 +280,11 @@ class CustomerDataAccessServiceTest extends AbstractTestcontainersTest {
     void saveUpdateFail() {
         Allure.suite("Customer repository JDBC unit tests");
         // Arrange
-        var initialCustomer1 = this.serviceUnderTest.save(new CustomerGenerator().generate());
+        var initialCustomer1 = serviceUnderTest.save(new CustomerGenerator().generate());
         // Act
         // Assert
         assertThatThrownBy(
-                () -> this.serviceUnderTest.save(
+                () -> serviceUnderTest.save(
                         new CustomerGenerator()
                                 .withEmail(initialCustomer1.getEmail())
                                 .generate()
@@ -303,7 +303,7 @@ class CustomerDataAccessServiceTest extends AbstractTestcontainersTest {
     void saveCreateFailEmailExists() {
         Allure.suite("Customer repository JDBC unit tests");
         // Arrange
-        Function<Customer, Customer> saveCustomer = (customer) -> this.serviceUnderTest.save(customer);
+        Function<Customer, Customer> saveCustomer = (customer) -> serviceUnderTest.save(customer);
         var customer1 = saveCustomer.apply(new CustomerGenerator().generate());
         // Act
         var customerObj2 = new CustomerGenerator().withEmail(customer1.getEmail()).generate();
@@ -322,10 +322,10 @@ class CustomerDataAccessServiceTest extends AbstractTestcontainersTest {
     void deleteById() {
         Allure.suite("Customer repository JDBC unit tests");
         // Arrange
-        var customer = this.serviceUnderTest.save(new CustomerGenerator().generate());
+        var customer = serviceUnderTest.save(new CustomerGenerator().generate());
         // Act
-        this.serviceUnderTest.deleteById(customer.getId());
-        var getCustomerByID = this.serviceUnderTest.findById(customer.getId());
+        serviceUnderTest.deleteById(customer.getId());
+        var getCustomerByID = serviceUnderTest.findById(customer.getId());
         // Assert
         assertThat(getCustomerByID).isEmpty();
     }
