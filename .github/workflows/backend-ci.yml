@@ -1,0 +1,35 @@
+name: CI - Build Backend
+
+on:
+  pull_request:
+    branches:
+      - master
+    paths:
+      - backend\**
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:latest
+        env:
+          POSTGRES_USER: mzamota
+          POSTGRES_PASSWORD: password
+          POSTGRES_DB: customer
+        ports:
+          - 5433:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-java@v3
+        with:
+          distribution: 'oracle'
+          java-version: '21'
+          cache: 'gradle'
+      - name: Build and run unit+integration tests
+        run: ./gradlew build
