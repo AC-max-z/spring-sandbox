@@ -34,4 +34,4 @@ jobs:
           java-version: '21'
           cache: 'gradle'
       - name: Build and run unit+integration tests
-        run: ./gradlew build
+        run: ./gradlew build --debug
