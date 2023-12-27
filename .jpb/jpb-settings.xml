@@ -4,7 +4,7 @@
     <persistence-units>
       <persistence-unit moduleName="spring-boot-example.main" name="Default">
         <packages>
-          <package value="com.maxzamota.springbootexample" />
+          <package value="com.maxzamota.spring_sandbox" />
         </packages>
       </persistence-unit>
     </persistence-units>
