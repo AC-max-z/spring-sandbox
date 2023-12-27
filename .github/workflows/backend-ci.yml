@@ -5,17 +5,19 @@ on:
     branches:
       - master
     paths:
-      - backend\**
+      - backend/**
+  workflow_dispatch:
+
 
 jobs:
   build:
     runs-on: ubuntu-latest
     services:
       postgres:
-        image: postgres:latest
+        image: postgres
         env:
-          POSTGRES_USER: mzamota
-          POSTGRES_PASSWORD: password
+          POSTGRES_USER: ${{ secrets.PG_USERNAME }}
+          POSTGRES_PASSWORD: ${{ secrets.PG_PASSWORD }}
           POSTGRES_DB: customer
         ports:
           - 5433:5432
@@ -32,4 +34,4 @@ jobs:
           java-version: '21'
           cache: 'gradle'
       - name: Build and run unit+integration tests
-        run: ./gradlew build
+        run: ./gradlew build --debug
