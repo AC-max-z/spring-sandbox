@@ -36,7 +36,7 @@ public abstract class AbstractTestcontainersTest {
     private static void registerDataSourceProperties(DynamicPropertyRegistry registry) {
         registry.add(
                 "spring.datasource.url",
-                postgreSQLContainer::getJdbcUrl
+                () -> postgreSQLContainer.getJdbcUrl().replace("localhost", "127.0.0.1")
         );
         registry.add(
                 "spring.datasource.username",
