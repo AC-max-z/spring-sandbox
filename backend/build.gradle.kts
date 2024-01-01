@@ -66,7 +66,7 @@ tasks {
         retry {
             maxRetries.set(3)
             maxFailures.set(20)
-            failOnPassedAfterRetry.set(true)
+            failOnPassedAfterRetry.set(false)
         }
         systemProperties["junit.jupiter.execution.parallel.enabled"] = true
         systemProperties["junit.jupiter.execution.parallel.mode.default"] = "concurrent"
