@@ -48,6 +48,9 @@ jobs:
         id: build-number
         run: echo "BUILD_NUMBER=$(date '+%d.%m.%Y.%H.%M.%S')" >> $GITHUB_OUTPUT
 
+      - name: Make gradlew executable
+        run: chmod +x gradlew
+
       - name: Build and run unit+integration tests
         run: ./gradlew --stacktrace build -DdockerImageTag=${{ steps.build-number.outputs.BUILD_NUMBER }}
 
