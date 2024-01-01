@@ -65,7 +65,7 @@ class CustomerRepositoryTest extends AbstractTestcontainersTest {
     void doesNotExistCustomerByEmail() {
         Allure.suite("JPA unit tests");
         // Arrange
-        var email = faker.internet().safeEmailAddress();
+        var email = this.faker.internet().safeEmailAddress();
         // Act
         var customerExists = this.classUnderTest.existsCustomerByEmail(email);
         // Assert
@@ -145,7 +145,7 @@ class CustomerRepositoryTest extends AbstractTestcontainersTest {
     void findCustomersByEmailNegative() {
         Allure.suite("JPA unit tests");
         // Arrange
-        var email = faker.internet().safeEmailAddress();
+        var email = this.faker.internet().safeEmailAddress();
         // Act
         var customers = this.classUnderTest.findCustomersByEmail(email);
         // Assert

@@ -8,7 +8,6 @@ import com.maxzamota.spring_sandbox.model.Customer;
 import com.maxzamota.spring_sandbox.repository.jpa.CustomerRepository;
 import com.maxzamota.spring_sandbox.service.CustomerService;
 import io.qameta.allure.*;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
@@ -27,7 +26,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-@Execution(ExecutionMode.CONCURRENT)
+@Execution(ExecutionMode.SAME_THREAD)
 @Epic("Customer service unit tests")
 @Tags({
         @Tag("unit-test"),
@@ -95,15 +94,16 @@ class CustomerServiceTest {
     @AllureId("CUSTSERV-002")
     @TmsLink("CUSTSERV-002")
     @Issue("CUSTSERV-002")
-    @Disabled
     void sortedCustomers(CustomerSortType sortType) {
         Allure.suite("Customer service unit tests");
 
         // Arrange
+        step("Clean database");
+        this.serviceUnderTest.deleteAll();
         step("Generate list of customers");
-        var customers = new CustomerGenerator().buildList(69);
-
-        //TODO: Figure out how to mock? But I CBA... And it is a JPA stuff so no point anyway
+        var generatedCustomers = new CustomerGenerator().buildList(69);
+        step("Save generated customers");
+        var savedCustomers = this.serviceUnderTest.saveAll(generatedCustomers);
 
         // Act
         step("Call service layer sortedCustomers() method");
@@ -117,38 +117,40 @@ class CustomerServiceTest {
         step("Verify that returned list is sorted as expected");
         switch (sortType) {
             case BY_ID_ASC -> assertThat(sortedCustomers)
-                    .isEqualTo(customers.stream()
+                    .isEqualTo(savedCustomers.stream()
                             .sorted(Comparator.comparingInt(Customer::getId)                            )
                             .toList()
                     );
             case BY_ID_DESC -> assertThat(sortedCustomers)
-                    .isEqualTo(customers.stream()
+                    .isEqualTo(savedCustomers.stream()
                             .sorted(Comparator.comparingInt(Customer::getId).reversed())
                             .toList()
                     );
             case BY_AGE_ASC -> assertThat(sortedCustomers)
-                    .isEqualTo(customers.stream()
+                    .isEqualTo(savedCustomers.stream()
                             .sorted(Comparator.comparingInt(Customer::getAge))
                             .toList()
                     );
             case BY_AGE_DESC -> assertThat(sortedCustomers)
-                    .isEqualTo(customers.stream()
+                    .isEqualTo(savedCustomers.stream()
                             .sorted(Comparator.comparingInt(Customer::getAge).reversed())
                             .toList()
                     );
             case BY_NAME_ASC -> assertThat(sortedCustomers)
-                    .isEqualTo(customers.stream()
+                    .isEqualTo(savedCustomers.stream()
                             .sorted(Comparator.comparing(Customer::getName))
                             .toList()
                     );
             case BY_NAME_DESC -> assertThat(sortedCustomers)
-                    .isEqualTo(customers.stream()
+                    .isEqualTo(savedCustomers.stream()
                             .sorted(Comparator.comparing(Customer::getName).reversed())
                             .toList()
                     );
             case null ->
                     assertThrows(NullPointerException.class, () -> this.serviceUnderTest.sortedCustomers(sortType));
         }
+        step("Clean database");
+        this.serviceUnderTest.deleteAll();
     }
 
     @Test

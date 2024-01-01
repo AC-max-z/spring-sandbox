@@ -10,45 +10,34 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.test.web.reactive.server.WebTestClient;
-import org.springframework.web.reactive.function.client.ExchangeFilterFunction;
 import reactor.core.publisher.Mono;
 import reactor.netty.http.client.HttpClient;
 import reactor.netty.transport.logging.AdvancedByteBufFormat;
 
 import java.util.Collection;
+import java.util.Objects;
 import java.util.UUID;
 
 public class IntegrationTestHelpers {
+    private static final String APP_BASE_URI = "http://localhost";
     private static final String CUSTOMER_PUBLIC_API_URI = "/api/v1/customer";
 
-    public static WebTestClient getWebTestClient(Logger logger, int port) {
+    public static WebTestClient getWebTestClient(Logger logger, Integer port) {
         return WebTestClient
                 .bindToServer()
-                .baseUrl("http://localhost:" + port)
-                .clientConnector(new ReactorClientHttpConnector(
-                        HttpClient
-                                .create()
-                                .wiretap(
-                                        "HTTP_CLIENT",
-                                        LogLevel.INFO,
-                                        AdvancedByteBufFormat.TEXTUAL
-                                )
-                ))
-                .filter(ExchangeFilterFunction.ofRequestProcessor(
-                        clientRequest -> {
-                            logger.info("Request: {} {}", clientRequest.method(), clientRequest.url());
-                            clientRequest.headers()
-                                    .forEach((name, values) -> values
-                                            .forEach(value -> logger.info("{}={}", name, value))
-                                    );
-                            return Mono.just(clientRequest);
-                        })
-                )
-                .filter(ExchangeFilterFunction.ofResponseProcessor(
-                        clientResponse -> {
-                            logger.info("Response Status {}", clientResponse.statusCode());
-                            return Mono.just(clientResponse);
-                        })
+                .baseUrl(Objects.nonNull(port) ? APP_BASE_URI + ":" + port : APP_BASE_URI)
+                .clientConnector(
+                        new ReactorClientHttpConnector(
+                                HttpClient
+                                        .create()
+                                        // This will enable info level logging to underlying HttpClient
+                                        // to see requests and responses data
+                                        .wiretap(
+                                                "HTTP_CLIENT",
+                                                LogLevel.INFO,
+                                                AdvancedByteBufFormat.TEXTUAL
+                                        )
+                        )
                 )
                 .defaultHeader(HttpHeaders.USER_AGENT, "Spring Web Client")
                 .build();
