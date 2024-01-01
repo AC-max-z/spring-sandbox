@@ -25,7 +25,7 @@ public abstract class AbstractTestcontainersTest {
     @BeforeAll
     static void beforeAll() {
         Flyway flyway = Flyway.configure().dataSource(
-                postgreSQLContainer.getJdbcUrl().replace("localhost", "127.0.0.1"),
+                postgreSQLContainer.getJdbcUrl(),
                 postgreSQLContainer.getUsername(),
                 postgreSQLContainer.getPassword()
         ).load();
@@ -36,7 +36,7 @@ public abstract class AbstractTestcontainersTest {
     private static void registerDataSourceProperties(DynamicPropertyRegistry registry) {
         registry.add(
                 "spring.datasource.url",
-                () -> postgreSQLContainer.getJdbcUrl().replace("localhost", "127.0.0.1")
+                postgreSQLContainer::getJdbcUrl
         );
         registry.add(
                 "spring.datasource.username",
