@@ -85,4 +85,12 @@ public class CustomerService {
         }
         return this.customerRepository.save(customer);
     }
+
+    public Collection<Customer> saveAll(Collection<Customer> customers) {
+        return this.customerRepository.saveAll(customers);
+    }
+
+    public void deleteAll() {
+        this.customerRepository.deleteAll();
+    }
 }

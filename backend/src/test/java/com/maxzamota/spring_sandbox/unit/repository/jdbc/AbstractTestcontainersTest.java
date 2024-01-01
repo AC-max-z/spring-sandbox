@@ -1,6 +1,7 @@
 package com.maxzamota.spring_sandbox.unit.repository.jdbc;
 
 import org.flywaydb.core.Flyway;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -17,13 +18,17 @@ public abstract class AbstractTestcontainersTest {
 
     @Container
     protected static final PostgreSQLContainer<?> postgreSQLContainer =
-            new PostgreSQLContainer<>("postgres:latest")
+            new PostgreSQLContainer<>("postgres:15-alpine")
                     .withDatabaseName("maxzamota-dao-unit-test")
                     .withUsername("mzamota")
                     .withPassword("password");
 
+    /**
+     * Runs Flyway migration scripts on testcontainers database
+     */
     @BeforeAll
     static void beforeAll() {
+        postgreSQLContainer.start();
         Flyway flyway = Flyway.configure().dataSource(
                 postgreSQLContainer.getJdbcUrl(),
                 postgreSQLContainer.getUsername(),
@@ -32,6 +37,15 @@ public abstract class AbstractTestcontainersTest {
         flyway.migrate();
     }
 
+    @AfterAll
+    static void afterAll() {
+        postgreSQLContainer.stop();
+    }
+
+    /**
+     * Configure spring app properties to change datasource for tests' app context
+     * @param registry
+     */
     @DynamicPropertySource
     private static void registerDataSourceProperties(DynamicPropertyRegistry registry) {
         registry.add(
