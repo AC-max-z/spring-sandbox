@@ -17,7 +17,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 @Epic("Customer JPA unit tests")
-@Execution(ExecutionMode.SAME_THREAD)
+@Execution(ExecutionMode.CONCURRENT)
 @Tags({
         @Tag("unit-test"),
         @Tag("persistence-layer"),
