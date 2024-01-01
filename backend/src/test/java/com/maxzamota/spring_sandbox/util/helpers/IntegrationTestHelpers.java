@@ -5,7 +5,6 @@ import com.maxzamota.spring_sandbox.model.Customer;
 import io.netty.handler.logging.LogLevel;
 import io.qameta.allure.Step;
 import org.jetbrains.annotations.NotNull;
-import org.slf4j.Logger;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
@@ -22,7 +21,7 @@ public class IntegrationTestHelpers {
     private static final String APP_BASE_URI = "http://localhost";
     private static final String CUSTOMER_PUBLIC_API_URI = "/api/v1/customer";
 
-    public static WebTestClient getWebTestClient(Logger logger, Integer port) {
+    public static WebTestClient getWebTestClient(Integer port) {
         return WebTestClient
                 .bindToServer()
                 .baseUrl(Objects.nonNull(port) ? APP_BASE_URI + ":" + port : APP_BASE_URI)

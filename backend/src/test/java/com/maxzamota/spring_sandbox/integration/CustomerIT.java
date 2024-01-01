@@ -86,7 +86,7 @@ public class CustomerIT {
         var step0 = "Init Web Test Client";
         logger.info(step0);
         step(step0);
-        WebTestClient webClient = IntegrationTestHelpers.getWebTestClient(this.logger, this.port);
+        WebTestClient webClient = IntegrationTestHelpers.getWebTestClient(this.port);
 
         var step1 = "Generate new Customer object";
         logger.info(step1);
@@ -145,7 +145,7 @@ public class CustomerIT {
         var step0 = "Init Web Test Client";
         logger.info(step0);
         step(step0);
-        WebTestClient webClient = IntegrationTestHelpers.getWebTestClient(this.logger, this.port);
+        WebTestClient webClient = IntegrationTestHelpers.getWebTestClient(this.port);
 
         var step1 = "Generate new customer object";
         logger.info(step1);
@@ -215,7 +215,7 @@ public class CustomerIT {
         var step0 = "Init Web Test Client";
         logger.info(step0);
         step(step0);
-        WebTestClient webClient = IntegrationTestHelpers.getWebTestClient(this.logger, this.port);
+        WebTestClient webClient = IntegrationTestHelpers.getWebTestClient(this.port);
 
         var step1 = "Generate new customer object";
         logger.info(step1);
