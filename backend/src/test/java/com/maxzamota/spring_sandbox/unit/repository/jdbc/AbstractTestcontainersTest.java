@@ -15,16 +15,6 @@ import javax.sql.DataSource;
 @Testcontainers
 public abstract class AbstractTestcontainersTest {
 
-    @BeforeAll
-    static void beforeAll() {
-        Flyway flyway = Flyway.configure().dataSource(
-                postgreSQLContainer.getJdbcUrl(),
-                postgreSQLContainer.getUsername(),
-                postgreSQLContainer.getPassword()
-        ).load();
-        flyway.migrate();
-    }
-
     @Container
     protected static final PostgreSQLContainer<?> postgreSQLContainer =
             new PostgreSQLContainer<>("postgres:latest")
@@ -32,11 +22,21 @@ public abstract class AbstractTestcontainersTest {
                     .withUsername("mzamota")
                     .withPassword("password");
 
+    @BeforeAll
+    static void beforeAll() {
+        Flyway flyway = Flyway.configure().dataSource(
+                postgreSQLContainer.getJdbcUrl().replace("localhost", "127.0.0.1"),
+                postgreSQLContainer.getUsername(),
+                postgreSQLContainer.getPassword()
+        ).load();
+        flyway.migrate();
+    }
+
     @DynamicPropertySource
     private static void registerDataSourceProperties(DynamicPropertyRegistry registry) {
         registry.add(
                 "spring.datasource.url",
-                postgreSQLContainer::getJdbcUrl
+                () -> postgreSQLContainer.getJdbcUrl().replace("localhost", "127.0.0.1")
         );
         registry.add(
                 "spring.datasource.username",
