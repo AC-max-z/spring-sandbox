@@ -25,7 +25,7 @@ repositories {
 }
 
 allprojects {
-    version = "${project.version}-build-${System.getProperty("dockerImageTag") ?: 0}"
+    version = "${System.getProperty("dockerImageTag") ?: version}"
 }
 
 dependencies {
