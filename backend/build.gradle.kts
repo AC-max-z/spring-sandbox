@@ -141,6 +141,5 @@ jib {
     to {
         image = "docker.io/acidcommunism69/spring-sandbox-api:${version}"
         setTags(listOf("latest", "$version"))
-        setCredHelper("desktop")
     }
 }
