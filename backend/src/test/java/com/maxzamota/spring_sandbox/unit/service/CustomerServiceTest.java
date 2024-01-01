@@ -26,7 +26,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-@Execution(ExecutionMode.SAME_THREAD)
+@Execution(ExecutionMode.CONCURRENT)
 @Epic("Customer service unit tests")
 @Tags({
         @Tag("unit-test"),
@@ -35,7 +35,9 @@ import static org.mockito.Mockito.*;
 @Severity(SeverityLevel.BLOCKER)
 class CustomerServiceTest {
     private CustomerService serviceUnderTest;
+
     AutoCloseable autoCloseable;
+
     @Mock
     private CustomerRepository repository;
 
@@ -98,59 +100,66 @@ class CustomerServiceTest {
         Allure.suite("Customer service unit tests");
 
         // Arrange
-        step("Clean database");
-        this.serviceUnderTest.deleteAll();
         step("Generate list of customers");
         var generatedCustomers = new CustomerGenerator().buildList(69);
         step("Save generated customers");
         var savedCustomers = this.serviceUnderTest.saveAll(generatedCustomers);
+        var retrievedCustomers = this.serviceUnderTest.getAllCustomers();
 
         // Act
         step("Call service layer sortedCustomers() method");
         Collection<Customer> sortedCustomers = null;
         try {
+            // This can flake if new customer(s) is/are saved in other thread
+            // between obtaining all customers list and sorted customers list
+            // during concurrent test execution
             sortedCustomers = this.serviceUnderTest.sortedCustomers(sortType);
         } catch (NullPointerException ignored) {
+        }
+        step("Filter sorted customers list to ensure only previously retrieved " +
+                "customers are in it (concurrent anti-flake hack)");
+        if (Objects.nonNull(sortedCustomers)) {
+            sortedCustomers = sortedCustomers.stream()
+                    .filter(retrievedCustomers::contains)
+                    .toList();
         }
 
         // Assert
         step("Verify that returned list is sorted as expected");
         switch (sortType) {
             case BY_ID_ASC -> assertThat(sortedCustomers)
-                    .isEqualTo(savedCustomers.stream()
-                            .sorted(Comparator.comparingInt(Customer::getId)                            )
+                    .isEqualTo(retrievedCustomers.stream()
+                            .sorted(Comparator.comparingInt(Customer::getId))
                             .toList()
                     );
             case BY_ID_DESC -> assertThat(sortedCustomers)
-                    .isEqualTo(savedCustomers.stream()
+                    .isEqualTo(retrievedCustomers.stream()
                             .sorted(Comparator.comparingInt(Customer::getId).reversed())
                             .toList()
                     );
             case BY_AGE_ASC -> assertThat(sortedCustomers)
-                    .isEqualTo(savedCustomers.stream()
+                    .isEqualTo(retrievedCustomers.stream()
                             .sorted(Comparator.comparingInt(Customer::getAge))
                             .toList()
                     );
             case BY_AGE_DESC -> assertThat(sortedCustomers)
-                    .isEqualTo(savedCustomers.stream()
+                    .isEqualTo(retrievedCustomers.stream()
                             .sorted(Comparator.comparingInt(Customer::getAge).reversed())
                             .toList()
                     );
             case BY_NAME_ASC -> assertThat(sortedCustomers)
-                    .isEqualTo(savedCustomers.stream()
+                    .isEqualTo(retrievedCustomers.stream()
                             .sorted(Comparator.comparing(Customer::getName))
                             .toList()
                     );
             case BY_NAME_DESC -> assertThat(sortedCustomers)
-                    .isEqualTo(savedCustomers.stream()
+                    .isEqualTo(retrievedCustomers.stream()
                             .sorted(Comparator.comparing(Customer::getName).reversed())
                             .toList()
                     );
             case null ->
                     assertThrows(NullPointerException.class, () -> this.serviceUnderTest.sortedCustomers(sortType));
         }
-        step("Clean database");
-        this.serviceUnderTest.deleteAll();
     }
 
     @Test

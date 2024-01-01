@@ -36,12 +36,15 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class CustomerIT {
     @LocalServerPort
     private int port;
+
     @Autowired
     private ModelMapper mapper;
+
     @Container
     private static final PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>(
             "postgres:15-alpine"
     );
+
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
     @DynamicPropertySource
