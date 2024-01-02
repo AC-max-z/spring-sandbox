@@ -56,6 +56,13 @@ jobs:
           --data '{"text":"Job Status ${{ job.status }}"}' 
           ${{ secrets.SLACK_WEBHOOK_URL }}
 
+      - name: Send Discord Message
+        if: always()
+        run: >
+          curl -X POST -H 'Content-type: application/json' 
+          --data '{"text":"Backend-CI run status ${{ job.status }}"}' 
+          ${{ secrets.DISCORD_WEBHOOK_URL }}
+
       - name: Send telegram notification
         uses: yanzay/notify-telegram@v0.1.0
         if: always()
