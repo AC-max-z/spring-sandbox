@@ -82,10 +82,10 @@ jobs:
           git commit -m "Update Dockerrun.aws.json docker image with new tag ${{ steps.build-number.outputs.BUILD_NUMBER }}"
           git push
           
-      - name: Telegram status notification
-        if: cancelled() == false
-        uses: xinthink/action-telegram@v1.1
+      - name: Send telegram notification
+        uses: yanzay/notify-telegram@v0.1.0
+        if: always()
         with:
-          botToken: ${{ secrets.TELEGRAM_BOT_TOKEN }}
-          chatId: ${{ secrets.TELEGRAM_CHAT_ID }}
-          jobStatus: ${{ job.status }}
+          chat: ${{ secrets.TELEGRAM_CHAT_ID }} # user id or channel name secret
+          token: ${{ secrets.TELEGRAM_BOT_TOKEN }} # token secret
+          status: ${{ job.status }} # do not modify this line
