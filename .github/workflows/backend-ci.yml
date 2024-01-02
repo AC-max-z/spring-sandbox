@@ -30,6 +30,13 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
+      - name: Send Slack Message
+        if: always()
+        run: >
+          curl -X POST -H 'Content-type: application/json' 
+          --data '{"text":":test_tube: Starting app build and tests"}' 
+          ${{ secrets.SLACK_WEBHOOK_URL }}
+
       - uses: actions/setup-java@v3
         with:
           distribution: 'temurin'
@@ -41,6 +48,13 @@ jobs:
 
       - name: Build and run unit+integration tests
         run: ./gradlew build --stacktrace
+
+      - name: Send Slack Message
+        if: always()
+        run: >
+          curl -X POST -H 'Content-type: application/json' 
+          --data '{"text":"Job Status ${{ job.status }}"}' 
+          ${{ secrets.SLACK_WEBHOOK_URL }}
 
       - name: Send telegram notification
         uses: yanzay/notify-telegram@v0.1.0
