@@ -1,8 +1,9 @@
-import {Wrap, WrapItem, Spinner, Text} from '@chakra-ui/react';
+import { Wrap, WrapItem, Spinner, Text } from '@chakra-ui/react';
 import SidebarWithHeader from './components/shared/Sidebar.jsx';
-import {useEffect, useState} from 'react';
-import {getCustomers} from './services/client.js';
-import Card from "./components/Card.jsx";
+import { useEffect, useState } from 'react';
+import { getCustomers } from './services/client.js';
+import Card from './components/Card.jsx';
+import {DrawerForm} from "./components/DrawerForm.jsx";
 
 const App = () => {
     const [customers, setCustomers] = useState([]);
@@ -16,7 +17,6 @@ const App = () => {
             })
             .catch(err => console.log(err))
             .finally(() => setLoading(false));
-
     }, []);
     if (loading) {
         return (
@@ -41,17 +41,15 @@ const App = () => {
     }
     return (
         <SidebarWithHeader>
-            <Wrap justify={"center"} spacing={"30px"}>
+            <DrawerForm/>
+            <Wrap justify={'center'} spacing={'30px'}>
                 {customers.map((customer, index) => (
                     <WrapItem key={index}>
-                        <Card
-                            {...customer}
-                        ></Card>
+                        <Card {...customer}></Card>
                     </WrapItem>
                 ))}
             </Wrap>
         </SidebarWithHeader>
-
     );
 };
 

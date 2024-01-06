@@ -106,22 +106,6 @@ tasks {
             includeTags("jpa")
         }
     }
-
-    val generateMetadata by registering(WriteProperties::class) {
-        description = "Generate metadata and write it into properties file"
-        destinationFile = file("${layout.buildDirectory}/metadata.properties")
-        encoding = "UTF-8"
-        comment = "Version of the project"
-        property("project.version", project.version)
-    }
-
-    register("docker-push") {
-        doLast {
-            exec {
-                commandLine("docker", "push", "docker.io/acidcommunism69/${project.name}:${project.version}")
-            }
-        }
-    }
 }
 
 jib {

@@ -17,12 +17,12 @@ export default function Card({id, name, age, email, gender}) {
     return (
         <Center py={6}>
             <Box
-                maxW={'350px'}
+                maxW={'500px'}
                 w={'full'}
                 bg={useColorModeValue('white', 'gray.900')}
                 boxShadow={'2xl'}
                 rounded={'lg'}
-                p={6}
+                p={10}
                 textAlign={'center'}>
                 <Avatar
                     size={'xl'}

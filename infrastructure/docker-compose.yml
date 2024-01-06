@@ -17,7 +17,7 @@ services:
 
   spring-sandbox-api:
     container_name: spring-sandbox-api
-    image: acidcommunism69/spring-sandbox-api
+    image: acidcommunism69/spring-sandbox-api:latest
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/customer
     ports:
