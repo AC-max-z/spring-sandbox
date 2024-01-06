@@ -80,7 +80,7 @@ jobs:
 
       - name: Update Dockerrun.aws.json image tag with new build number
         run: |
-          echo "./infrastructure/Dockerrun.aws.json before updating tag"
+          echo "Dockerrun.aws.json before updating tag"
           cat ./infrastructure/Dockerrun.aws.json
           sed -i -E 's_(acidcommunism69/spring-sandbox-api:)([^"]*)_\1'${{ steps.build-number.outputs.BUILD_NUMBER }}'_' ./infrastructure/Dockerrun.aws.json
           echo "./infrastructure/Dockerrun.aws.json after updating tag"
