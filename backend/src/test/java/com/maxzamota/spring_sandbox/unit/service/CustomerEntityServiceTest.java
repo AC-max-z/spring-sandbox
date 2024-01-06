@@ -3,8 +3,8 @@ package com.maxzamota.spring_sandbox.unit.service;
 import com.maxzamota.spring_sandbox.enums.CustomerSortType;
 import com.maxzamota.spring_sandbox.exception.DuplicateResourceException;
 import com.maxzamota.spring_sandbox.exception.ResourceNotFoundException;
+import com.maxzamota.spring_sandbox.model.CustomerEntity;
 import com.maxzamota.spring_sandbox.util.generators.CustomerGenerator;
-import com.maxzamota.spring_sandbox.model.Customer;
 import com.maxzamota.spring_sandbox.repository.jpa.CustomerRepository;
 import com.maxzamota.spring_sandbox.service.CustomerService;
 import io.qameta.allure.*;
@@ -33,7 +33,7 @@ import static org.mockito.Mockito.*;
         @Tag("service-layer")
 })
 @Severity(SeverityLevel.BLOCKER)
-class CustomerServiceTest {
+class CustomerEntityServiceTest {
     private CustomerService serviceUnderTest;
 
     AutoCloseable autoCloseable;
@@ -69,7 +69,7 @@ class CustomerServiceTest {
         step("Generate list of customer objects");
         var mockedCustomers = new CustomerGenerator().buildList(size);
         step("Setup repository mock");
-        when(this.repository.findAll()).thenReturn((List<Customer>) mockedCustomers);
+        when(this.repository.findAll()).thenReturn((List<CustomerEntity>) mockedCustomers);
 
         // Act
         step("Call getAllCustomers() service layer method");
@@ -108,18 +108,18 @@ class CustomerServiceTest {
 
         // Act
         step("Call service layer sortedCustomers() method");
-        Collection<Customer> sortedCustomers = null;
+        Collection<CustomerEntity> sortedCustomerEntities = null;
         try {
             // This can flake if new customer(s) is/are saved in other thread
             // between obtaining all customers list and sorted customers list
             // during concurrent test execution
-            sortedCustomers = this.serviceUnderTest.sortedCustomers(sortType);
+            sortedCustomerEntities = this.serviceUnderTest.sortedCustomers(sortType);
         } catch (NullPointerException ignored) {
         }
         step("Filter sorted customers list to ensure only previously retrieved " +
                 "customers are in it (concurrent anti-flake hack)");
-        if (Objects.nonNull(sortedCustomers)) {
-            sortedCustomers = sortedCustomers.stream()
+        if (Objects.nonNull(sortedCustomerEntities)) {
+            sortedCustomerEntities = sortedCustomerEntities.stream()
                     .filter(retrievedCustomers::contains)
                     .toList();
         }
@@ -127,34 +127,34 @@ class CustomerServiceTest {
         // Assert
         step("Verify that returned list is sorted as expected");
         switch (sortType) {
-            case BY_ID_ASC -> assertThat(sortedCustomers)
+            case BY_ID_ASC -> assertThat(sortedCustomerEntities)
                     .isEqualTo(retrievedCustomers.stream()
-                            .sorted(Comparator.comparingInt(Customer::getId))
+                            .sorted(Comparator.comparingInt(CustomerEntity::getId))
                             .toList()
                     );
-            case BY_ID_DESC -> assertThat(sortedCustomers)
+            case BY_ID_DESC -> assertThat(sortedCustomerEntities)
                     .isEqualTo(retrievedCustomers.stream()
-                            .sorted(Comparator.comparingInt(Customer::getId).reversed())
+                            .sorted(Comparator.comparingInt(CustomerEntity::getId).reversed())
                             .toList()
                     );
-            case BY_AGE_ASC -> assertThat(sortedCustomers)
+            case BY_AGE_ASC -> assertThat(sortedCustomerEntities)
                     .isEqualTo(retrievedCustomers.stream()
-                            .sorted(Comparator.comparingInt(Customer::getAge))
+                            .sorted(Comparator.comparingInt(CustomerEntity::getAge))
                             .toList()
                     );
-            case BY_AGE_DESC -> assertThat(sortedCustomers)
+            case BY_AGE_DESC -> assertThat(sortedCustomerEntities)
                     .isEqualTo(retrievedCustomers.stream()
-                            .sorted(Comparator.comparingInt(Customer::getAge).reversed())
+                            .sorted(Comparator.comparingInt(CustomerEntity::getAge).reversed())
                             .toList()
                     );
-            case BY_NAME_ASC -> assertThat(sortedCustomers)
+            case BY_NAME_ASC -> assertThat(sortedCustomerEntities)
                     .isEqualTo(retrievedCustomers.stream()
-                            .sorted(Comparator.comparing(Customer::getName))
+                            .sorted(Comparator.comparing(CustomerEntity::getName))
                             .toList()
                     );
-            case BY_NAME_DESC -> assertThat(sortedCustomers)
+            case BY_NAME_DESC -> assertThat(sortedCustomerEntities)
                     .isEqualTo(retrievedCustomers.stream()
-                            .sorted(Comparator.comparing(Customer::getName).reversed())
+                            .sorted(Comparator.comparing(CustomerEntity::getName).reversed())
                             .toList()
                     );
             case null ->
@@ -182,7 +182,7 @@ class CustomerServiceTest {
 
         // Act
         step("Call getCustomerById() service layer method");
-        Customer actual = null;
+        CustomerEntity actual = null;
         try {
             actual = this.serviceUnderTest.getCustomerById(id);
         } catch (ResourceNotFoundException ignored) {
@@ -321,9 +321,9 @@ class CustomerServiceTest {
 
         // Act
         step("Call updateById() service layer method");
-        Customer updatedCustomer = null;
+        CustomerEntity updatedCustomerEntity = null;
         try {
-            updatedCustomer = this.serviceUnderTest.updateById(customer);
+            updatedCustomerEntity = this.serviceUnderTest.updateById(customer);
         } catch (ResourceNotFoundException ignored) {
         }
 
@@ -338,7 +338,7 @@ class CustomerServiceTest {
         verify(this.repository)
                 .save(customer);
         step("Verify returned customer is as expected");
-        assertThat(updatedCustomer)
+        assertThat(updatedCustomerEntity)
                 .isEqualTo(customer);
     }
 

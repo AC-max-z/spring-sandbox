@@ -1,6 +1,6 @@
 package com.maxzamota.spring_sandbox.repository.jdbc;
 
-import com.maxzamota.spring_sandbox.model.Customer;
+import com.maxzamota.spring_sandbox.model.CustomerEntity;
 import com.maxzamota.spring_sandbox.repository.CustomerDao;
 import com.maxzamota.spring_sandbox.repository.mappers.CustomerRowMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,35 +23,42 @@ public class CustomerJDBCDataAccessService implements CustomerDao {
     }
 
     @Override
-    public Customer save(Customer customer) {
-        if (Objects.nonNull(customer.getId()) && this.existsCustomerById(customer.getId())) {
+    public CustomerEntity save(CustomerEntity customerEntity) {
+        if (Objects.nonNull(customerEntity.getId()) && this.existsCustomerById(customerEntity.getId())) {
             var updateQuery = """
                     UPDATE customer
-                    SET name = ?, email = ?, age = ?
+                    SET name = ?, email = ?, age = ?, gender = ?::gender
                     WHERE id = ?
                     """;
             this.jdbcTemplate.update(
                     updateQuery,
-                    customer.getName(),
-                    customer.getEmail(),
-                    customer.getAge(),
-                    customer.getId()
+                    customerEntity.getName(),
+                    customerEntity.getEmail(),
+                    customerEntity.getAge(),
+                    customerEntity.getGender().toString(),
+                    customerEntity.getId()
             );
-            return this.findById(customer.getId()).orElseThrow();
+            return this.findById(customerEntity.getId()).orElseThrow();
         }
         var insertQuery = """
-                INSERT INTO customer(name, email, age)
-                VALUES (?, ?, ?)
+                INSERT INTO customer(name, email, age, gender)
+                VALUES (?, ?, ?, ?::gender)
                 """;
-        this.jdbcTemplate.update(insertQuery, customer.getName(), customer.getEmail(), customer.getAge());
-        return this.findCustomersByEmail(customer.getEmail()).stream()
+        this.jdbcTemplate.update(
+                insertQuery,
+                customerEntity.getName(),
+                customerEntity.getEmail(),
+                customerEntity.getAge(),
+                customerEntity.getGender().toString()
+        );
+        return this.findCustomersByEmail(customerEntity.getEmail()).stream()
                 .findFirst()
                 .orElseThrow();
 
     }
 
     @Override
-    public Collection<Customer> findAll() {
+    public Collection<CustomerEntity> findAll() {
         var query = """
                 SELECT * FROM customer
                 """;
@@ -59,7 +66,7 @@ public class CustomerJDBCDataAccessService implements CustomerDao {
     }
 
     @Override
-    public Optional<Customer> findById(Integer id) {
+    public Optional<CustomerEntity> findById(Integer id) {
         var sql = """
                 SELECT *
                 FROM customer
@@ -102,7 +109,7 @@ public class CustomerJDBCDataAccessService implements CustomerDao {
     }
 
     @Override
-    public Collection<Customer> findCustomersByEmail(String email) {
+    public Collection<CustomerEntity> findCustomersByEmail(String email) {
         var query = """
                 SELECT *
                 FROM customer

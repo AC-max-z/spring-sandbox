@@ -1,7 +1,7 @@
 package com.maxzamota.spring_sandbox.unit.repository.mappers;
 
 import com.maxzamota.spring_sandbox.util.generators.CustomerGenerator;
-import com.maxzamota.spring_sandbox.model.Customer;
+import com.maxzamota.spring_sandbox.model.CustomerEntity;
 import com.maxzamota.spring_sandbox.repository.mappers.CustomerRowMapper;
 import io.qameta.allure.Allure;
 import io.qameta.allure.Epic;
@@ -21,7 +21,7 @@ import static org.mockito.Mockito.when;
 
 @Epic("Mappers unit tests")
 @Severity(SeverityLevel.BLOCKER)
-class CustomerRowMapperTest {
+class CustomerEntityRowMapperTest {
 
     @Test
     @DisplayName("Should map Customer object from result set")
@@ -35,19 +35,20 @@ class CustomerRowMapperTest {
         // Arrange
         CustomerRowMapper customerRowMapper = new CustomerRowMapper();
         ResultSet rs = mock(ResultSet.class);
-        Customer expectedCustomer = new CustomerGenerator()
+        CustomerEntity expectedCustomerEntity = new CustomerGenerator()
                 .withId(1)
                 .withName("Jamal")
                 .withEmail("bigBallsJamal@yahoo.com")
                 .withAge(42)
                 .generate();
-        when(rs.getInt("id")).thenReturn(expectedCustomer.getId());
-        when(rs.getString("name")).thenReturn(expectedCustomer.getName());
-        when(rs.getString("email")).thenReturn(expectedCustomer.getEmail());
-        when(rs.getInt("age")).thenReturn(expectedCustomer.getAge());
+        when(rs.getInt("id")).thenReturn(expectedCustomerEntity.getId());
+        when(rs.getString("name")).thenReturn(expectedCustomerEntity.getName());
+        when(rs.getString("email")).thenReturn(expectedCustomerEntity.getEmail());
+        when(rs.getInt("age")).thenReturn(expectedCustomerEntity.getAge());
+        when(rs.getString("gender")).thenReturn(String.valueOf(expectedCustomerEntity.getGender()));
         // Act
-        Customer customer = customerRowMapper.mapRow(rs, 1);
+        CustomerEntity customerEntity = customerRowMapper.mapRow(rs, 1);
         // Assert
-        assertThat(customer).usingRecursiveComparison().isEqualTo(expectedCustomer);
+        assertThat(customerEntity).usingRecursiveComparison().isEqualTo(expectedCustomerEntity);
     }
 }

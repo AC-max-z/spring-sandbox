@@ -7,6 +7,9 @@ build/
 htmlReport/
 backend/*.log
 *.log
+.env*
+*node_modules/
+frontend/react-ui-spring-sandbox/node_modules
 
 ### Configs ###
 src/main/resources/application.yml

@@ -3,6 +3,10 @@ server:
   error:
     include-message: always
 
+cors:
+  allowedOrigins: "http://localhost:5173"
+  allowedMethods: "*"
+
 spring:
   datasource:
     url: jdbc:postgresql://localhost:5433/customer

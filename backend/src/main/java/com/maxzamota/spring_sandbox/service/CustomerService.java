@@ -3,7 +3,7 @@ package com.maxzamota.spring_sandbox.service;
 import com.maxzamota.spring_sandbox.enums.CustomerSortType;
 import com.maxzamota.spring_sandbox.exception.DuplicateResourceException;
 import com.maxzamota.spring_sandbox.exception.ResourceNotFoundException;
-import com.maxzamota.spring_sandbox.model.Customer;
+import com.maxzamota.spring_sandbox.model.CustomerEntity;
 import com.maxzamota.spring_sandbox.repository.jpa.CustomerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -25,11 +25,11 @@ public class CustomerService {
         this.customerRepository = customerRepository;
     }
 
-    public Collection<Customer> getAllCustomers() {
+    public Collection<CustomerEntity> getAllCustomers() {
         return this.customerRepository.findAll();
     }
 
-    public Collection<Customer> sortedCustomers(@NonNull CustomerSortType sortType) {
+    public Collection<CustomerEntity> sortedCustomers(@NonNull CustomerSortType sortType) {
         return switch (sortType) {
             case CustomerSortType.BY_AGE_ASC -> this.customerRepository.findAllByOrderByAgeAsc();
             case CustomerSortType.BY_AGE_DESC -> this.customerRepository.findAllByOrderByAgeDesc();
@@ -40,19 +40,19 @@ public class CustomerService {
         };
     }
 
-    public Customer getCustomerById(Integer id) {
+    public CustomerEntity getCustomerById(Integer id) {
         return this.customerRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Customer with id={%s} not found!"
                         .formatted(id)));
     }
 
-    public Customer save(Customer customer) {
-        if (this.customerRepository.existsCustomerByEmail(customer.getEmail())) {
+    public CustomerEntity save(CustomerEntity customerEntity) {
+        if (this.customerRepository.existsCustomerByEmail(customerEntity.getEmail())) {
             throw new DuplicateResourceException(
-                    "Customer with email={%s} already exists!".formatted(customer.getEmail())
+                    "Customer with email={%s} already exists!".formatted(customerEntity.getEmail())
             );
         }
-        return this.customerRepository.save(customer);
+        return this.customerRepository.save(customerEntity);
     }
 
     public String deleteById(Integer id) {
@@ -61,33 +61,33 @@ public class CustomerService {
                 .formatted(id);
     }
 
-    public Customer updateById(Customer customer) {
-        if (!this.customerRepository.existsCustomerById(customer.getId())) {
+    public CustomerEntity updateById(CustomerEntity customerEntity) {
+        if (!this.customerRepository.existsCustomerById(customerEntity.getId())) {
             throw new ResourceNotFoundException("Customer with id={%s} not found!"
-                    .formatted(customer.getId()));
+                    .formatted(customerEntity.getId()));
         }
-        if (customer.equals(
+        if (customerEntity.equals(
                 this.customerRepository
-                        .findById(customer.getId())
+                        .findById(customerEntity.getId())
                         .orElseGet(() -> null))
         ) {
-            return customer;
+            return customerEntity;
         }
-        if (!this.customerRepository.findCustomersByEmail(customer.getEmail())
+        if (!this.customerRepository.findCustomersByEmail(customerEntity.getEmail())
                 .stream()
-                .filter(record -> !Objects.equals(record.getId(), customer.getId()))
+                .filter(record -> !Objects.equals(record.getId(), customerEntity.getId()))
                 .toList()
                 .isEmpty()
         ) {
             throw new DuplicateResourceException("Customer with email={%s} already exists!"
-                    .formatted(customer.getEmail())
+                    .formatted(customerEntity.getEmail())
             );
         }
-        return this.customerRepository.save(customer);
+        return this.customerRepository.save(customerEntity);
     }
 
-    public Collection<Customer> saveAll(Collection<Customer> customers) {
-        return this.customerRepository.saveAll(customers);
+    public Collection<CustomerEntity> saveAll(Collection<CustomerEntity> customerEntities) {
+        return this.customerRepository.saveAll(customerEntities);
     }
 
     public void deleteAll() {

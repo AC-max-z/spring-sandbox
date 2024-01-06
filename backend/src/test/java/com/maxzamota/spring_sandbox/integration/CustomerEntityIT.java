@@ -3,7 +3,7 @@ package com.maxzamota.spring_sandbox.integration;
 import com.maxzamota.spring_sandbox.dto.CustomerDto;
 import com.maxzamota.spring_sandbox.util.generators.CustomerGenerator;
 import com.maxzamota.spring_sandbox.util.helpers.IntegrationTestHelpers;
-import com.maxzamota.spring_sandbox.model.Customer;
+import com.maxzamota.spring_sandbox.model.CustomerEntity;
 import io.qameta.allure.*;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.parallel.Execution;
@@ -33,7 +33,7 @@ import static org.assertj.core.api.Assertions.assertThat;
         @Tag("customer")
 })
 @Severity(SeverityLevel.BLOCKER)
-public class CustomerIT {
+public class CustomerEntityIT {
     @LocalServerPort
     private int port;
 
@@ -98,33 +98,33 @@ public class CustomerIT {
         var step2 = "Create generated customer using public Customer API";
         logger.info(step2);
         step(step2);
-        Customer createdCustomer = IntegrationTestHelpers.postCustomer(webClient, customerDto);
+        CustomerEntity createdCustomerEntity = IntegrationTestHelpers.postCustomer(webClient, customerDto);
 
         var step3 = "Get all customers using public Customer API";
         logger.info(step3);
         step(step3);
-        Collection<Customer> allCustomers = IntegrationTestHelpers.getAllCustomers(webClient);
+        Collection<CustomerEntity> allCustomerEntities = IntegrationTestHelpers.getAllCustomers(webClient);
 
         var step4 = "Get customer by id using public Customer API";
         logger.info(step4);
         step(step4);
-        Customer savedCustomer = IntegrationTestHelpers
-                .getCustomerById(webClient, createdCustomer.getId());
+        CustomerEntity savedCustomerEntity = IntegrationTestHelpers
+                .getCustomerById(webClient, createdCustomerEntity.getId());
 
         // Assert
         var step5 = "Verify all customers list contains created customer";
         logger.info(step5);
         step(step5);
-        assertThat(allCustomers)
+        assertThat(allCustomerEntities)
                 .usingRecursiveFieldByFieldElementComparator()
-                .contains(createdCustomer);
+                .contains(createdCustomerEntity);
 
         var step6 = "Verify customer is returned by id";
         logger.info(step6);
         step(step6);
-        assertThat(savedCustomer)
+        assertThat(savedCustomerEntity)
                 .usingRecursiveComparison()
-                .isEqualTo(createdCustomer);
+                .isEqualTo(createdCustomerEntity);
     }
 
     @Test

@@ -1,8 +1,8 @@
 package com.maxzamota.spring_sandbox.unit.repository.jdbc;
 
 import com.github.javafaker.Faker;
+import com.maxzamota.spring_sandbox.model.CustomerEntity;
 import com.maxzamota.spring_sandbox.util.generators.CustomerGenerator;
-import com.maxzamota.spring_sandbox.model.Customer;
 import com.maxzamota.spring_sandbox.repository.jdbc.CustomerJDBCDataAccessService;
 import com.maxzamota.spring_sandbox.repository.mappers.CustomerRowMapper;
 import io.qameta.allure.*;
@@ -28,7 +28,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
         @Tag("jdbc")
 })
 @Severity(SeverityLevel.BLOCKER)
-class CustomerDataAccessServiceTest extends AbstractTestcontainersTest {
+class CustomerEntityDataAccessServiceTest extends AbstractTestcontainersTest {
 
     private static CustomerJDBCDataAccessService serviceUnderTest;
     private final static CustomerRowMapper customerRowMapper = new CustomerRowMapper();
@@ -75,9 +75,9 @@ class CustomerDataAccessServiceTest extends AbstractTestcontainersTest {
         // Arrange
         var savedCustomer = serviceUnderTest.save(new CustomerGenerator().generate());
         // Act
-        Collection<Customer> actualCustomers = serviceUnderTest.findAll();
+        Collection<CustomerEntity> actualCustomerEntities = serviceUnderTest.findAll();
         // Assert
-        assertThat(actualCustomers)
+        assertThat(actualCustomerEntities)
                 .isNotEmpty()
                 .usingRecursiveFieldByFieldElementComparator()
                 .contains(savedCustomer);
@@ -96,7 +96,7 @@ class CustomerDataAccessServiceTest extends AbstractTestcontainersTest {
         // Arrange
         var savedCustomer = serviceUnderTest.save(new CustomerGenerator().generate());
         // Act
-        Optional<Customer> actualCustomer = serviceUnderTest.findById(savedCustomer.getId());
+        Optional<CustomerEntity> actualCustomer = serviceUnderTest.findById(savedCustomer.getId());
         // Assert
         assertThat(actualCustomer)
                 .isPresent()
@@ -118,7 +118,7 @@ class CustomerDataAccessServiceTest extends AbstractTestcontainersTest {
         // Arrange
         Integer id = -1;
         // Act
-        Optional<Customer> actualCustomer = serviceUnderTest.findById(id);
+        Optional<CustomerEntity> actualCustomer = serviceUnderTest.findById(id);
         // Assert
         assertThat(actualCustomer).isNotPresent();
     }
@@ -134,9 +134,9 @@ class CustomerDataAccessServiceTest extends AbstractTestcontainersTest {
     void existsCustomerByEmail() {
         Allure.suite("Customer repository JDBC unit tests");
         // Arrange
-        Customer customer = serviceUnderTest.save(new CustomerGenerator().generate());
+        CustomerEntity customerEntity = serviceUnderTest.save(new CustomerGenerator().generate());
         // Act
-        var customerExistsByEmail = serviceUnderTest.existsCustomerByEmail(customer.getEmail());
+        var customerExistsByEmail = serviceUnderTest.existsCustomerByEmail(customerEntity.getEmail());
         // Assert
         assertThat(customerExistsByEmail).isTrue();
     }
@@ -171,9 +171,9 @@ class CustomerDataAccessServiceTest extends AbstractTestcontainersTest {
     void existsCustomerById() {
         Allure.suite("Customer repository JDBC unit tests");
         // Arrange
-        Customer customer = serviceUnderTest.save(new CustomerGenerator().generate());
+        CustomerEntity customerEntity = serviceUnderTest.save(new CustomerGenerator().generate());
         // Act
-        Boolean customerExistsById = serviceUnderTest.existsCustomerById(customer.getId());
+        Boolean customerExistsById = serviceUnderTest.existsCustomerById(customerEntity.getId());
         // Assert
         assertThat(customerExistsById).isTrue();
     }
@@ -259,6 +259,7 @@ class CustomerDataAccessServiceTest extends AbstractTestcontainersTest {
                         .withId(initialCustomer.getId())
                         .withName(initialCustomer.getName())
                         .withAge(initialCustomer.getAge())
+                        .withGender(initialCustomer.getGender())
                         .generate()
         );
         // Assert
@@ -305,7 +306,7 @@ class CustomerDataAccessServiceTest extends AbstractTestcontainersTest {
     void saveCreateFailEmailExists() {
         Allure.suite("Customer repository JDBC unit tests");
         // Arrange
-        Function<Customer, Customer> saveCustomer = (customer) -> serviceUnderTest.save(customer);
+        Function<CustomerEntity, CustomerEntity> saveCustomer = (customer) -> serviceUnderTest.save(customer);
         var customer1 = saveCustomer.apply(new CustomerGenerator().generate());
         // Act
         var customerObj2 = new CustomerGenerator().withEmail(customer1.getEmail()).generate();

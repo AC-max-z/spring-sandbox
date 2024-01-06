@@ -24,7 +24,7 @@ import static org.assertj.core.api.Assertions.assertThat;
         @Tag("jpa")
 })
 @Severity(SeverityLevel.BLOCKER)
-class CustomerRepositoryTest extends AbstractTestcontainersTest {
+class CustomerEntityRepositoryTest extends AbstractTestcontainersTest {
 
     @Autowired
     private CustomerRepository classUnderTest;
