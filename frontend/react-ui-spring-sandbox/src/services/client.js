@@ -30,3 +30,13 @@ export const deleteCustomerById = async (id) => {
         throw err;
     }
 }
+
+export const updateCustomer = async (customer) => {
+    try {
+        return await client.put(
+            `${import.meta.env.VITE_API_BASE_URL}${CUSTOMER_API_ENDPOINT}/${customer.id}`,
+            customer);
+    } catch (err) {
+        throw err;
+    }
+}

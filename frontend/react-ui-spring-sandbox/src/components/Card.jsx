@@ -18,13 +18,17 @@ import {
     ModalHeader,
     ModalCloseButton,
     ModalBody,
-    ModalFooter,
+    ModalFooter, Drawer, DrawerOverlay, DrawerContent, DrawerCloseButton, DrawerHeader, DrawerBody, DrawerFooter,
 } from '@chakra-ui/react'
 import {errorNotification, successNotification} from "../services/notification.js";
 import {deleteCustomerById} from "../services/client.js";
+import React from "react";
+import EditCustomerForm from "./EditCustomerForm.jsx";
 
 export default function Card({id, name, age, email, gender, fetchCustomers}) {
-    const {isOpen, onOpen, onClose} = useDisclosure();
+    const {isOpen: isDeleteOpen, onOpen: onDeleteOpen, onClose: onDeleteClose} = useDisclosure();
+    const {isOpen: isEditOpen, onOpen: onEditOpen, onClose: onEditClose} = useDisclosure();
+    const btnRef = React.useRef();
     return (
         <Center py={6}>
             <Box
@@ -92,12 +96,32 @@ export default function Card({id, name, age, email, gender, fetchCustomers}) {
                         _focus={{
                             bg: 'grey.500',
                         }}
-                        onClick={onOpen}
+                        onClick={onDeleteOpen}
                     >
                         Delete
                     </Button>
+                    <Button
+                        flex={1}
+                        fontSize={'sm'}
+                        rounded={'full'}
+                        bg={'blue.400'}
+                        color={'white'}
+                        boxShadow={
+                            '0px 1px 25px -5px rgb(66 153 225 / 48%), 0 10px 10px -5px rgb(66 153 225 / 43%)'
+                        }
+                        _hover={{
+                            transform: 'translateY(-2px)',
+                            boxShadow: 'lg'
+                        }}
+                        _focus={{
+                            bg: 'grey.500',
+                        }}
+                        onClick={onEditOpen}
+                    >
+                        Edit
+                    </Button>
 
-                    <Modal isOpen={isOpen} onClose={onClose}>
+                    <Modal isOpen={isDeleteOpen} onClose={onDeleteClose}>
                         <ModalOverlay/>
                         <ModalContent>
                             <ModalHeader>Confirm action</ModalHeader>
@@ -107,7 +131,7 @@ export default function Card({id, name, age, email, gender, fetchCustomers}) {
                             </ModalBody>
 
                             <ModalFooter>
-                                <Button colorScheme='blue' mr={3} onClick={onClose}>
+                                <Button colorScheme='blue' mr={3} onClick={onDeleteClose}>
                                     Cancel
                                 </Button>
                                 <Button
@@ -130,6 +154,36 @@ export default function Card({id, name, age, email, gender, fetchCustomers}) {
                             </ModalFooter>
                         </ModalContent>
                     </Modal>
+                    <Drawer
+                        isOpen={isEditOpen}
+                        placement='right'
+                        onClose={onEditClose}
+                        finalFocusRef={btnRef}
+                        size={"xl"}
+                    >
+                        <DrawerOverlay/>
+                        <DrawerContent>
+                            <DrawerCloseButton/>
+                            <DrawerHeader>Edit customer</DrawerHeader>
+
+                            <DrawerBody>
+                                <EditCustomerForm
+                                    id={id}
+                                    name={name}
+                                    age={age}
+                                    email={email}
+                                    gender={gender}
+                                    fetchCustomers={fetchCustomers}
+                                />
+                            </DrawerBody>
+
+                            <DrawerFooter>
+                                <Button variant='outline' mr={3} onClick={onEditClose}>
+                                    Cancel
+                                </Button>
+                            </DrawerFooter>
+                        </DrawerContent>
+                    </Drawer>
                 </Stack>
             </Box>
         </Center>

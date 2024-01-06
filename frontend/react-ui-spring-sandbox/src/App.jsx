@@ -60,11 +60,7 @@ const App = () => {
                 {customers.map((customer, index) => (
                     <WrapItem key={index}>
                         <Card
-                            id={customer.id}
-                            name={customer.name}
-                            age={customer.age}
-                            email={customer.email}
-                            gender={customer.gender}
+                            {...customer}
                             fetchCustomers={fetchCustomers}
                         />
                     </WrapItem>
