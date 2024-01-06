@@ -120,71 +120,71 @@ export default function Card({id, name, age, email, gender, fetchCustomers}) {
                     >
                         Edit
                     </Button>
-
-                    <Modal isOpen={isDeleteOpen} onClose={onDeleteClose}>
-                        <ModalOverlay/>
-                        <ModalContent>
-                            <ModalHeader>Confirm action</ModalHeader>
-                            <ModalCloseButton/>
-                            <ModalBody>
-                                Are you sure that you want to delete customer {name}
-                            </ModalBody>
-
-                            <ModalFooter>
-                                <Button colorScheme='blue' mr={3} onClick={onDeleteClose}>
-                                    Cancel
-                                </Button>
-                                <Button
-                                    variant='ghost'
-                                    onClick={
-                                        () => deleteCustomerById(id)
-                                            .then(res => successNotification(
-                                                `Success!`,
-                                                `Customer ${name} successfully deleted!`
-                                            ))
-                                            .catch(err => errorNotification(
-                                                `Server returned an error code ${err.response.status}`,
-                                                `Error: ${err.response.data.message}`
-                                            ))
-                                            .finally(() => fetchCustomers())
-                                    }
-                                >
-                                    Delete
-                                </Button>
-                            </ModalFooter>
-                        </ModalContent>
-                    </Modal>
-                    <Drawer
-                        isOpen={isEditOpen}
-                        placement='right'
-                        onClose={onEditClose}
-                        finalFocusRef={btnRef}
-                        size={"xl"}
-                    >
-                        <DrawerOverlay/>
-                        <DrawerContent>
-                            <DrawerCloseButton/>
-                            <DrawerHeader>Edit customer</DrawerHeader>
-
-                            <DrawerBody>
-                                <EditCustomerForm
-                                    id={id}
-                                    name={name}
-                                    age={age}
-                                    email={email}
-                                    gender={gender}
-                                    fetchCustomers={fetchCustomers}
-                                />
-                            </DrawerBody>
-
-                            <DrawerFooter>
-                                <Button variant='outline' mr={3} onClick={onEditClose}>
-                                    Cancel
-                                </Button>
-                            </DrawerFooter>
-                        </DrawerContent>
-                    </Drawer>
                 </Stack>
+
+                <Modal isOpen={isDeleteOpen} onClose={onDeleteClose}>
+                    <ModalOverlay/>
+                    <ModalContent>
+                        <ModalHeader>Confirm action</ModalHeader>
+                        <ModalCloseButton/>
+                        <ModalBody>
+                            Are you sure that you want to delete customer {name}
+                        </ModalBody>
+
+                        <ModalFooter>
+                            <Button colorScheme='blue' mr={3} onClick={onDeleteClose}>
+                                Cancel
+                            </Button>
+                            <Button
+                                variant='ghost'
+                                onClick={
+                                    () => deleteCustomerById(id)
+                                        .then(res => successNotification(
+                                            `Success!`,
+                                            `Customer ${name} successfully deleted!`
+                                        ))
+                                        .catch(err => errorNotification(
+                                            `Server returned an error code ${err.response.status}`,
+                                            `Error: ${err.response.data.message}`
+                                        ))
+                                        .finally(() => fetchCustomers())
+                                }
+                            >
+                                Delete
+                            </Button>
+                        </ModalFooter>
+                    </ModalContent>
+                </Modal>
+                <Drawer
+                    isOpen={isEditOpen}
+                    placement='right'
+                    onClose={onEditClose}
+                    finalFocusRef={btnRef}
+                    size={"xl"}
+                >
+                    <DrawerOverlay/>
+                    <DrawerContent>
+                        <DrawerCloseButton/>
+                        <DrawerHeader>Edit customer</DrawerHeader>
+
+                        <DrawerBody>
+                            <EditCustomerForm
+                                id={id}
+                                name={name}
+                                age={age}
+                                email={email}
+                                gender={gender}
+                                fetchCustomers={fetchCustomers}
+                            />
+                        </DrawerBody>
+
+                        <DrawerFooter>
+                            <Button variant='outline' mr={3} onClick={onEditClose}>
+                                Cancel
+                            </Button>
+                        </DrawerFooter>
+                    </DrawerContent>
+                </Drawer>
             </Box>
         </Center>
     )

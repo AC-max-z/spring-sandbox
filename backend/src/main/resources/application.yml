@@ -4,7 +4,7 @@ server:
     include-message: always
 
 cors:
-  allowedOrigins: "http://localhost:5173"
+  allowedOrigins: "*"
   allowedMethods: "*"
 
 spring:
