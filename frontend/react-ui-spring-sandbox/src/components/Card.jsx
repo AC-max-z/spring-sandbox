@@ -8,17 +8,29 @@ import {
     Text,
     Stack,
     Button,
-    Link,
     Badge,
-    useColorModeValue, Tag,
+    useColorModeValue,
+    Tag,
+    useDisclosure,
+    Modal,
+    ModalOverlay,
+    ModalContent,
+    ModalHeader,
+    ModalCloseButton,
+    ModalBody,
+    ModalFooter,
 } from '@chakra-ui/react'
+import {errorNotification, successNotification} from "../services/notification.js";
+import {deleteCustomerById} from "../services/client.js";
 
-export default function Card({id, name, age, email, gender}) {
+export default function Card({id, name, age, email, gender, fetchCustomers}) {
+    const {isOpen, onOpen, onClose} = useDisclosure();
     return (
         <Center py={6}>
             <Box
                 maxW={'500px'}
-                w={'full'}
+                w={'50vh'}
+                h={'full'}
                 bg={useColorModeValue('white', 'gray.900')}
                 boxShadow={'2xl'}
                 rounded={'lg'}
@@ -68,28 +80,56 @@ export default function Card({id, name, age, email, gender}) {
                         flex={1}
                         fontSize={'sm'}
                         rounded={'full'}
-                        _focus={{
-                            bg: 'gray.200',
-                        }}>
-                        Message
-                    </Button>
-                    <Button
-                        flex={1}
-                        fontSize={'sm'}
-                        rounded={'full'}
-                        bg={'blue.400'}
+                        bg={'red.400'}
                         color={'white'}
                         boxShadow={
                             '0px 1px 25px -5px rgb(66 153 225 / 48%), 0 10px 10px -5px rgb(66 153 225 / 43%)'
                         }
                         _hover={{
-                            bg: 'blue.500',
+                            transform: 'translateY(-2px)',
+                            boxShadow: 'lg'
                         }}
                         _focus={{
-                            bg: 'blue.500',
-                        }}>
-                        Follow
+                            bg: 'grey.500',
+                        }}
+                        onClick={onOpen}
+                    >
+                        Delete
                     </Button>
+
+                    <Modal isOpen={isOpen} onClose={onClose}>
+                        <ModalOverlay/>
+                        <ModalContent>
+                            <ModalHeader>Confirm action</ModalHeader>
+                            <ModalCloseButton/>
+                            <ModalBody>
+                                Are you sure that you want to delete customer {name}
+                            </ModalBody>
+
+                            <ModalFooter>
+                                <Button colorScheme='blue' mr={3} onClick={onClose}>
+                                    Cancel
+                                </Button>
+                                <Button
+                                    variant='ghost'
+                                    onClick={
+                                        () => deleteCustomerById(id)
+                                            .then(res => successNotification(
+                                                `Success!`,
+                                                `Customer ${name} successfully deleted!`
+                                            ))
+                                            .catch(err => errorNotification(
+                                                `Server returned an error code ${err.response.status}`,
+                                                `Error: ${err.response.data.message}`
+                                            ))
+                                            .finally(() => fetchCustomers())
+                                    }
+                                >
+                                    Delete
+                                </Button>
+                            </ModalFooter>
+                        </ModalContent>
+                    </Modal>
                 </Stack>
             </Box>
         </Center>

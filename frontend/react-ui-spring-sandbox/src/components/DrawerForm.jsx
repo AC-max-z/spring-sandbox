@@ -9,10 +9,11 @@ import {
     Input, useDisclosure
 } from "@chakra-ui/react";
 import React from "react";
+import CreateCustomerForm from "./CreateCustomerForm.jsx";
 
 const AddIcon = () => "+";
 
-const DrawerForm = () => {
+const DrawerForm = ({fetchCustomers}) => {
     const {isOpen, onOpen, onClose} = useDisclosure()
     const btnRef = React.useRef()
     return (
@@ -35,17 +36,18 @@ const DrawerForm = () => {
                 <DrawerOverlay/>
                 <DrawerContent>
                     <DrawerCloseButton/>
-                    <DrawerHeader>Create your account</DrawerHeader>
+                    <DrawerHeader>Create new customer</DrawerHeader>
 
                     <DrawerBody>
-                        <Input placeholder='Type here...'/>
+                        <CreateCustomerForm
+                            fetchCustomers={fetchCustomers}
+                        />
                     </DrawerBody>
 
                     <DrawerFooter>
                         <Button variant='outline' mr={3} onClick={onClose}>
                             Cancel
                         </Button>
-                        <Button colorScheme='blue'>Save</Button>
                     </DrawerFooter>
                 </DrawerContent>
             </Drawer>

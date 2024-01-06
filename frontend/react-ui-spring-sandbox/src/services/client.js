@@ -8,7 +8,25 @@ export const getCustomers = async () => {
             `${import.meta.env.VITE_API_BASE_URL}${CUSTOMER_API_ENDPOINT}/all`
         );
     } catch (err) {
-        console.log(err);
         throw err;
     }
 };
+
+export const saveCustomer = async (customer) => {
+    try {
+        return await client.post(
+            `${import.meta.env.VITE_API_BASE_URL}${CUSTOMER_API_ENDPOINT}`,
+            customer
+        )
+    } catch (e) {
+        throw e;
+    }
+}
+
+export const deleteCustomerById = async (id) => {
+    try {
+        return await client.delete(`${import.meta.env.VITE_API_BASE_URL}${CUSTOMER_API_ENDPOINT}/${id}`)
+    } catch (err) {
+        throw err;
+    }
+}
