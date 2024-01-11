@@ -51,7 +51,7 @@ public class CustomerEntity {
     @NonNull
     private Gender gender;
 
-    public CustomerEntity(String name, String email, Integer age, Gender gender) {
+    public CustomerEntity(@NonNull String name, @NonNull String email, @NonNull Integer age, @NonNull Gender gender) {
         this.name = name;
         this.email = email;
         this.age = age;
@@ -84,7 +84,11 @@ public class CustomerEntity {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         CustomerEntity that = (CustomerEntity) o;
-        return Objects.equals(id, that.id) && Objects.equals(name, that.name) && Objects.equals(email, that.email) && Objects.equals(age, that.age) && gender == that.gender;
+        return Objects.equals(id, that.id)
+                && Objects.equals(name, that.name)
+                && Objects.equals(email, that.email)
+                && Objects.equals(age, that.age)
+                && gender == that.gender;
     }
 
     @Override

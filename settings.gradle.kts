@@ -6,3 +6,4 @@ pluginManagement {
     }
 }
 include("backend")
+include("ui-e2e-tests")

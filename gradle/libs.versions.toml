@@ -1,0 +1,13 @@
+[versions]
+fakerVer = "0.13"
+modelMapperVer = "2.3.8"
+junitVer = "5.8.1"
+testContainersVer = "1.19.3"
+
+[libraries]
+faker = { module = "com.github.javafaker:javafaker", version.ref = "fakerVer" }
+modelMapper = { module = "org.modelmapper:modelmapper", version.ref = "modelMapperVer" }
+junit = { module = "org.junit.jupiter:junit-jupiter", version.ref = "junitVer" }
+testContainers = { module = "org.testcontainers:testcontainers", version.ref = "testContainersVer" }
+testContainersJunit = { module = "org.testcontainers:junit-jupiter", version.ref = "testContainersVer" }
+testContainersPostgres = { module = "org.testcontainers:postgresql", version.ref = "testContainersVer" }
