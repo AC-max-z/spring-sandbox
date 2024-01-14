@@ -25,6 +25,7 @@ public class Waits {
         this.driver = driver;
         PageFactory.initElements(driver, this);
         this.wait = new WebDriverWait(driver, Duration.ofMillis(this.waitTimeout));
+        this.driver.manage().timeouts().implicitlyWait(Duration.ofMillis(implicitWait));
     }
 
     @FindBy(xpath = "//span[contains(text(), 'Loading')]")

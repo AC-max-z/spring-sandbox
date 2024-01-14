@@ -15,6 +15,9 @@ dependencies {
     implementation("org.seleniumhq.selenium:selenium-java:4.16.1")
     testImplementation("org.junit.jupiter:junit-jupiter-engine:5.10.0")
     testImplementation("org.assertj:assertj-core:3.25.1")
+    testImplementation(libs.faker)
+    implementation("org.rnorth.duct-tape:duct-tape:1.0.8")
+    implementation("org.slf4j:slf4j-api:2.0.11")
 }
 
 tasks.test {

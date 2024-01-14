@@ -15,7 +15,6 @@ import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.time.Duration;
 import java.util.Map;
 
 public class WebDriverFactory {
@@ -30,9 +29,9 @@ public class WebDriverFactory {
                         new ChromeDriverService.Builder()
                                 .withLogOutput(System.out)
                                 .withLogFile(logLocation)
+                                .withReadableTimestamp(true)
                                 .build();
                 var opts = new ChromeOptions();
-                opts.setImplicitWaitTimeout(Duration.ofMillis(500));
                 yield new ChromeDriver(service, opts);
             }
 
@@ -44,19 +43,18 @@ public class WebDriverFactory {
 //                                .withLogOutput(System.out)
                                 .build();
                 var opts = new FirefoxOptions();
-                opts.setImplicitWaitTimeout(Duration.ofMillis(500));
                 yield new FirefoxDriver(geckoService, opts);
             }
 
             case DriverType.FIREFOX_REMOTE -> {
                 ChromeOptions opts = new ChromeOptions();
-                opts.setImplicitWaitTimeout(Duration.ofMillis(500));
+                opts.setEnableDownloads(true);
                 yield new RemoteWebDriver(new URI(gridUrl).toURL(), opts);
             }
 
             case DriverType.CHROME_REMOTE -> {
                 FirefoxOptions options = new FirefoxOptions();
-                options.setImplicitWaitTimeout(Duration.ofMillis(500));
+                options.setEnableDownloads(true);
                 yield new RemoteWebDriver(new URI(gridUrl).toURL(), options);
             }
 
