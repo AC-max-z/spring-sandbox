@@ -92,7 +92,7 @@ public class CreateCustomerForm {
 
     public void selectRandomValueInGenderSelect() {
         waits.waitForElement(WaitCondition.CLICKABLE, genderSelect);
-        Integer optionsSize = getGenderSelectOptions().size();
+        int optionsSize = getGenderSelectOptions().size();
         getGenderSelect().selectByIndex(new Random().nextInt(optionsSize));
     }
 

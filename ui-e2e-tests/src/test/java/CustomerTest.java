@@ -1,4 +1,6 @@
 import com.github.javafaker.Faker;
+import io.qameta.allure.Description;
+import io.qameta.allure.Epic;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
@@ -10,7 +12,6 @@ import org.springsandbox.enums.DriverType;
 import org.springsandbox.factories.WebDriverFactory;
 import org.springsandbox.pages.CreateCustomerForm;
 import org.springsandbox.pages.IndexPage;
-import helpers.Customer;
 import org.springsandbox.pages.UpdateCustomerForm;
 
 import java.net.MalformedURLException;
@@ -20,7 +21,13 @@ import java.util.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @Execution(ExecutionMode.CONCURRENT)
-public class SimpleSeleniumScriptTest {
+@Epic("Customer UI tests")
+@Tags({
+        @Tag("UI test"),
+        @Tag("E2E"),
+        @Tag("customer")
+})
+public class CustomerTest {
 
     private final ThreadLocal<WebDriver> driverThreadLocal = new ThreadLocal<>();
     private final Faker faker = new Faker();
@@ -38,6 +45,11 @@ public class SimpleSeleniumScriptTest {
 
     @ParameterizedTest
     @EnumSource(DriverType.class)
+    @DisplayName("Should display new customer after creating one")
+    @Description("This test creates new customer, checks if it is present on page, then deletes it")
+    @Tags({
+            @Tag("positive")
+    })
     public void shouldDisplayNewCustomerAfterCreate(DriverType driverType) throws MalformedURLException, URISyntaxException {
         // Arrange
         driverThreadLocal.set(WebDriverFactory.getDriver(driverType));
@@ -53,7 +65,7 @@ public class SimpleSeleniumScriptTest {
         indexPage.goTo();
         indexPage.clickCreateCustomerButton();
         CreateCustomerForm createCustomerForm = new CreateCustomerForm(driver);
-        Customer.createCustomer(createCustomerForm, name, email, age, pseudoRandomlyPickedGender);
+        helpers.Customer.createCustomer(createCustomerForm, name, email, age, pseudoRandomlyPickedGender);
 
         // Assert
         WebElement createdCustomerCard = indexPage.getCustomerCardWithEmail(email);
@@ -71,6 +83,11 @@ public class SimpleSeleniumScriptTest {
 
     @ParameterizedTest
     @EnumSource(DriverType.class)
+    @DisplayName("Should display updated customer data after editing one")
+    @Description("This test creates new customer, then edits it, checks if customer was updated and then deletes it")
+    @Tags({
+            @Tag("positive")
+    })
     void shouldDisplayUpdatedCustomerAfterEdit(DriverType driverType) throws MalformedURLException, URISyntaxException {
         // Arrange
         driverThreadLocal.set(WebDriverFactory.getDriver(driverType));
@@ -92,13 +109,13 @@ public class SimpleSeleniumScriptTest {
         indexPage.goTo();
         indexPage.clickCreateCustomerButton();
         CreateCustomerForm createCustomerForm = new CreateCustomerForm(driver);
-        Customer.createCustomer(createCustomerForm, initialName, initialEmail, initialAge, initialPseudoRandomlyPickedGender);
+        helpers.Customer.createCustomer(createCustomerForm, initialName, initialEmail, initialAge, initialPseudoRandomlyPickedGender);
 
         WebElement createdCustomerCard = indexPage.getCustomerCardWithEmail(initialEmail);
         indexPage.clickEditCustomer(createdCustomerCard);
 
         UpdateCustomerForm updateCustomerForm = new UpdateCustomerForm(driver);
-        Customer.editCustomer(updateCustomerForm, updatedName, updatedEmail, updatedAge, updatedPseudoRandomlyPickedGender);
+        helpers.Customer.editCustomer(updateCustomerForm, updatedName, updatedEmail, updatedAge, updatedPseudoRandomlyPickedGender);
 
         // Assert
         WebElement updatedCustomerCard = indexPage.getCustomerCardWithEmail(updatedEmail);
