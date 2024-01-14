@@ -57,24 +57,36 @@ public class IndexPage {
     public WebElement getCustomerCardWithEmail(String email) {
         waits.waitForElements(WaitCondition.VISIBLE, customerCards);
         return customerCards.stream()
-                .filter(webEl -> webEl.findElement(By.xpath(".//p[contains(text(), '@')]")).getText().equals(email))
+                .filter(webEl -> webEl
+                        .findElement(By.xpath(".//p[contains(text(), '@')]"))
+                        .getText()
+                        .equals(email))
                 .findFirst()
                 .orElse(null);
     }
 
     public String getCustomerNameFromCard(WebElement customerCard) {
         waits.waitForElement(WaitCondition.VISIBLE, customerCard);
-        return customerCard.findElement(By.xpath(".//h2")).getText();
+        return customerCard
+                .findElement(By.xpath(".//h2"))
+                .getText();
     }
 
     public Integer getCustomerAgeFromCard(WebElement customerCard) {
         waits.waitForElement(WaitCondition.VISIBLE, customerCard);
-        return Integer.parseInt(customerCard.findElement(By.xpath(".//p/span")).getText().split(" ")[1]);
+        return Integer
+                .parseInt(customerCard
+                        .findElement(By.xpath(".//p/span"))
+                        .getText()
+                        .split(" ")[1]
+                );
     }
 
     public String getCustomerGenderFromCard(WebElement customerCard) {
         waits.waitForElement(WaitCondition.VISIBLE, customerCard);
-        return customerCard.findElement(By.xpath(".//span[contains(@class, 'chakra-badge')]")).getText();
+        return customerCard
+                .findElement(By.xpath(".//span[contains(@class, 'chakra-badge')]"))
+                .getText();
     }
 
     public WebElement getCreateCustomerButton() {
@@ -99,6 +111,16 @@ public class IndexPage {
             deleteButton.click();
             return null;
         });
+    }
+
+    public void clickEditCustomer(WebElement customerCard) {
+        WebElement editButton = customerCard.findElement(By.xpath(".//button[text()='Edit']"));
+        waits.waitForElement(WaitCondition.CLICKABLE, editButton);
+        Unreliables.retryUntilSuccess(10, TimeUnit.SECONDS, () -> {
+            editButton.click();
+            return null;
+        });
+
     }
 
     public void confirmDeleteCustomer() {
