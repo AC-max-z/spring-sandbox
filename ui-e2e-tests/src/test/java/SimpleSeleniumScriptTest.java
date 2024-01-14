@@ -22,8 +22,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 @Execution(ExecutionMode.CONCURRENT)
 public class SimpleSeleniumScriptTest {
 
-    private ThreadLocal<WebDriver> driverThreadLocal = new ThreadLocal<>();
-    private Faker faker = new Faker();
+    private final ThreadLocal<WebDriver> driverThreadLocal = new ThreadLocal<>();
+    private final Faker faker = new Faker();
 
     @BeforeAll
     static void beforeAll() {
