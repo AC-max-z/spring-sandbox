@@ -2,7 +2,7 @@ package com.maxzamota.spring_sandbox.dto;
 
 import lombok.*;
 
-import java.util.Date;
+import java.sql.Timestamp;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -16,7 +16,7 @@ public class ProductDto {
     @NonNull
     private Double price;
     @NonNull
-    private Date issueDate;
+    private Timestamp issueDate;
     @NonNull
     private BrandDto brand;
     @NonNull

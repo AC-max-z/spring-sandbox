@@ -1,11 +1,11 @@
 name: CD - deploy backend
 
 on:
-  push:
-    branches:
-      - master
-    paths:
-      - backend/**
+#  push:
+#    branches:
+#      - master
+#    paths:
+#      - backend/**
   workflow_dispatch:
 
 jobs:

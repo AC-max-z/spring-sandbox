@@ -3,6 +3,7 @@ package com.maxzamota.spring_sandbox.model;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.sql.Timestamp;
 import java.util.Date;
 import java.util.Objects;
 import java.util.UUID;
@@ -26,7 +27,7 @@ public class BrandEntity {
     )
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @ToString.Include
-    private UUID id;
+    private Integer id;
 
     @Column(
             name = "name",
@@ -42,7 +43,7 @@ public class BrandEntity {
     )
     @ToString.Include
     @NonNull
-    private Date foundationDate;
+    private Timestamp foundationDate;
 
     @Column(
             name = "country_of_origin",
@@ -72,9 +73,7 @@ public class BrandEntity {
             name = "date_added",
             nullable = false
     )
-    @ToString.Exclude
-    @NonNull
-    private Date dateAdded;
+    private Timestamp dateAdded;
 
     public BrandEntity(BrandBuilder builder) {
         this.id = builder.id;
@@ -88,7 +87,7 @@ public class BrandEntity {
 
     public BrandEntity(
             @NonNull String name,
-            @NonNull Date foundationDate,
+            @NonNull Timestamp foundationDate,
             @NonNull String countryOfOrigin,
             @NonNull String description,
             @NonNull String history
@@ -102,13 +101,13 @@ public class BrandEntity {
 
     @Setter
     public static class BrandBuilder {
-        private UUID id;
+        private Integer id;
         private String name;
-        private Date foundationDate;
+        private Timestamp foundationDate;
         private String countryOfOrigin;
         private String description;
         private String history;
-        private Date dateAdded;
+        private Timestamp dateAdded;
 
         public BrandEntity build() {
             return new BrandEntity(this);

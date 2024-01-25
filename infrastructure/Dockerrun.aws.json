@@ -5,7 +5,7 @@
       "name": "spring-sandbox-app-api",
       "image": "acidcommunism69/spring-sandbox-api:06.01.2024.09.35.44",
       "essential": true,
-      "memory": 256,
+      "memory": 512,
       "portMappings": [
         {
           "hostPort": 8080,

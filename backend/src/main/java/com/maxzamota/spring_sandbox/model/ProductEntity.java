@@ -3,9 +3,8 @@ package com.maxzamota.spring_sandbox.model;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.Date;
+import java.sql.Timestamp;
 import java.util.Objects;
-import java.util.UUID;
 
 @Entity
 @Getter
@@ -26,7 +25,7 @@ public class ProductEntity {
     )
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @ToString.Include
-    private UUID id;
+    private Integer id;
 
     @Column(
             name = "name",
@@ -58,7 +57,7 @@ public class ProductEntity {
     )
     @ToString.Include
     @NonNull
-    private Date issueDate;
+    private Timestamp issueDate;
 
     @ManyToOne
     @JoinColumn(name = "brand_id", referencedColumnName = "id")
@@ -78,22 +77,20 @@ public class ProductEntity {
             name = "discount",
             nullable = true
     )
-    @ToString.Exclude
     private Integer discount;
 
     @Column(
             name = "date_added",
             nullable = false
     )
-    @ToString.Exclude
     @NonNull
-    private Date dateAdded;
+    private Timestamp dateAdded;
 
     public ProductEntity(
             @NonNull String name,
             @NonNull String description,
             @NonNull Double price,
-            @NonNull Date issueDate,
+            @NonNull Timestamp issueDate,
             @NonNull BrandEntity brand,
             @NonNull Integer availableAmount,
             Integer discount
@@ -121,15 +118,15 @@ public class ProductEntity {
 
     @Setter
     public static class ProductBuilder {
-        private UUID id;
+        private Integer id;
         private String name;
         private String description;
         private Double price;
-        private Date issueDate;
+        private Timestamp issueDate;
         private BrandEntity brand;
         private Integer availableAmount;
         private Integer discount;
-        private Date dateAdded;
+        private Timestamp dateAdded;
 
         public ProductEntity build() {
             return new ProductEntity(this);

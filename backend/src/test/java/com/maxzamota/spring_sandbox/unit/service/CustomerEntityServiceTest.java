@@ -62,7 +62,7 @@ class CustomerEntityServiceTest {
     @AllureId("CUSTSERV-001")
     @TmsLink("CUSTSERV-001")
     @Issue("CUSTSERV-001")
-    void getAllCustomers(int size) {
+    void shouldCallFindAllCustomers(int size) {
         Allure.suite("Customer service unit tests");
 
         // Arrange
@@ -96,7 +96,7 @@ class CustomerEntityServiceTest {
     @AllureId("CUSTSERV-002")
     @TmsLink("CUSTSERV-002")
     @Issue("CUSTSERV-002")
-    void sortedCustomers(CustomerSortType sortType) {
+    void shouldReturnSortedCustomers(CustomerSortType sortType) {
         Allure.suite("Customer service unit tests");
 
         // Arrange
@@ -170,7 +170,7 @@ class CustomerEntityServiceTest {
     @AllureId("CUSTSERV-003")
     @TmsLink("CUSTSERV-003")
     @Issue("CUSTSERV-003")
-    void getCustomerById() {
+    void shouldCallFindById() {
         Allure.suite("Customer service unit tests");
 
         // Arrange
@@ -204,7 +204,7 @@ class CustomerEntityServiceTest {
     @AllureId("CUSTSERV-004")
     @TmsLink("CUSTSERV-004")
     @Issue("CUSTSERV-004")
-    void getCustomerByIdExceptionFlow() {
+    void shouldThrowNotFoundException() {
         Allure.suite("Customer service unit tests");
 
         // Arrange
@@ -230,7 +230,7 @@ class CustomerEntityServiceTest {
     @AllureId("CUSTSERV-005")
     @TmsLink("CUSTSERV-005")
     @Issue("CUSTSERV-005")
-    void save() {
+    void shouldCallSave() {
         Allure.suite("Customer service unit tests");
 
         // Arrange
@@ -255,7 +255,7 @@ class CustomerEntityServiceTest {
     @AllureId("CUSTSERV-006")
     @TmsLink("CUSTSERV-006")
     @Issue("CUSTSERV-006")
-    void saveExceptionFlow() {
+    void shouldThrowDuplicateExceptionOnSave() {
         Allure.suite("Customer service unit tests");
 
         // Arrange
@@ -282,7 +282,7 @@ class CustomerEntityServiceTest {
     @AllureId("CUSTSERV-007")
     @TmsLink("CUSTSERV-007")
     @Issue("CUSTSERV-007")
-    void deleteById() {
+    void shouldCallDeleteById() {
         Allure.suite("Customer service unit tests");
 
         // Arrange
@@ -306,7 +306,7 @@ class CustomerEntityServiceTest {
     @AllureId("CUSTSERV-008")
     @TmsLink("CUSTSERV-008")
     @Issue("CUSTSERV-008")
-    void updateById() {
+    void shouldCallSaveWhenUpdate() {
         Allure.suite("Customer service unit tests");
 
         // Arrange
@@ -350,7 +350,7 @@ class CustomerEntityServiceTest {
     @AllureId("CUSTSERV-009")
     @TmsLink("CUSTSERV-009")
     @Issue("CUSTSERV-009")
-    void updateByIdExceptionCustomerNotFound() {
+    void shouldThrowNotFoundExceptionWhenUpdateNonExistent() {
         Allure.suite("Customer service unit tests");
 
         // Arrange
@@ -379,7 +379,7 @@ class CustomerEntityServiceTest {
     @AllureId("CUSTSERV-010")
     @TmsLink("CUSTSERV-010")
     @Issue("CUSTSERV-010")
-    void updateByIdExceptionEmailTaken() {
+    void shouldThrowDuplicateExceptionWhenUpdateWithNonUniqueEmail() {
         Allure.suite("Customer service unit tests");
 
         // Arrange

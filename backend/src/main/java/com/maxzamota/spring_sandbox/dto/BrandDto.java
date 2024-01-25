@@ -2,6 +2,7 @@ package com.maxzamota.spring_sandbox.dto;
 
 import lombok.*;
 
+import java.sql.Timestamp;
 import java.util.Date;
 
 @AllArgsConstructor
@@ -12,7 +13,7 @@ public class BrandDto {
     @NonNull
     private String name;
     @NonNull
-    private Date foundationDate;
+    private Timestamp foundationDate;
     @NonNull
     private String countryOfOrigin;
     @NonNull

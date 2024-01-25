@@ -4,7 +4,7 @@ info:
   description: "spring_boot_example Customer API"
   version: "1.0.0"
 servers:
-  - url: "{appUrl}"
+  - url: "http://test-env.eba-hrm5uz3a.eu-north-1.elasticbeanstalk.com/"
 paths:
   /api/v1/customer/all:
     get:

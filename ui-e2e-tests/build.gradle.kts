@@ -24,12 +24,14 @@ dependencies {
 }
 
 tasks.test {
-    useJUnitPlatform()
     systemProperties["junit.jupiter.execution.parallel.enabled"] = true
     systemProperties["junit.jupiter.execution.parallel.mode.default"] = "concurrent"
     maxParallelForks = (Runtime.getRuntime().availableProcessors() / 4).takeIf { it > 0 } ?: 1
     retry {
         maxRetries.set(2)
         failOnPassedAfterRetry.set(false)
+    }
+    useJUnitPlatform() {
+        includeTags("E2E", "UI test")
     }
 }

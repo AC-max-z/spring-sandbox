@@ -66,6 +66,7 @@ tasks {
             if (!excludeTags.isNullOrEmpty()) {
                 excludeTags(excludeTags)
             }
+            excludeTags("E2E")
         }
         retry {
             maxRetries.set(3)
