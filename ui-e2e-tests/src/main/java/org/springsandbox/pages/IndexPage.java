@@ -1,6 +1,7 @@
 package org.springsandbox.pages;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindAll;
@@ -50,13 +51,17 @@ public class IndexPage {
     }
 
     public List<WebElement> getCustomerCards() {
-        waits.waitForElements(WaitCondition.VISIBLE, customerCards);
+        try {
+            waits.waitForElements(WaitCondition.VISIBLE, customerCards);
+        } catch (StaleElementReferenceException e) {
+            PageFactory.initElements(driver, this);
+            waits.waitForElements(WaitCondition.VISIBLE, customerCards);
+        }
         return customerCards;
     }
 
     public WebElement getCustomerCardWithEmail(String email) {
-        waits.waitForElements(WaitCondition.VISIBLE, customerCards);
-        return customerCards.stream()
+        return getCustomerCards().stream()
                 .filter(webEl -> webEl
                         .findElement(By.xpath(".//p[contains(text(), '@')]"))
                         .getText()
@@ -66,14 +71,24 @@ public class IndexPage {
     }
 
     public String getCustomerNameFromCard(WebElement customerCard) {
-        waits.waitForElement(WaitCondition.VISIBLE, customerCard);
+        try {
+            waits.waitForElement(WaitCondition.VISIBLE, customerCard);
+        } catch (StaleElementReferenceException e) {
+            PageFactory.initElements(driver, this);
+            waits.waitForElement(WaitCondition.VISIBLE, customerCard);
+        }
         return customerCard
                 .findElement(By.xpath(".//h2"))
                 .getText();
     }
 
     public Integer getCustomerAgeFromCard(WebElement customerCard) {
-        waits.waitForElement(WaitCondition.VISIBLE, customerCard);
+        try {
+            waits.waitForElement(WaitCondition.VISIBLE, customerCard);
+        } catch (StaleElementReferenceException e) {
+            PageFactory.initElements(driver, this);
+            waits.waitForElement(WaitCondition.VISIBLE, customerCard);
+        }
         return Integer
                 .parseInt(customerCard
                         .findElement(By.xpath(".//p/span"))
@@ -83,19 +98,34 @@ public class IndexPage {
     }
 
     public String getCustomerGenderFromCard(WebElement customerCard) {
-        waits.waitForElement(WaitCondition.VISIBLE, customerCard);
+        try {
+            waits.waitForElement(WaitCondition.VISIBLE, customerCard);
+        } catch (StaleElementReferenceException e) {
+            PageFactory.initElements(driver, this);
+            waits.waitForElement(WaitCondition.VISIBLE, customerCard);
+        }
         return customerCard
                 .findElement(By.xpath(".//span[contains(@class, 'chakra-badge')]"))
                 .getText();
     }
 
     public WebElement getCreateCustomerButton() {
-        waits.waitForElement(WaitCondition.VISIBLE, createCustomerButton);
+        try {
+            waits.waitForElement(WaitCondition.VISIBLE, createCustomerButton);
+        } catch (StaleElementReferenceException e) {
+            PageFactory.initElements(driver, this);
+            waits.waitForElement(WaitCondition.VISIBLE, createCustomerButton);
+        }
         return createCustomerButton;
     }
 
     public void clickCreateCustomerButton() {
-        waits.waitForElement(WaitCondition.CLICKABLE, createCustomerButton);
+        try {
+            waits.waitForElement(WaitCondition.CLICKABLE, createCustomerButton);
+        } catch (StaleElementReferenceException e) {
+            PageFactory.initElements(driver, this);
+            waits.waitForElement(WaitCondition.CLICKABLE, createCustomerButton);
+        }
         createCustomerButton.click();
     }
 

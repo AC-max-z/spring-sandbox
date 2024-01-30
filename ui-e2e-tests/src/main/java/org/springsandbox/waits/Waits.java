@@ -45,9 +45,12 @@ public class Waits {
         waitForPageLoading();
         driver.manage().timeouts().implicitlyWait(Duration.ofMillis(0));
         switch (condition) {
-            case VISIBLE -> wait.until(ExpectedConditions.visibilityOf(element));
-            case CLICKABLE -> wait.until(ExpectedConditions.elementToBeClickable(element));
-            case INVISIBLE -> wait.until(ExpectedConditions.invisibilityOf(element));
+            case VISIBLE -> wait
+                    .until(ExpectedConditions.visibilityOf(element));
+            case CLICKABLE -> wait
+                    .until(ExpectedConditions.elementToBeClickable(element));
+            case INVISIBLE -> wait
+                    .until(ExpectedConditions.invisibilityOf(element));
         }
         driver.manage().timeouts().implicitlyWait(Duration.ofMillis(implicitWait));
     }
@@ -56,8 +59,10 @@ public class Waits {
         waitForPageLoading();
         driver.manage().timeouts().implicitlyWait(Duration.ofMillis(0));
         switch (condition) {
-            case VISIBLE -> wait.until(ExpectedConditions.visibilityOfAllElements(elements));
-            case INVISIBLE -> wait.until(ExpectedConditions.invisibilityOfAllElements(elements));
+            case VISIBLE -> wait
+                    .until(ExpectedConditions.visibilityOfAllElements(elements));
+            case INVISIBLE -> wait
+                    .until(ExpectedConditions.invisibilityOfAllElements(elements));
             default -> throw new IllegalArgumentException("Unexpected value: " + condition);
         }
         driver.manage().timeouts().implicitlyWait(Duration.ofMillis(implicitWait));
