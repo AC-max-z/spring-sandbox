@@ -18,12 +18,13 @@ import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.util.*;
 
+import static io.qameta.allure.Allure.step;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @Execution(ExecutionMode.CONCURRENT)
 @Epic("Customer UI tests")
 @Tags({
-        @Tag("UI test"),
+        @Tag("UI"),
         @Tag("E2E"),
         @Tag("customer")
 })
@@ -52,9 +53,12 @@ public class CustomerTest {
     })
     public void shouldDisplayNewCustomerAfterCreate(DriverType driverType) throws MalformedURLException, URISyntaxException {
         // Arrange
+        step("Create driver instance %s".formatted(driverType));
         driverThreadLocal.set(WebDriverFactory.getDriver(driverType));
         var driver = driverThreadLocal.get();
         var indexPage = new IndexPage(driver);
+
+        step("Generate new customer data");
         String name = faker.name().firstName();
         String email = name + "@" + faker.internet().domainName();
         Integer age = faker.number().numberBetween(16, 99);
@@ -62,20 +66,26 @@ public class CustomerTest {
         String pseudoRandomlyPickedGender = availableGenders.get(new Random().nextInt(availableGenders.size()));
 
         // Act
+        step("Go to index page");
         indexPage.goTo();
+        step("Click create customer button");
         indexPage.clickCreateCustomerButton();
+        step("Fill in create customer form");
         CreateCustomerForm createCustomerForm = new CreateCustomerForm(driver);
         helpers.Customer.createCustomer(createCustomerForm, name, email, age, pseudoRandomlyPickedGender);
 
         // Assert
+        step("Check that new customer card is displayed on index page");
         WebElement createdCustomerCard = indexPage.getCustomerCardWithEmail(email);
         assertThat(createdCustomerCard).isNotNull();
         // TODO: add success toast isDisplayed check
+        step("Check that data on that card is the same as generated");
         assertThat(indexPage.getCustomerNameFromCard(createdCustomerCard)).isEqualTo(name);
         assertThat(indexPage.getCustomerAgeFromCard(createdCustomerCard)).isEqualTo(age);
         assertThat(indexPage.getCustomerGenderFromCard(createdCustomerCard)).isEqualTo(pseudoRandomlyPickedGender);
 
         // Cleanup
+        step("Delete created customer");
         indexPage.clickDeleteCustomer(createdCustomerCard);
         indexPage.confirmDeleteCustomer();
         assertThat(indexPage.getCustomerCardWithEmail(email)).isNull();
@@ -90,42 +100,53 @@ public class CustomerTest {
     })
     void shouldDisplayUpdatedCustomerAfterEdit(DriverType driverType) throws MalformedURLException, URISyntaxException {
         // Arrange
+        step("Create driver instance %s".formatted(driverType));
         driverThreadLocal.set(WebDriverFactory.getDriver(driverType));
         var driver = driverThreadLocal.get();
         var indexPage = new IndexPage(driver);
 
+        step("Generate initial customer data");
         String initialName = faker.name().firstName();
         String initialEmail = initialName + "@" + faker.internet().domainName();
         Integer initialAge = faker.number().numberBetween(16, 99);
         List<String> availableGenders = List.of("MALE", "FEMALE", "NONE_OF_YOUR_BUSINESS");
         String initialPseudoRandomlyPickedGender = availableGenders.get(new Random().nextInt(availableGenders.size()));
 
+        step("Generate updated customer data");
         String updatedName = faker.name().firstName();
         String updatedEmail = initialName + "@" + faker.internet().domainName();
         Integer updatedAge = faker.number().numberBetween(16, 99);
         String updatedPseudoRandomlyPickedGender = availableGenders.get(new Random().nextInt(availableGenders.size()));
 
         // Act
+        step("Go to index page");
         indexPage.goTo();
+        step("Click create customer button");
         indexPage.clickCreateCustomerButton();
+        step("Fill in create customer form with initial data");
         CreateCustomerForm createCustomerForm = new CreateCustomerForm(driver);
         helpers.Customer.createCustomer(createCustomerForm, initialName, initialEmail, initialAge, initialPseudoRandomlyPickedGender);
 
+        step("Find created customer card on index page");
         WebElement createdCustomerCard = indexPage.getCustomerCardWithEmail(initialEmail);
         indexPage.clickEditCustomer(createdCustomerCard);
 
+        step("Click edit customer button");
         UpdateCustomerForm updateCustomerForm = new UpdateCustomerForm(driver);
         helpers.Customer.editCustomer(updateCustomerForm, updatedName, updatedEmail, updatedAge, updatedPseudoRandomlyPickedGender);
 
         // Assert
+        step("Find updated customer card");
         WebElement updatedCustomerCard = indexPage.getCustomerCardWithEmail(updatedEmail);
         assertThat(updatedCustomerCard).isNotNull();
         // TODO: add success toast isDisplayed check
+        step("Check that data on that card is as generated");
         assertThat(indexPage.getCustomerNameFromCard(updatedCustomerCard)).isEqualTo(updatedName);
         assertThat(indexPage.getCustomerAgeFromCard(updatedCustomerCard)).isEqualTo(updatedAge);
         assertThat(indexPage.getCustomerGenderFromCard(updatedCustomerCard)).isEqualTo(updatedPseudoRandomlyPickedGender);
 
         // Cleanup
+        step("Delete customer");
         indexPage.clickDeleteCustomer(updatedCustomerCard);
         indexPage.confirmDeleteCustomer();
         assertThat(indexPage.getCustomerCardWithEmail(updatedEmail)).isNull();
