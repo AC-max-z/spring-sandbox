@@ -71,4 +71,12 @@ public class BrandService {
     public BrandEntity findBrandByName(String name) {
         return this.repository.findOneByName(name);
     }
+
+    public Collection<BrandEntity> saveAll(Collection<BrandEntity> brands) {
+        return this.repository.saveAll(brands);
+    }
+
+    public Collection<BrandEntity> getAll() {
+        return this.repository.findAll();
+    }
 }
