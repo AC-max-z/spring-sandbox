@@ -15,6 +15,7 @@ import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.HashMap;
 import java.util.Map;
 
 public class WebDriverFactory {
@@ -47,14 +48,26 @@ public class WebDriverFactory {
             }
 
             case DriverType.FIREFOX_REMOTE -> {
-                ChromeOptions opts = new ChromeOptions();
+                FirefoxOptions opts = new FirefoxOptions();
                 opts.setEnableDownloads(true);
+                opts.setCapability("selenoid:options", new HashMap<String, Object>() {
+                    {
+//                        put("enableVideo", true);
+                        put("enableVNC", true);
+                    }
+                });
                 yield new RemoteWebDriver(new URI(gridUrl).toURL(), opts);
             }
 
             case DriverType.CHROME_REMOTE -> {
-                FirefoxOptions options = new FirefoxOptions();
+                ChromeOptions options = new ChromeOptions();
                 options.setEnableDownloads(true);
+                options.setCapability("selenoid:options", new HashMap<String, Object>() {
+                    {
+//                        put("enableVideo", true);
+                        put("enableVNC", true);
+                    }
+                });
                 yield new RemoteWebDriver(new URI(gridUrl).toURL(), options);
             }
 
