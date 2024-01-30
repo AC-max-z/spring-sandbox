@@ -3,7 +3,6 @@ package com.maxzamota.spring_sandbox.dto;
 import lombok.*;
 
 import java.sql.Timestamp;
-import java.util.Date;
 
 @AllArgsConstructor
 @NoArgsConstructor
