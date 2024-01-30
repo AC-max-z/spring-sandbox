@@ -24,6 +24,9 @@ dependencies {
 }
 
 tasks.test {
+    useJUnitPlatform() {
+        excludeTags("E2E", "UI")
+    }
     systemProperties["junit.jupiter.execution.parallel.enabled"] = true
     systemProperties["junit.jupiter.execution.parallel.mode.default"] = "concurrent"
     maxParallelForks = (Runtime.getRuntime().availableProcessors() / 4).takeIf { it > 0 } ?: 1
@@ -31,7 +34,18 @@ tasks.test {
         maxRetries.set(2)
         failOnPassedAfterRetry.set(false)
     }
-    useJUnitPlatform() {
-        includeTags("E2E", "UI test")
+}
+tasks {
+    register("e2e-ui-tests", Test::class.java) {
+        useJUnitPlatform() {
+            includeTags("E2E", "UI")
+        }
+        systemProperties["junit.jupiter.execution.parallel.enabled"] = true
+        systemProperties["junit.jupiter.execution.parallel.mode.default"] = "concurrent"
+        maxParallelForks = (Runtime.getRuntime().availableProcessors() / 4).takeIf { it > 0 } ?: 1
+        retry {
+            maxRetries.set(2)
+            failOnPassedAfterRetry.set(false)
+        }
     }
 }
