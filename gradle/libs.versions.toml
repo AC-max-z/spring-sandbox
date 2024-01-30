@@ -11,3 +11,6 @@ junit = { module = "org.junit.jupiter:junit-jupiter", version.ref = "junitVer" }
 testContainers = { module = "org.testcontainers:testcontainers", version.ref = "testContainersVer" }
 testContainersJunit = { module = "org.testcontainers:junit-jupiter", version.ref = "testContainersVer" }
 testContainersPostgres = { module = "org.testcontainers:postgresql", version.ref = "testContainersVer" }
+logbackJson = { module = "ch.qos.logback.contrib:logback-json-classic", version = "0.1.5" }
+logbackJackson = { module = "ch.qos.logback.contrib:logback-jackson", version = "0.1.5" }
+jacksonDatabind = { module = "com.fasterxml.jackson.core:jackson-databind", version = "2.15.0" }

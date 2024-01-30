@@ -8,6 +8,8 @@ cors:
   allowedMethods: "*"
 
 spring:
+  mvc:
+    dispatch-trace-request: true
   datasource:
     url: jdbc:postgresql://localhost:5433/customer
     username: mzamota
@@ -25,3 +27,14 @@ spring:
     web-application-type: servlet
   flyway:
     baseline-on-migrate: true
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      group:
+        custom:
+          show-components: "always"
+          show-details: "always"

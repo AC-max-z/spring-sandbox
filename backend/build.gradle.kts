@@ -1,4 +1,9 @@
 val allureVersion = "2.24.0"
+// Define configuration for AspectJ agent
+val agent: Configuration by configurations.creating {
+    isCanBeConsumed = true
+    isCanBeResolved = true
+}
 
 plugins {
     java
@@ -27,9 +32,13 @@ allprojects {
 dependencies {
     implementation(libs.faker)
     implementation(libs.modelMapper)
+    implementation(libs.logbackJson)
+    implementation(libs.logbackJackson)
+    implementation(libs.jacksonDatabind)
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.boot:spring-boot-starter-data-jdbc")
+    implementation("org.springframework.boot:spring-boot-starter-actuator")
     implementation("org.modelmapper:modelmapper-module-record:1.0.0")
     implementation("org.flywaydb:flyway-core")
     implementation("io.projectreactor.netty:reactor-netty-http:1.1.14")
@@ -48,10 +57,14 @@ dependencies {
     testImplementation(libs.testContainersPostgres)
     testImplementation(platform("io.qameta.allure:allure-bom:$allureVersion"))
     testImplementation("io.qameta.allure:allure-junit5")
+    agent("org.aspectj:aspectjweaver:1.9.20.1")
 }
 
 tasks {
     withType<Test> {
+        jvmArgs = listOf(
+            "-javaagent:${agent.singleFile}"
+        )
         testLogging {
             showExceptions = true
             showCauses = true
