@@ -62,9 +62,6 @@ dependencies {
 
 tasks {
     withType<Test> {
-        jvmArgs = listOf(
-            "-javaagent:${agent.singleFile}"
-        )
         testLogging {
             showExceptions = true
             showCauses = true

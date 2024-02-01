@@ -17,8 +17,8 @@ public class BrandService {
     private final BrandRepository repository;
 
     @Autowired
-    public BrandService(BrandRepository repository) {
-        this.repository = repository;
+    public BrandService(BrandRepository brandRepository) {
+        this.repository = brandRepository;
     }
 
     public Collection<BrandEntity> getSortedBrands(BrandSortType sortType) {

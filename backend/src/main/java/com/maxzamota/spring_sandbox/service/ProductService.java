@@ -17,8 +17,8 @@ public class ProductService {
     private final ProductRepository repository;
 
     @Autowired
-    public ProductService(ProductRepository repository) {
-        this.repository = repository;
+    public ProductService(ProductRepository productRepository) {
+        this.repository = productRepository;
     }
 
     public Collection<ProductEntity> getAllSorted(ProductSortType sort) {
