@@ -14,7 +14,12 @@ import java.util.Objects;
 @ToString(onlyExplicitlyIncluded = true)
 @Table(
         name = "brand",
-        uniqueConstraints = {}
+        uniqueConstraints = {
+                @UniqueConstraint(
+                        name = "brand_name_unique",
+                        columnNames = "name"
+                )
+        }
 )
 public class BrandEntity {
     @Id
@@ -29,7 +34,8 @@ public class BrandEntity {
 
     @Column(
             name = "name",
-            nullable = false
+            nullable = false,
+            unique = true
     )
     @ToString.Include
     @NonNull
