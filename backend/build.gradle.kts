@@ -44,6 +44,7 @@ dependencies {
     implementation("io.projectreactor.netty:reactor-netty-http:1.1.14")
     // https://mvnrepository.com/artifact/org.springframework/spring-webflux
     implementation("org.springframework:spring-webflux:6.1.2")
+    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.1.0")
 
     runtimeOnly("org.postgresql:postgresql")
 
