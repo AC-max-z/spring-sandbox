@@ -39,9 +39,9 @@ import static org.mockito.Mockito.*;
 @Severity(SeverityLevel.BLOCKER)
 public class BrandServiceTest {
     private BrandService serviceUnderTest;
-    AutoCloseable autoCloseable;
+    private AutoCloseable autoCloseable;
     private final ThreadLocal<Logger> loggerThreadLocal = new ThreadLocal<>();
-    ObjectMapper mapper = new ObjectMapper();
+    private final ObjectMapper mapper = new ObjectMapper();
     private final String allureSuiteName = "Brand service unit tests";
 
     @Mock

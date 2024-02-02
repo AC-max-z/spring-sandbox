@@ -69,9 +69,17 @@ public class ProductService {
             throw new DuplicateResourceException("Brand with name={%s} already exists"
                     .formatted(product.getName()));
         }
-        product.setDateAdded(Objects.nonNull(currentProduct.getDateAdded()) ?
-                currentProduct.getDateAdded()
+        product.setDateAdded(Objects.nonNull(currentProduct.getDateAdded())
+                ? currentProduct.getDateAdded()
                 : new Timestamp(System.currentTimeMillis()));
         return this.repository.save(product);
+    }
+
+    public Collection<ProductEntity> saveAll(Collection<ProductEntity> products) {
+        return this.repository.saveAll(products);
+    }
+
+    public Collection<ProductEntity> getAll() {
+        return this.repository.findAll();
     }
 }
