@@ -15,8 +15,6 @@ import org.springsandbox.waits.Waits;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class IndexPage {
     private final WebDriver driver;
@@ -156,18 +154,6 @@ public class IndexPage {
     public void confirmDeleteCustomer() {
         waits.waitForElement(WaitCondition.CLICKABLE, confirmDeleteButton);
         confirmDeleteButton.click();
-    }
-
-    public Map<String, WebElement> elementsMap() {
-        return Stream.of(new Object[][]{
-                {"Loading spinner", this.loadingSpinner}
-        }).collect(Collectors.toMap(data -> (String) data[0], data -> (WebElement) data[1]));
-    }
-
-    public Map<String, List<WebElement>> listsOfElementsMap() {
-        return Stream.of(new Object[][]{
-                {"Customer cards", this.customerCards}
-        }).collect(Collectors.toMap(data -> (String) data[0], data -> (List<WebElement>) data[1]));
     }
 
 }

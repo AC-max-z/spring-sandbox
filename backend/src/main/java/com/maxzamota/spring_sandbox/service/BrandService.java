@@ -1,11 +1,14 @@
 package com.maxzamota.spring_sandbox.service;
 
-import com.maxzamota.spring_sandbox.enums.BrandSortType;
 import com.maxzamota.spring_sandbox.exception.DuplicateResourceException;
 import com.maxzamota.spring_sandbox.exception.ResourceNotFoundException;
 import com.maxzamota.spring_sandbox.model.BrandEntity;
 import com.maxzamota.spring_sandbox.repository.jpa.BrandRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
@@ -19,15 +22,6 @@ public class BrandService {
     @Autowired
     public BrandService(BrandRepository brandRepository) {
         this.repository = brandRepository;
-    }
-
-    public Collection<BrandEntity> getSortedBrands(BrandSortType sortType) {
-        return switch (sortType) {
-            case BY_ID_ASC -> this.repository.findAllByOrderByIdAsc();
-            case BY_ID_DESC -> this.repository.findAllByOrderByIdDesc();
-            case BY_NAME_ASC -> this.repository.findAllByOrderByNameAsc();
-            case BY_NAME_DESC -> this.repository.findAllByOrderByNameDesc();
-        };
     }
 
     public BrandEntity getBrandById(Integer id) {
@@ -64,7 +58,9 @@ public class BrandService {
         ) {
             throw new DuplicateResourceException("Brand with name={%s} already exists".formatted(brand.getName()));
         }
-        brand.setDateAdded(Objects.nonNull(currentBrand.getDateAdded()) ? currentBrand.getDateAdded() : new Timestamp(System.currentTimeMillis()));
+        brand.setDateAdded(Objects.nonNull(currentBrand.getDateAdded())
+                ? currentBrand.getDateAdded()
+                : new Timestamp(System.currentTimeMillis()));
         return this.repository.save(brand);
     }
 
@@ -76,7 +72,19 @@ public class BrandService {
         return this.repository.saveAll(brands);
     }
 
-    public Collection<BrandEntity> getAll() {
-        return this.repository.findAll();
+    public Page<BrandEntity> getAll(
+            Integer pageNum,
+            Integer pageSize,
+            String sortBy,
+            String sortDirection
+    ) {
+        Sort sort = Sort.by(Sort.Direction.fromString(sortDirection), sortBy);
+        Pageable pageable = PageRequest.of(pageNum, pageSize, sort);
+
+        return this.repository.findAll(pageable);
+    }
+
+    public Page<BrandEntity> getAll(Pageable pageable) {
+        return this.repository.findAll(pageable);
     }
 }

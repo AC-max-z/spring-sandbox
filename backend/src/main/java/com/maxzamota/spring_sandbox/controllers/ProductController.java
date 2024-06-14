@@ -1,20 +1,27 @@
 package com.maxzamota.spring_sandbox.controllers;
 
+import com.maxzamota.spring_sandbox.assemblers.ProductModelAssembler;
 import com.maxzamota.spring_sandbox.dto.ProductDto;
-import com.maxzamota.spring_sandbox.enums.ProductSortType;
 import com.maxzamota.spring_sandbox.exception.BadRequestException;
+import com.maxzamota.spring_sandbox.mappers.ProductMapper;
 import com.maxzamota.spring_sandbox.model.BrandEntity;
 import com.maxzamota.spring_sandbox.model.ProductEntity;
 import com.maxzamota.spring_sandbox.service.BrandService;
 import com.maxzamota.spring_sandbox.service.ProductService;
-import org.modelmapper.ModelMapper;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.IanaLinkRelations;
+import org.springframework.hateoas.PagedModel;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.Timestamp;
-import java.util.Collection;
 import java.util.Objects;
 
 @RestController
@@ -22,87 +29,104 @@ import java.util.Objects;
 public class ProductController implements EntityController<Integer, ProductEntity, ProductDto> {
     private final ProductService productService;
     private final BrandService brandService;
-    private final ModelMapper mapper;
+    private final ProductMapper mapper;
+    private final ProductModelAssembler assembler;
+    private final PagedResourcesAssembler<ProductEntity> pagedAssembler;
 
     @Autowired
     public ProductController(
             ProductService productService,
             BrandService brandService,
-            ModelMapper mapper
+            ProductMapper mapper,
+            ProductModelAssembler assembler,
+            PagedResourcesAssembler<ProductEntity> pagedAssembler
     ) {
         this.productService = productService;
         this.brandService = brandService;
         this.mapper = mapper;
+        this.assembler = assembler;
+        this.pagedAssembler = pagedAssembler;
     }
 
     @Override
     @GetMapping({"/all", "/list"})
-    public ResponseEntity<Collection<ProductEntity>> getAll(
-            @RequestParam(required = false) String sortType
+    public ResponseEntity<PagedModel<EntityModel<ProductEntity>>> getAll(
+            @PageableDefault Pageable pageable
     ) {
-        ProductSortType sort = ProductSortType.BY_ID_ASC;
-        try {
-            sort = ProductSortType.valueOf(sortType);
-        } catch (Exception ignored) {}
-        return ResponseEntity.ok(this.productService.getAllSorted(sort));
+        Page<ProductEntity> products = productService.getAll(pageable);
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("X-Page-Number", String.valueOf(products.getNumber()));
+        headers.add("X-Page-Size", String.valueOf(products.getSize()));
+        PagedModel<EntityModel<ProductEntity>> pagedModel = pagedAssembler.toModel(
+                products, assembler
+        );
+        return ResponseEntity
+                .ok()
+                .headers(headers)
+                .body(pagedModel);
     }
 
     @Override
     @GetMapping("/{id}")
-    public ResponseEntity<ProductEntity> get(@PathVariable Integer id) {
-        return ResponseEntity.ok(this.productService.getById(id));
+    public ResponseEntity<EntityModel<ProductEntity>> get(@PathVariable Integer id) {
+        ProductEntity product = this.productService.getById(id);
+        EntityModel<ProductEntity> productEntityModel = this.assembler.toModel(product);
+        return ResponseEntity.ok(productEntityModel);
     }
 
     @Override
     @PostMapping
-    public ResponseEntity<ProductEntity> post(@RequestBody ProductDto productDto) {
+    public ResponseEntity<EntityModel<ProductEntity>> post(@RequestBody ProductDto productDto) {
         ProductEntity product;
         try {
             BrandEntity brand = this.brandService.findBrandByName(productDto.getBrand().getName());
-            product = this.mapper.map(productDto, ProductEntity.class);
+            product = this.mapper.fromDto(productDto);
             if (Objects.nonNull(brand)) {
                 product.setBrand(brand);
             } else {
-                brand = this.mapper.map(productDto.getBrand(), BrandEntity.class);
-                brand.setDateAdded(new Timestamp(System.currentTimeMillis()));
-                brand = this.brandService.save(brand);
+                brand = this.brandService.save(product.getBrand());
                 product.setBrand(brand);
             }
             product.setDateAdded(new Timestamp(System.currentTimeMillis()));
         } catch (Exception e) {
             throw new BadRequestException(e.getMessage());
         }
-        return new ResponseEntity<>(this.productService.save(product), HttpStatus.CREATED);
+        this.productService.save(product);
+        EntityModel<ProductEntity> productEntityModel = this.assembler.toModel(product);
+        return ResponseEntity
+                .created(productEntityModel.getRequiredLink(IanaLinkRelations.SELF).toUri())
+                .body(productEntityModel);
     }
 
     @Override
     @DeleteMapping("/{id}")
-    public ResponseEntity<String> deleteById(@PathVariable Integer id) {
-        return ResponseEntity.ok(this.productService.deleteById(id));
+    public ResponseEntity<?> deleteById(@PathVariable Integer id) {
+        this.productService.deleteById(id);
+        return ResponseEntity.noContent().build();
     }
 
     @Override
     @PutMapping("/{id}")
-    public ResponseEntity<ProductEntity> update(
+    public ResponseEntity<EntityModel<ProductEntity>> update(
             @PathVariable Integer id,
             @RequestBody ProductDto productDto
     ) {
         ProductEntity product;
         try {
             BrandEntity brand = this.brandService.findBrandByName(productDto.getBrand().getName());
-            product = this.mapper.map(productDto, ProductEntity.class);
-            if (Objects.nonNull(brand)) {
-                product.setBrand(brand);
-            } else {
-                brand = this.mapper.map(productDto.getBrand(), BrandEntity.class);
-                brand.setDateAdded(new Timestamp(System.currentTimeMillis()));
-                brand = this.brandService.save(brand);
-                product.setBrand(brand);
+            product = this.mapper.fromDto(productDto);
+            if (Objects.isNull(brand)) {
+                brand = this.brandService.save(product.getBrand());
             }
+            product.setBrand(brand);
         } catch (Exception e) {
             throw new BadRequestException(e.getMessage());
         }
         product.setId(id);
-        return new ResponseEntity<>(this.productService.update(product), HttpStatus.OK);
+        product = productService.update(product);
+        EntityModel<ProductEntity> productEntityModel = this.assembler.toModel(product);
+        return ResponseEntity
+                .created(productEntityModel.getRequiredLink(IanaLinkRelations.SELF).toUri())
+                .body(productEntityModel);
     }
 }

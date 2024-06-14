@@ -7,7 +7,7 @@ val agent: Configuration by configurations.creating {
 
 plugins {
     java
-    id("org.springframework.boot") version "3.2.0"
+    id("org.springframework.boot") version "3.3.0"
     id("io.spring.dependency-management") version "1.1.4"
     id("io.freefair.lombok")
     id("org.gradle.test-retry") version "1.5.8"
@@ -38,9 +38,13 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.boot:spring-boot-starter-data-jdbc")
+    implementation("org.springframework.boot:spring-boot-starter-jdbc")
     implementation("org.springframework.boot:spring-boot-starter-actuator")
+    implementation("org.springframework.boot:spring-boot-starter-security")
+    implementation("org.springframework.boot:spring-boot-starter-hateoas")
     implementation("org.modelmapper:modelmapper-module-record:1.0.0")
     implementation("org.flywaydb:flyway-core")
+    implementation("org.flywaydb:flyway-database-postgresql")
     implementation("io.projectreactor.netty:reactor-netty-http:1.1.14")
     // https://mvnrepository.com/artifact/org.springframework/spring-webflux
     implementation("org.springframework:spring-webflux:6.1.2")
@@ -70,7 +74,7 @@ tasks {
         }
         val includeTags = System.getProperty("includeTags")
         val excludeTags = System.getProperty("excludeTags")
-        useJUnitPlatform() {
+        useJUnitPlatform {
             if (!includeTags.isNullOrEmpty()) {
                 includeTags(includeTags)
             }
@@ -90,31 +94,31 @@ tasks {
     }
 
     register("unit-tests", Test::class.java) {
-        useJUnitPlatform() {
+        useJUnitPlatform {
             includeTags("unit-test")
         }
     }
 
     register("integration-tests", Test::class.java) {
-        useJUnitPlatform() {
+        useJUnitPlatform {
             includeTags("integration-test")
         }
     }
 
     register("service-layer-tests", Test::class.java) {
-        useJUnitPlatform() {
+        useJUnitPlatform {
             includeTags("service-layer")
         }
     }
 
     register("persistence-layer-tests", Test::class.java) {
-        useJUnitPlatform() {
+        useJUnitPlatform {
             includeTags("persistence-layer")
         }
     }
 
     register("jpa-tests", Test::class.java) {
-        useJUnitPlatform() {
+        useJUnitPlatform {
             includeTags("jpa")
         }
     }

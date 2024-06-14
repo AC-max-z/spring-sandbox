@@ -1,6 +1,5 @@
 package com.maxzamota.spring_sandbox.service;
 
-import com.maxzamota.spring_sandbox.enums.CustomerSortType;
 import com.maxzamota.spring_sandbox.exception.DuplicateResourceException;
 import com.maxzamota.spring_sandbox.exception.ResourceNotFoundException;
 import com.maxzamota.spring_sandbox.model.CustomerEntity;
@@ -9,7 +8,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
-import org.springframework.lang.NonNull;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
@@ -25,19 +27,19 @@ public class CustomerService {
         this.customerRepository = customerRepository;
     }
 
-    public Collection<CustomerEntity> getAllCustomers() {
-        return this.customerRepository.findAll();
+    public Page<CustomerEntity> getAll(
+            Integer pageNum,
+            Integer pageSize,
+            String sortBy,
+            String sortDirection
+    ) {
+        Sort sort = Sort.by(Sort.Direction.fromString(sortDirection), sortBy);
+        Pageable pageable = PageRequest.of(pageNum, pageSize, sort);
+        return this.customerRepository.findAll(pageable);
     }
 
-    public Collection<CustomerEntity> sortedCustomers(@NonNull CustomerSortType sortType) {
-        return switch (sortType) {
-            case CustomerSortType.BY_AGE_ASC -> this.customerRepository.findAllByOrderByAgeAsc();
-            case CustomerSortType.BY_AGE_DESC -> this.customerRepository.findAllByOrderByAgeDesc();
-            case CustomerSortType.BY_ID_ASC -> this.customerRepository.findAllByOrderByIdAsc();
-            case CustomerSortType.BY_ID_DESC -> this.customerRepository.findAllByOrderByIdDesc();
-            case CustomerSortType.BY_NAME_ASC -> this.customerRepository.findAllByOrderByNameAsc();
-            case CustomerSortType.BY_NAME_DESC -> this.customerRepository.findAllByOrderByNameDesc();
-        };
+    public Page<CustomerEntity> getAll(Pageable pageable) {
+        return this.customerRepository.findAll(pageable);
     }
 
     public CustomerEntity getCustomerById(Integer id) {
@@ -61,7 +63,7 @@ public class CustomerService {
                 .formatted(id);
     }
 
-    public CustomerEntity updateById(CustomerEntity customerEntity) {
+    public CustomerEntity update(CustomerEntity customerEntity) {
         if (!this.customerRepository.existsCustomerById(customerEntity.getId())) {
             throw new ResourceNotFoundException("Customer with id={%s} not found!"
                     .formatted(customerEntity.getId()));

@@ -51,7 +51,12 @@ public class CustomerEntity {
     @NonNull
     private Gender gender;
 
-    public CustomerEntity(@NonNull String name, @NonNull String email, @NonNull Integer age, @NonNull Gender gender) {
+    public CustomerEntity(
+            @NonNull String name,
+            @NonNull String email,
+            @NonNull Integer age,
+            @NonNull Gender gender
+    ) {
         this.name = name;
         this.email = email;
         this.age = age;

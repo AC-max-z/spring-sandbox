@@ -7,11 +7,19 @@ cors:
   allowedOrigins: "*"
   allowedMethods: "*"
 
+logging:
+  level:
+    org.springframework.security: TRACE
+
 spring:
+#  security:
+#    user:
+#      name: max
+#      password: asdg34rbnlok
   mvc:
     dispatch-trace-request: true
   datasource:
-    url: jdbc:postgresql://localhost:5433/customer
+    url: jdbc:postgresql://localhost:5432/customer
     username: mzamota
     password: password
     driver-class-name: org.postgresql.Driver

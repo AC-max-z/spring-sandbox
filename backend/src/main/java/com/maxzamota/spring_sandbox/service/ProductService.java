@@ -1,11 +1,14 @@
 package com.maxzamota.spring_sandbox.service;
 
-import com.maxzamota.spring_sandbox.enums.ProductSortType;
 import com.maxzamota.spring_sandbox.exception.DuplicateResourceException;
 import com.maxzamota.spring_sandbox.exception.ResourceNotFoundException;
 import com.maxzamota.spring_sandbox.model.ProductEntity;
 import com.maxzamota.spring_sandbox.repository.jpa.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
@@ -19,15 +22,6 @@ public class ProductService {
     @Autowired
     public ProductService(ProductRepository productRepository) {
         this.repository = productRepository;
-    }
-
-    public Collection<ProductEntity> getAllSorted(ProductSortType sort) {
-        return switch (sort) {
-            case BY_ID_DESC -> this.repository.findAllByOrderByIdDesc();
-            case BY_ID_ASC -> this.repository.findAllByOrderByIdAsc();
-            case BY_NAME_ASC -> this.repository.findAllByOrderByNameAsc();
-            case BY_NAME_DESC -> this.repository.findAllByOrderByNameDesc();
-        };
     }
 
     public ProductEntity getById(Integer id) {
@@ -71,7 +65,8 @@ public class ProductService {
         }
         product.setDateAdded(Objects.nonNull(currentProduct.getDateAdded())
                 ? currentProduct.getDateAdded()
-                : new Timestamp(System.currentTimeMillis()));
+                : new Timestamp(System.currentTimeMillis())
+        );
         return this.repository.save(product);
     }
 
@@ -79,7 +74,18 @@ public class ProductService {
         return this.repository.saveAll(products);
     }
 
-    public Collection<ProductEntity> getAll() {
-        return this.repository.findAll();
+    public Page<ProductEntity> getAll(
+            Integer pageNum,
+            Integer pageSize,
+            String sortBy,
+            String sortDirection
+    ) {
+        Sort sort = Sort.by(Sort.Direction.fromString(sortDirection), sortBy);
+        Pageable pageable = PageRequest.of(pageNum, pageSize, sort);
+        return this.repository.findAll(pageable);
+    }
+
+    public Page<ProductEntity> getAll(Pageable pageable) {
+        return this.repository.findAll(pageable);
     }
 }
