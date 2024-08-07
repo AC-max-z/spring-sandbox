@@ -1,6 +1,6 @@
 package com.maxzamota.spring_sandbox.controllers;
 
-import com.maxzamota.spring_sandbox.assemblers.BrandModelAssembler;
+import com.maxzamota.spring_sandbox.model_assemblers.BrandModelAssembler;
 import com.maxzamota.spring_sandbox.dto.BrandDto;
 import com.maxzamota.spring_sandbox.exception.BadRequestException;
 import com.maxzamota.spring_sandbox.mappers.BrandMapper;

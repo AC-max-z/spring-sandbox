@@ -134,6 +134,14 @@ public class BrandEntity {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, foundationDate, countryOfOrigin, description, history, dateAdded);
+        return Objects.hash(
+                id,
+                name,
+                foundationDate,
+                countryOfOrigin,
+                description,
+                history,
+                dateAdded
+        );
     }
 }

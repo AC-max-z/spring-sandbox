@@ -1,4 +1,4 @@
-package com.maxzamota.spring_sandbox.assemblers;
+package com.maxzamota.spring_sandbox.model_assemblers;
 
 import com.maxzamota.spring_sandbox.controllers.BrandController;
 import com.maxzamota.spring_sandbox.model.BrandEntity;

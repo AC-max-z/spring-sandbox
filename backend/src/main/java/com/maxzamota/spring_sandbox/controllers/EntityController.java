@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 
 @RestController
-public interface EntityController<ID, T, DTO> {
+public interface   EntityController<ID, T, DTO> {
 
     ResponseEntity<PagedModel<EntityModel<T>>> getAll(
             @PageableDefault Pageable pageable

@@ -1,6 +1,6 @@
 package com.maxzamota.spring_sandbox.controllers;
 
-import com.maxzamota.spring_sandbox.assemblers.CustomerModelAssembler;
+import com.maxzamota.spring_sandbox.model_assemblers.CustomerModelAssembler;
 import com.maxzamota.spring_sandbox.dto.CustomerDto;
 import com.maxzamota.spring_sandbox.exception.BadRequestException;
 import com.maxzamota.spring_sandbox.mappers.CustomerMapper;

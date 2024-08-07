@@ -1,7 +1,9 @@
 package com.maxzamota.spring_sandbox.service;
 
+import com.maxzamota.spring_sandbox.exception.BadRequestException;
 import com.maxzamota.spring_sandbox.exception.DuplicateResourceException;
 import com.maxzamota.spring_sandbox.exception.ResourceNotFoundException;
+import com.maxzamota.spring_sandbox.model.BrandEntity;
 import com.maxzamota.spring_sandbox.model.ProductEntity;
 import com.maxzamota.spring_sandbox.repository.jpa.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +11,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.mapping.PropertyReferenceException;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
@@ -86,6 +89,12 @@ public class ProductService {
     }
 
     public Page<ProductEntity> getAll(Pageable pageable) {
-        return this.repository.findAll(pageable);
+        Page<ProductEntity> products;
+        try {
+            products = this.repository.findAll(pageable);
+            return products;
+        } catch (PropertyReferenceException e) {
+            throw new BadRequestException(e.getMessage());
+        }
     }
 }

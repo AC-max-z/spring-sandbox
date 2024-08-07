@@ -1,5 +1,6 @@
 package com.maxzamota.spring_sandbox.service;
 
+import com.maxzamota.spring_sandbox.exception.BadRequestException;
 import com.maxzamota.spring_sandbox.exception.DuplicateResourceException;
 import com.maxzamota.spring_sandbox.exception.ResourceNotFoundException;
 import com.maxzamota.spring_sandbox.mappers.UserMapper;
@@ -10,17 +11,16 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.mapping.PropertyReferenceException;
 import org.springframework.stereotype.Service;
 
 @Service
 public class UserService {
     private UserRepository repository;
-    private UserMapper mapper;
 
     @Autowired
     public UserService(UserRepository repository, UserMapper mapper) {
         this.repository = repository;
-        this.mapper = mapper;
     }
 
     public Page<UserEntity> findAll(
@@ -35,7 +35,13 @@ public class UserService {
     }
 
     public Page<UserEntity> findAll(Pageable pageable) {
-        return repository.findAll(pageable);
+        Page<UserEntity> users;
+        try {
+            users = this.repository.findAll(pageable);
+            return users;
+        } catch (PropertyReferenceException e) {
+            throw new BadRequestException(e.getMessage());
+        }
     }
 
     public UserEntity getById(int id) {

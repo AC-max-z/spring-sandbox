@@ -326,10 +326,12 @@ public class BrandServiceTest {
 
     @Test
     @DisplayName("Should update existing brand with unique name when update() method is called")
-    @Description("In this test 2 brand objects are generated, one is for initial brand data " +
+    @Description(
+            "In this test 2 brand objects are generated, one is for initial brand data " +
             "another is for updated. First we call application layer save() method providing initial brand, " +
             "then we call update() application layer method providing updated brand and verify that update() " +
-            "invokes save() repository mock method and returns updated brand data.")
+            "invokes save() repository mock method and returns updated brand data."
+    )
     @Tags({
             @Tag("positive")
     })

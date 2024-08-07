@@ -1,5 +1,6 @@
 package com.maxzamota.spring_sandbox.service;
 
+import com.maxzamota.spring_sandbox.exception.BadRequestException;
 import com.maxzamota.spring_sandbox.exception.DuplicateResourceException;
 import com.maxzamota.spring_sandbox.exception.ResourceNotFoundException;
 import com.maxzamota.spring_sandbox.model.CustomerEntity;
@@ -12,6 +13,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.mapping.PropertyReferenceException;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
@@ -39,7 +41,13 @@ public class CustomerService {
     }
 
     public Page<CustomerEntity> getAll(Pageable pageable) {
-        return this.customerRepository.findAll(pageable);
+        Page<CustomerEntity> customers;
+        try {
+            customers = this.customerRepository.findAll(pageable);
+            return customers;
+        } catch (PropertyReferenceException e) {
+            throw new BadRequestException(e.getMessage());
+        }
     }
 
     public CustomerEntity getCustomerById(Integer id) {
