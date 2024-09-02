@@ -52,8 +52,7 @@ public class CustomerTest {
     }
 
     @ParameterizedTest
-    @EnumSource(DriverType.class)
-    @MethodSource("provideCustomers")
+    @MethodSource("provideCustomersAndDriverTypes")
     @DisplayName("Should display new customer after creating one")
     @Description("This test creates new customer, checks if it is present on page, then deletes it")
     @Tags({
@@ -96,8 +95,7 @@ public class CustomerTest {
     }
 
     @ParameterizedTest
-    @EnumSource(DriverType.class)
-    @MethodSource("provideCustomers")
+    @MethodSource("provideCustomersAndDriverTypes")
     @DisplayName("Should display updated customer data after editing one")
     @Description("This test creates new customer, then edits it, checks if customer was updated and then deletes it")
     @Tags({
@@ -149,11 +147,12 @@ public class CustomerTest {
 
     }
 
-    private static Stream<Arguments> provideCustomers() {
+    private static Stream<Arguments> provideCustomersAndDriverTypes() {
         return Stream.of(
-                Arguments.of(generator.generate(), generator.generate()),
-                Arguments.of(generator.generate(), generator.generate()),
-                Arguments.of(generator.generate(), generator.generate())
+                Arguments.of(DriverType.CHROME_REMOTE, generator.generate(), generator.generate()),
+                Arguments.of(DriverType.FIREFOX_REMOTE, generator.generate(), generator.generate()),
+                Arguments.of(DriverType.CHROME_REMOTE, generator.generate(), generator.generate()),
+                Arguments.of(DriverType.FIREFOX_REMOTE, generator.generate(), generator.generate())
         );
     }
 }
