@@ -4,7 +4,6 @@ import com.github.javafaker.Faker;
 import org.springsandbox.domain.Customer;
 import util.FakerProvider;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -19,14 +18,5 @@ public class CustomerGenerator implements ObjectGenerator<Customer> {
         List<String> availableGenders = List.of("MALE", "FEMALE", "DIFFERENT", "NONE_OF_YOUR_BUSINESS");
         String gender = availableGenders.get(new Random().nextInt(availableGenders.size()));
         return new Customer(name, email, age, gender);
-    }
-
-    @Override
-    public List<Customer> generateList(int size) {
-        var customers = new ArrayList<Customer>();
-        for (int i = 0; i < size; i++) {
-            customers.add(this.generate());
-        }
-        return customers.stream().toList();
     }
 }

@@ -1,8 +1,19 @@
 package generators;
 
+import org.springsandbox.domain.Customer;
+
+import java.util.ArrayList;
 import java.util.List;
 
 public interface ObjectGenerator<T> {
     T generate();
-    List<T> generateList(int size);
+
+    default List<T> generateList(int size) {
+        var list = new ArrayList<T>(size);
+        for (int i = 0; i < size; i++) {
+            list.add(this.generate());
+        }
+        return list.stream().toList();
+    }
+
 }
