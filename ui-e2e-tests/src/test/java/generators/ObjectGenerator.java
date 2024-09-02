@@ -1,7 +1,5 @@
 package generators;
 
-import org.springsandbox.domain.Customer;
-
 import java.util.ArrayList;
 import java.util.List;
 
