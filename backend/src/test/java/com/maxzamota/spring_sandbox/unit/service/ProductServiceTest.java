@@ -1,30 +1,17 @@
 package com.maxzamota.spring_sandbox.unit.service;
 
-import com.maxzamota.spring_sandbox.model.ProductEntity;
-import com.maxzamota.spring_sandbox.repository.jpa.ProductRepository;
+import com.maxzamota.spring_sandbox.repository.ProductRepository;
 import com.maxzamota.spring_sandbox.service.ProductService;
-import com.maxzamota.spring_sandbox.util.generators.ProductGenerator;
 import io.qameta.allure.*;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.EnumSource;
-import org.junit.jupiter.params.provider.NullSource;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.testcontainers.shaded.com.fasterxml.jackson.core.JsonProcessingException;
 import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.Objects;
-
 import static io.qameta.allure.Allure.step;
-import static org.assertj.core.api.Assertions.*;
-import static org.mockito.Mockito.*;
 
 @Execution(ExecutionMode.CONCURRENT)
 @Epic("Product service unit tests")

@@ -1,7 +1,7 @@
 package com.maxzamota.spring_sandbox.configuration;
 
 import com.maxzamota.spring_sandbox.model.UserEntity;
-import com.maxzamota.spring_sandbox.repository.jpa.UserRepository;
+import com.maxzamota.spring_sandbox.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -39,7 +39,6 @@ public class AuthProvider implements AuthenticationProvider {
                 return new UsernamePasswordAuthenticationToken(username, password, authorities);
             }
             throw new BadCredentialsException("Invalid password");
-
         }
         throw new BadCredentialsException("User not found");
     }

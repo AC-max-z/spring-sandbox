@@ -5,7 +5,7 @@ import com.maxzamota.spring_sandbox.exception.DuplicateResourceException;
 import com.maxzamota.spring_sandbox.exception.ResourceNotFoundException;
 import com.maxzamota.spring_sandbox.mappers.UserMapper;
 import com.maxzamota.spring_sandbox.model.UserEntity;
-import com.maxzamota.spring_sandbox.repository.jpa.UserRepository;
+import com.maxzamota.spring_sandbox.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;

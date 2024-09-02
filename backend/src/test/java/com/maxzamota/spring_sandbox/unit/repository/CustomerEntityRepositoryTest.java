@@ -1,9 +1,9 @@
-package com.maxzamota.spring_sandbox.unit.repository.jpa;
+package com.maxzamota.spring_sandbox.unit.repository;
 
 import com.github.javafaker.Faker;
 import com.maxzamota.spring_sandbox.util.generators.CustomerGenerator;
 import com.maxzamota.spring_sandbox.unit.repository.jdbc.AbstractTestcontainersTest;
-import com.maxzamota.spring_sandbox.repository.jpa.CustomerRepository;
+import com.maxzamota.spring_sandbox.repository.CustomerRepository;
 import io.qameta.allure.*;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.parallel.Execution;

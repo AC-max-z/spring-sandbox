@@ -10,17 +10,17 @@ import org.springframework.web.bind.annotation.RestController;
 
 
 @RestController
-public interface   EntityController<ID, T, DTO> {
+public interface EntityController<T, E, V> {
 
-    ResponseEntity<PagedModel<EntityModel<T>>> getAll(
+    ResponseEntity<PagedModel<EntityModel<E>>> getAll(
             @PageableDefault Pageable pageable
     );
 
-    ResponseEntity<EntityModel<T>> get(@PathVariable("id") ID id);
+    ResponseEntity<EntityModel<E>> get(@PathVariable("id") T id);
 
-    ResponseEntity<EntityModel<T>> post(DTO dto);
+    ResponseEntity<EntityModel<E>> post(V dto);
 
-    ResponseEntity<?> deleteById(ID id);
+    ResponseEntity<?> deleteById(T id);
 
-    ResponseEntity<EntityModel<T>> update(ID id, DTO dto);
+    ResponseEntity<EntityModel<E>> update(T id, V dto);
 }

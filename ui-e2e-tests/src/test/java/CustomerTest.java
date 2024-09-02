@@ -1,6 +1,8 @@
 import com.github.javafaker.Faker;
 import io.qameta.allure.Description;
 import io.qameta.allure.Epic;
+import io.qameta.allure.Severity;
+import io.qameta.allure.SeverityLevel;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
@@ -49,8 +51,11 @@ public class CustomerTest {
     @DisplayName("Should display new customer after creating one")
     @Description("This test creates new customer, checks if it is present on page, then deletes it")
     @Tags({
-            @Tag("positive")
+            @Tag("positive"),
+            @Tag("regression"),
+            @Tag("acceptance")
     })
+    @Severity(SeverityLevel.BLOCKER)
     public void shouldDisplayNewCustomerAfterCreate(DriverType driverType) throws MalformedURLException, URISyntaxException {
         // Arrange
         step("Create driver instance %s".formatted(driverType));
@@ -96,8 +101,11 @@ public class CustomerTest {
     @DisplayName("Should display updated customer data after editing one")
     @Description("This test creates new customer, then edits it, checks if customer was updated and then deletes it")
     @Tags({
-            @Tag("positive")
+            @Tag("positive"),
+            @Tag("regression"),
+            @Tag("acceptance")
     })
+    @Severity(SeverityLevel.BLOCKER)
     void shouldDisplayUpdatedCustomerAfterEdit(DriverType driverType) throws MalformedURLException, URISyntaxException {
         // Arrange
         step("Create driver instance %s".formatted(driverType));

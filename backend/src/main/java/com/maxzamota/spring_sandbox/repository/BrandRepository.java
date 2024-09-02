@@ -1,4 +1,4 @@
-package com.maxzamota.spring_sandbox.repository.jpa;
+package com.maxzamota.spring_sandbox.repository;
 
 import com.maxzamota.spring_sandbox.model.BrandEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
