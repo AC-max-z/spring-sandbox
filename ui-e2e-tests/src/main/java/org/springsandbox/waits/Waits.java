@@ -6,17 +6,19 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
+import org.openqa.selenium.support.ui.FluentWait;
+import org.openqa.selenium.support.ui.Wait;
 import org.springsandbox.enums.WaitCondition;
 import org.springsandbox.util.AppProperties;
 
 import java.time.Duration;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 
 public class Waits {
     private final WebDriver driver;
-    private final WebDriverWait wait;
+    private final Wait<WebDriver> wait;
     private final Map<String, String> envVars = AppProperties.getProperties();
     private final Integer implicitWait = Integer.parseInt(envVars.get("DRIVER_IMPLICIT_WAIT_MILLIS"));
 
@@ -24,7 +26,11 @@ public class Waits {
         this.driver = driver;
         PageFactory.initElements(this.driver, this);
         int waitTimeout = Integer.parseInt(envVars.get("DRIVER_WAIT_ELEMENT_TIMEOUT"));
-        this.wait = new WebDriverWait(this.driver, Duration.ofMillis(waitTimeout));
+        int pollingInterval = Integer.parseInt(envVars.get("DRIVER_POLLING_INTERVAL_MILLIS"));
+        this.wait = new FluentWait<>(this.driver)
+                .withTimeout(Duration.ofMillis(waitTimeout))
+                .pollingEvery(Duration.ofMillis(pollingInterval))
+                .ignoring(NoSuchElementException.class);
         this.driver.manage().timeouts().implicitlyWait(Duration.ofMillis(implicitWait));
     }
 
