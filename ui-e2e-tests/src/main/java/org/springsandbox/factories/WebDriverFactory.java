@@ -21,11 +21,12 @@ import java.util.Map;
 public class WebDriverFactory {
     private static final Map<String, String> envVars = AppProperties.getProperties();
     private static final String gridUrl = envVars.get("GRID_URL");
+
     public static WebDriver getDriver(DriverType driverType) throws URISyntaxException, MalformedURLException {
         return switch (driverType) {
 
             case DriverType.CHROME -> {
-                File logLocation = new File("src/test/resources/logs/chrome.log");
+                File logLocation = new File(envVars.get("CHROME_LOCAL_LOG_OUTPUT"));
                 ChromeDriverService service =
                         new ChromeDriverService.Builder()
                                 .withLogOutput(System.out)
@@ -37,7 +38,7 @@ public class WebDriverFactory {
             }
 
             case DriverType.FIREFOX -> {
-                File logLocation = new File("src/test/resources/logs/firefox.log");
+                File logLocation = new File(envVars.get("FIREFOX_LOCAL_LOG_OUTPUT"));
                 GeckoDriverService geckoService =
                         new GeckoDriverService.Builder()
                                 .withLogFile(logLocation)
@@ -52,8 +53,8 @@ public class WebDriverFactory {
                 opts.setEnableDownloads(true);
                 opts.setCapability("selenoid:options", new HashMap<String, Object>() {
                     {
-//                        put("enableVideo", true);
-                        put("enableVNC", true);
+                        put("enableVideo", Boolean.valueOf(envVars.get("SELENOID_ENABLE_VIDEO")));
+                        put("enableVNC", Boolean.valueOf(envVars.get("SELENOID_ENABLE_VNC")));
                     }
                 });
                 yield new RemoteWebDriver(new URI(gridUrl).toURL(), opts);
@@ -64,8 +65,8 @@ public class WebDriverFactory {
                 options.setEnableDownloads(true);
                 options.setCapability("selenoid:options", new HashMap<String, Object>() {
                     {
-//                        put("enableVideo", true);
-                        put("enableVNC", true);
+                        put("enableVideo", Boolean.valueOf(envVars.get("SELENOID_ENABLE_VIDEO")));
+                        put("enableVNC", Boolean.valueOf(envVars.get("SELENOID_ENABLE_VNC")));
                     }
                 });
                 yield new RemoteWebDriver(new URI(gridUrl).toURL(), options);
