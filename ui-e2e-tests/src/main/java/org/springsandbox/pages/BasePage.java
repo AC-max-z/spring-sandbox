@@ -13,6 +13,11 @@ import org.springsandbox.waits.Waits;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Abstract page class for other page object classes to inherit from
+ * that contains common actions
+ * (everything is pretty self-explanatory, but verbosely commented just in case)
+ */
 public abstract class BasePage {
     protected final WebDriver driver;
     protected final Map<String, String> envVars = AppProperties.getProperties();
@@ -33,6 +38,14 @@ public abstract class BasePage {
         driver.get(baseUrl);
     }
 
+    /**
+     * Decorator method that waits until the element is visible
+     * and returns provided element back
+     * Re-Initializes the page if element is stale and retries
+     *
+     * @param element - WebElement
+     * @return - provided Element
+     */
     protected WebElement getElement(WebElement element) {
         try {
             waits.waitForElement(WaitCondition.VISIBLE, element);
@@ -43,6 +56,14 @@ public abstract class BasePage {
         return element;
     }
 
+    /**
+     * Decorator method that waits until the element is clickable
+     * and returns provided element back
+     * Re-Initializes the page if element is stale and retries
+     *
+     * @param element - WebElement
+     * @return - provided Element
+     */
     protected WebElement getClickableElement(WebElement element) {
         try {
             waits.waitForElement(WaitCondition.CLICKABLE, element);
@@ -53,6 +74,14 @@ public abstract class BasePage {
         return element;
     }
 
+    /**
+     * Decorator method that waits until all elements from the list are visible
+     * and returns provided elements list back
+     * Re-Initializes the page if StaleElementReferenceException is thrown and retries
+     *
+     * @param elements - List of WebElements
+     * @return - provided List of WebElements
+     */
     protected List<WebElement> getElements(List<WebElement> elements) {
         try {
             waits.waitForElements(WaitCondition.VISIBLE, elements);
@@ -63,11 +92,23 @@ public abstract class BasePage {
         return elements;
     }
 
+    /**
+     * Decorator method that waits until element is clickable and clicks it
+     *
+     * @param element - WebElement to click
+     */
     protected void clickElement(WebElement element) {
         getClickableElement(element);
         element.click();
     }
 
+    /**
+     * Decorator method that waits until provided input element is clickable
+     * and enters provided value in it
+     *
+     * @param value - value to enter
+     * @param input - input WebElement
+     */
     protected void enterValueToInput(String value, WebElement input) {
         getClickableElement(input);
         input.click();
@@ -77,6 +118,13 @@ public abstract class BasePage {
         input.sendKeys(value);
     }
 
+    /**
+     * Decorator method that waits until provided select WebElement is clickable
+     * and selects it
+     *
+     * @param value  - value to select
+     * @param select - select type WebElement
+     */
     protected void selectValueInSelect(String value, WebElement select) {
         getClickableElement(select);
         new Select(select).selectByValue(value);

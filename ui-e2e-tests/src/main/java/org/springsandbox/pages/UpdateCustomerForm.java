@@ -70,7 +70,7 @@ public class UpdateCustomerForm extends BasePage {
     }
 
     public void selectRandomValueInGenderSelect() {
-        Integer optionsSize = getGenderSelectOptions().size();
+        int optionsSize = getGenderSelectOptions().size();
         getGenderSelect().selectByIndex(new Random().nextInt(optionsSize));
     }
 

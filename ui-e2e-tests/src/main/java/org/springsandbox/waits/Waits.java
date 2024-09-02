@@ -16,9 +16,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 
+/**
+ * Encapsulates the waiting logic
+ */
 public class Waits {
     private final WebDriver driver;
     private final Wait<WebDriver> wait;
+    // Environment variables and properties from application.properties
     private final Map<String, String> envVars = AppProperties.getProperties();
     private final Integer implicitWait = Integer.parseInt(envVars.get("DRIVER_IMPLICIT_WAIT_MILLIS"));
 
@@ -37,6 +41,10 @@ public class Waits {
     @FindBy(xpath = "//span[contains(text(), 'Loading')]")
     private WebElement loadingSpinner;
 
+    /**
+     * Waits for page to finish loading by checking document.readystate=complete
+     * and waiting until all load spinners/skeletons on spa pages are invisible
+     */
     public void waitForPageLoading() {
         temporarilyDisableImplicitWait(() -> {
             wait.until(webDriver -> ((JavascriptExecutor) webDriver)
@@ -47,6 +55,14 @@ public class Waits {
         });
     }
 
+    /**
+     * Wait until specified condition is met for the provided element
+     * (waits for page to finish loading first and disables implicit waits
+     * while waiting, when condition is met - enables it back)
+     *
+     * @param condition - condition to be met
+     * @param element   - WebElement
+     */
     public void waitForElement(WaitCondition condition, WebElement element) {
         waitForPageLoading();
         temporarilyDisableImplicitWait(() -> {
@@ -61,6 +77,14 @@ public class Waits {
         });
     }
 
+    /**
+     * Wait until specified condition is met for provided elements
+     * (waits for page to finish loading first and disables implicit waits
+     * while waiting, when condition is met - enables it back)
+     *
+     * @param condition - condition to be met
+     * @param elements  - List of WebElements
+     */
     public void waitForElements(WaitCondition condition, List<WebElement> elements) {
         waitForPageLoading();
         temporarilyDisableImplicitWait(() -> {
@@ -74,6 +98,12 @@ public class Waits {
         });
     }
 
+    /**
+     * Temporarily disables implicit waits, until provided action is fulfilled
+     * then enables implicit wait back
+     *
+     * @param action - Runnable action to execute that contains explicit waits
+     */
     private void temporarilyDisableImplicitWait(Runnable action) {
         driver.manage().timeouts().implicitlyWait(Duration.ofMillis(0));
         try {

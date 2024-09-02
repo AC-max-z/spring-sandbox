@@ -11,13 +11,16 @@ public class AppProperties {
         appProperties = new HashMap<>(System.getenv());
         String appPropertiesFilePath = "src/main/resources/application.properties";
         try {
-            File appProps = new File(appPropertiesFilePath);
-            Scanner scanner = new Scanner(appProps);
+            File appPropsFile = new File(appPropertiesFilePath);
+            Scanner scanner = new Scanner(appPropsFile);
             while (scanner.hasNextLine()) {
                 String line = scanner.nextLine();
                 String propName = line.split("=")[0];
                 String value = line.split("=")[1];
-                appProperties.put(propName, value);
+                // args have higher priority
+                if (!appProperties.containsKey(propName)) {
+                    appProperties.put(propName, value);
+                }
             }
         } catch (FileNotFoundException e) {
             System.out.println("Oopsie-woopsie, file not found at: " + appPropertiesFilePath);
