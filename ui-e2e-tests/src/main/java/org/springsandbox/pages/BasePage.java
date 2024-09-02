@@ -43,23 +43,33 @@ public abstract class BasePage {
         return element;
     }
 
-    protected List<WebElement> getElements(List<WebElement> elements) {
+    protected WebElement getClickableElement(WebElement element) {
         try {
-            waits.waitForElements(WaitCondition.CLICKABLE, elements);
+            waits.waitForElement(WaitCondition.CLICKABLE, element);
         } catch (StaleElementReferenceException e) {
             PageFactory.initElements(driver, this);
-            waits.waitForElements(WaitCondition.CLICKABLE, elements);
+            waits.waitForElement(WaitCondition.CLICKABLE, element);
+        }
+        return element;
+    }
+
+    protected List<WebElement> getElements(List<WebElement> elements) {
+        try {
+            waits.waitForElements(WaitCondition.VISIBLE, elements);
+        } catch (StaleElementReferenceException e) {
+            PageFactory.initElements(driver, this);
+            waits.waitForElements(WaitCondition.VISIBLE, elements);
         }
         return elements;
     }
 
     protected void clickElement(WebElement element) {
-        getElement(element);
+        getClickableElement(element);
         element.click();
     }
 
     protected void enterValueToInput(String value, WebElement input) {
-        getElement(input);
+        getClickableElement(input);
         input.click();
         input.clear();
         input.sendKeys(Keys.CONTROL + "A");
@@ -68,7 +78,7 @@ public abstract class BasePage {
     }
 
     protected void selectValueInSelect(String value, WebElement select) {
-        getElement(select);
+        getClickableElement(select);
         new Select(select).selectByValue(value);
     }
 }
