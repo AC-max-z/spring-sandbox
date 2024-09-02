@@ -1,4 +1,4 @@
-package domain;
+package org.springsandbox.domain;
 
 public class Customer {
 

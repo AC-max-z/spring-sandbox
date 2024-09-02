@@ -1,6 +1,6 @@
 package helpers;
 
-import domain.Customer;
+import org.springsandbox.domain.Customer;
 import org.springsandbox.pages.CreateCustomerForm;
 import org.springsandbox.pages.UpdateCustomerForm;
 

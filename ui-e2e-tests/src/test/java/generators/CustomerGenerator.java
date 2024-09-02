@@ -1,7 +1,8 @@
 package generators;
 
 import com.github.javafaker.Faker;
-import domain.Customer;
+import org.springsandbox.domain.Customer;
+import util.FakerProvider;
 
 import java.util.ArrayList;
 import java.util.List;
