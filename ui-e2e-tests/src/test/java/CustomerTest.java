@@ -8,9 +8,12 @@ import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.EnumSource;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.springsandbox.domain.Customer;
 import org.springsandbox.enums.DriverType;
 import org.springsandbox.factories.WebDriverFactory;
 import org.springsandbox.pages.CreateCustomerForm;
@@ -20,6 +23,7 @@ import org.springsandbox.pages.UpdateCustomerForm;
 import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.util.*;
+import java.util.stream.Stream;
 
 import static io.qameta.allure.Allure.step;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -34,7 +38,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class CustomerTest {
 
     private final ThreadLocal<WebDriver> driverThreadLocal = new ThreadLocal<>();
-    private final CustomerGenerator generator = new CustomerGenerator();
+    private static final CustomerGenerator generator = new CustomerGenerator();
 
     @BeforeAll
     static void beforeAll() {
@@ -49,6 +53,7 @@ public class CustomerTest {
 
     @ParameterizedTest
     @EnumSource(DriverType.class)
+    @MethodSource("provideCustomers")
     @DisplayName("Should display new customer after creating one")
     @Description("This test creates new customer, checks if it is present on page, then deletes it")
     @Tags({
@@ -57,22 +62,19 @@ public class CustomerTest {
             @Tag("acceptance")
     })
     @Severity(SeverityLevel.BLOCKER)
-    public void shouldDisplayNewCustomerAfterCreate(DriverType driverType) throws MalformedURLException, URISyntaxException {
+    public void shouldDisplayNewCustomerAfterCreate(DriverType driverType, Customer customer, Customer updatedCustomer) throws MalformedURLException, URISyntaxException {
         // Arrange
         step("Create driver instance %s".formatted(driverType));
         driverThreadLocal.set(WebDriverFactory.getDriver(driverType));
         var driver = driverThreadLocal.get();
         var indexPage = new IndexPage(driver);
 
-        step("Generate new customer data");
-        var customer = generator.generate();
-
         // Act
         step("Go to index page");
         indexPage.goTo();
         step("Click create customer button");
         indexPage.clickCreateCustomerButton();
-        step("Fill in create customer form");
+        step("Fill in create customer form " + customer.toString());
         CreateCustomerForm createCustomerForm = new CreateCustomerForm(driver);
         CustomerHelper.createCustomer(createCustomerForm, customer);
 
@@ -95,6 +97,7 @@ public class CustomerTest {
 
     @ParameterizedTest
     @EnumSource(DriverType.class)
+    @MethodSource("provideCustomers")
     @DisplayName("Should display updated customer data after editing one")
     @Description("This test creates new customer, then edits it, checks if customer was updated and then deletes it")
     @Tags({
@@ -103,25 +106,19 @@ public class CustomerTest {
             @Tag("acceptance")
     })
     @Severity(SeverityLevel.BLOCKER)
-    void shouldDisplayUpdatedCustomerAfterEdit(DriverType driverType) throws MalformedURLException, URISyntaxException {
+    void shouldDisplayUpdatedCustomerAfterEdit(DriverType driverType, Customer initialCustomer, Customer updatedCustomer) throws MalformedURLException, URISyntaxException {
         // Arrange
         step("Create driver instance %s".formatted(driverType));
         driverThreadLocal.set(WebDriverFactory.getDriver(driverType));
         var driver = driverThreadLocal.get();
         var indexPage = new IndexPage(driver);
 
-        step("Generate initial customer data");
-        var initialCustomer = generator.generate();
-
-        step("Generate updated customer data");
-        var updatedCustomer = generator.generate();
-
         // Act
         step("Go to index page");
         indexPage.goTo();
         step("Click create customer button");
         indexPage.clickCreateCustomerButton();
-        step("Fill in create customer form with initial data");
+        step("Fill in create customer form with initial data " + initialCustomer.toString());
         CreateCustomerForm createCustomerForm = new CreateCustomerForm(driver);
         CustomerHelper.createCustomer(createCustomerForm, initialCustomer);
 
@@ -131,6 +128,7 @@ public class CustomerTest {
 
         step("Click edit customer button");
         UpdateCustomerForm updateCustomerForm = new UpdateCustomerForm(driver);
+        step("Edit customer with updated data " + updatedCustomer.toString());
         CustomerHelper.editCustomer(updateCustomerForm, updatedCustomer);
 
         // Assert
@@ -149,5 +147,13 @@ public class CustomerTest {
         indexPage.confirmDeleteCustomer();
         assertThat(indexPage.getCustomerCardWithEmail(updatedCustomer.getEmail())).isNull();
 
+    }
+
+    private static Stream<Arguments> provideCustomers() {
+        return Stream.of(
+                Arguments.of(generator.generate(), generator.generate()),
+                Arguments.of(generator.generate(), generator.generate()),
+                Arguments.of(generator.generate(), generator.generate())
+        );
     }
 }
