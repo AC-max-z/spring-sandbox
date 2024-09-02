@@ -38,39 +38,48 @@ public class Waits {
     private WebElement loadingSpinner;
 
     public void waitForPageLoading() {
-        driver.manage().timeouts().implicitlyWait(Duration.ofMillis(0));
-        wait.until(webDriver -> ((JavascriptExecutor) webDriver)
-                .executeScript("return document.readyState")
-                .equals("complete")
-        );
-        wait.until(ExpectedConditions.invisibilityOf(loadingSpinner));
-        driver.manage().timeouts().implicitlyWait(Duration.ofMillis(implicitWait));
+        temporarilyDisableImplicitWait(() -> {
+            wait.until(webDriver -> ((JavascriptExecutor) webDriver)
+                    .executeScript("return document.readyState")
+                    .equals("complete")
+            );
+            wait.until(ExpectedConditions.invisibilityOf(loadingSpinner));
+        });
     }
 
     public void waitForElement(WaitCondition condition, WebElement element) {
         waitForPageLoading();
-        driver.manage().timeouts().implicitlyWait(Duration.ofMillis(0));
-        switch (condition) {
-            case VISIBLE -> wait
-                    .until(ExpectedConditions.visibilityOf(element));
-            case CLICKABLE -> wait
-                    .until(ExpectedConditions.elementToBeClickable(element));
-            case INVISIBLE -> wait
-                    .until(ExpectedConditions.invisibilityOf(element));
-        }
-        driver.manage().timeouts().implicitlyWait(Duration.ofMillis(implicitWait));
+        temporarilyDisableImplicitWait(() -> {
+            switch (condition) {
+                case VISIBLE -> wait
+                        .until(ExpectedConditions.visibilityOf(element));
+                case CLICKABLE -> wait
+                        .until(ExpectedConditions.elementToBeClickable(element));
+                case INVISIBLE -> wait
+                        .until(ExpectedConditions.invisibilityOf(element));
+            }
+        });
     }
 
     public void waitForElements(WaitCondition condition, List<WebElement> elements) {
         waitForPageLoading();
+        temporarilyDisableImplicitWait(() -> {
+            switch (condition) {
+                case VISIBLE -> wait
+                        .until(ExpectedConditions.visibilityOfAllElements(elements));
+                case INVISIBLE -> wait
+                        .until(ExpectedConditions.invisibilityOfAllElements(elements));
+                default -> throw new IllegalArgumentException("Unexpected value: " + condition);
+            }
+        });
+    }
+
+    private void temporarilyDisableImplicitWait(Runnable action) {
         driver.manage().timeouts().implicitlyWait(Duration.ofMillis(0));
-        switch (condition) {
-            case VISIBLE -> wait
-                    .until(ExpectedConditions.visibilityOfAllElements(elements));
-            case INVISIBLE -> wait
-                    .until(ExpectedConditions.invisibilityOfAllElements(elements));
-            default -> throw new IllegalArgumentException("Unexpected value: " + condition);
+        try {
+            action.run();
+        } finally {
+            driver.manage().timeouts().implicitlyWait(Duration.ofMillis(implicitWait));
         }
-        driver.manage().timeouts().implicitlyWait(Duration.ofMillis(implicitWait));
     }
 }
