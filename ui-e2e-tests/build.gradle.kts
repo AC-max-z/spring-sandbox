@@ -37,7 +37,20 @@ tasks.test {
 }
 tasks {
     register("e2e-ui-tests", Test::class.java) {
+        testLogging {
+            showExceptions = true
+            showCauses = true
+            events("passed")
+        }
+        val includeTags = System.getProperty("includeTags")
+        val excludeTags = System.getProperty("excludeTags")
         useJUnitPlatform() {
+            if (!includeTags.isNullOrEmpty()) {
+                includeTags(includeTags)
+            }
+            if (!excludeTags.isNullOrEmpty()) {
+                excludeTags(excludeTags)
+            }
             includeTags("E2E", "UI")
         }
         systemProperties["junit.jupiter.execution.parallel.enabled"] = true

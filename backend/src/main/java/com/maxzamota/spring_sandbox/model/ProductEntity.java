@@ -92,6 +92,12 @@ public class ProductEntity {
     @NonNull
     private Timestamp dateAdded;
 
+    @Column(
+            name = "is_deleted",
+            nullable = false
+    )
+    private boolean isDeleted;
+
     public ProductEntity(
             @NonNull String name,
             @NonNull String description,
@@ -99,7 +105,8 @@ public class ProductEntity {
             @NonNull Timestamp issueDate,
             @NonNull BrandEntity brand,
             @NonNull Integer availableAmount,
-            Integer discount
+            Integer discount,
+            boolean isDeleted
     ) {
         this.name = name;
         this.description = description;
@@ -108,6 +115,7 @@ public class ProductEntity {
         this.brand = brand;
         this.availableAmount = availableAmount;
         this.discount = discount;
+        this.isDeleted = isDeleted;
     }
 
     public ProductEntity(ProductBuilder builder) {
@@ -120,6 +128,7 @@ public class ProductEntity {
         this.availableAmount = builder.availableAmount;
         this.discount = builder.discount;
         this.dateAdded = builder.dateAdded;
+        this.isDeleted = builder.isDeleted;
     }
 
     @Setter
@@ -133,6 +142,7 @@ public class ProductEntity {
         private Integer availableAmount;
         private Integer discount;
         private Timestamp dateAdded;
+        private boolean isDeleted;
 
         public ProductEntity build() {
             return new ProductEntity(this);
@@ -152,11 +162,23 @@ public class ProductEntity {
                 && Objects.equals(brand, that.brand)
                 && Objects.equals(availableAmount, that.availableAmount)
                 && Objects.equals(discount, that.discount)
-                && Objects.equals(dateAdded, that.dateAdded);
+                && Objects.equals(dateAdded, that.dateAdded)
+                && isDeleted == that.isDeleted;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, description, price, issueDate, brand, availableAmount, discount, dateAdded);
+        return Objects.hash(
+                id,
+                name,
+                description,
+                price,
+                issueDate,
+                brand,
+                availableAmount,
+                discount,
+                dateAdded,
+                isDeleted
+        );
     }
 }

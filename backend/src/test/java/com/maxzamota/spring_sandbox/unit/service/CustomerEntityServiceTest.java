@@ -4,16 +4,12 @@ import com.maxzamota.spring_sandbox.exception.DuplicateResourceException;
 import com.maxzamota.spring_sandbox.exception.ResourceNotFoundException;
 import com.maxzamota.spring_sandbox.model.CustomerEntity;
 import com.maxzamota.spring_sandbox.util.generators.CustomerGenerator;
-import com.maxzamota.spring_sandbox.repository.jpa.CustomerRepository;
+import com.maxzamota.spring_sandbox.repository.CustomerRepository;
 import com.maxzamota.spring_sandbox.service.CustomerService;
 import io.qameta.allure.*;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.EnumSource;
-import org.junit.jupiter.params.provider.NullSource;
-import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
@@ -22,7 +18,6 @@ import java.util.*;
 import static io.qameta.allure.Allure.step;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @Execution(ExecutionMode.CONCURRENT)

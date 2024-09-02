@@ -4,7 +4,7 @@ import com.maxzamota.spring_sandbox.exception.BadRequestException;
 import com.maxzamota.spring_sandbox.exception.DuplicateResourceException;
 import com.maxzamota.spring_sandbox.exception.ResourceNotFoundException;
 import com.maxzamota.spring_sandbox.model.BrandEntity;
-import com.maxzamota.spring_sandbox.repository.jpa.BrandRepository;
+import com.maxzamota.spring_sandbox.repository.BrandRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;

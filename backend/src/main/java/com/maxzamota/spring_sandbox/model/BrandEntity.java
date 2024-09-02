@@ -79,6 +79,12 @@ public class BrandEntity {
     )
     private Timestamp dateAdded;
 
+    @Column(
+            name = "is_deleted",
+            nullable = false
+    )
+    private boolean isDeleted;
+
     public BrandEntity(BrandBuilder builder) {
         this.id = builder.id;
         this.name = builder.name;
@@ -87,6 +93,7 @@ public class BrandEntity {
         this.description = builder.description;
         this.history = builder.history;
         this.dateAdded = builder.dateAdded;
+        this.isDeleted = builder.isDeleted;
     }
 
     public BrandEntity(
@@ -94,13 +101,15 @@ public class BrandEntity {
             @NonNull Timestamp foundationDate,
             @NonNull String countryOfOrigin,
             @NonNull String description,
-            @NonNull String history
+            @NonNull String history,
+            boolean isDeleted
     ) {
         this.name = name;
         this.foundationDate = foundationDate;
         this.countryOfOrigin = countryOfOrigin;
         this.description = description;
         this.history = history;
+        this.isDeleted = isDeleted;
     }
 
     @Setter
@@ -112,6 +121,7 @@ public class BrandEntity {
         private String description;
         private String history;
         private Timestamp dateAdded;
+        private boolean isDeleted;
 
         public BrandEntity build() {
             return new BrandEntity(this);
@@ -129,7 +139,8 @@ public class BrandEntity {
                 && Objects.equals(countryOfOrigin, that.countryOfOrigin)
                 && Objects.equals(description, that.description)
                 && Objects.equals(history, that.history)
-                && Objects.equals(dateAdded, that.dateAdded);
+                && Objects.equals(dateAdded, that.dateAdded)
+                && Objects.equals(isDeleted, that.isDeleted);
     }
 
     @Override
@@ -141,7 +152,8 @@ public class BrandEntity {
                 countryOfOrigin,
                 description,
                 history,
-                dateAdded
+                dateAdded,
+                isDeleted
         );
     }
 }

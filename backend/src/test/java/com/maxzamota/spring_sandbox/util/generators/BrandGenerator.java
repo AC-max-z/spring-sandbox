@@ -27,7 +27,8 @@ public class BrandGenerator {
                 foundationDate,
                 countryOfOrigin,
                 description,
-                history
+                history,
+                false
         );
     }
 
@@ -79,7 +80,8 @@ public class BrandGenerator {
                             new Timestamp(faker.date().past(10000, TimeUnit.DAYS).getTime()),
                             faker.address().country(),
                             faker.gameOfThrones().quote(),
-                            faker.lorem().sentence(42)
+                            faker.lorem().sentence(42),
+                            false
                     )
             );
         }

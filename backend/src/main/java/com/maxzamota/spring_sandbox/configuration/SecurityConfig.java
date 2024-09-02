@@ -45,7 +45,8 @@ public class SecurityConfig {
                                 "/error"
                         )
                         .permitAll()
-                        .anyRequest().authenticated()
+                        .anyRequest()
+                        .authenticated()
                 )
                 .formLogin(withDefaults())
                 .httpBasic(withDefaults());

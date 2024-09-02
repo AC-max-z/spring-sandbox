@@ -1,4 +1,4 @@
-package com.maxzamota.spring_sandbox.repository.jpa;
+package com.maxzamota.spring_sandbox.repository;
 
 import com.maxzamota.spring_sandbox.model.CustomerEntity;
 import org.springframework.context.annotation.Primary;

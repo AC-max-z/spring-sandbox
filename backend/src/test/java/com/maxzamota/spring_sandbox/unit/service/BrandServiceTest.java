@@ -3,7 +3,7 @@ package com.maxzamota.spring_sandbox.unit.service;
 import com.maxzamota.spring_sandbox.exception.DuplicateResourceException;
 import com.maxzamota.spring_sandbox.exception.ResourceNotFoundException;
 import com.maxzamota.spring_sandbox.model.BrandEntity;
-import com.maxzamota.spring_sandbox.repository.jpa.BrandRepository;
+import com.maxzamota.spring_sandbox.repository.BrandRepository;
 import com.maxzamota.spring_sandbox.service.BrandService;
 import com.maxzamota.spring_sandbox.util.generators.BrandGenerator;
 import io.qameta.allure.*;
@@ -11,14 +11,11 @@ import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.EnumSource;
-import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.slf4j.MDC;
 import org.testcontainers.shaded.com.fasterxml.jackson.core.JsonProcessingException;
 import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -26,7 +23,6 @@ import java.util.*;
 
 import static io.qameta.allure.Allure.step;
 import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @Execution(ExecutionMode.CONCURRENT)

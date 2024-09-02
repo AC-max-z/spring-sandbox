@@ -18,13 +18,13 @@ public class Waits {
     private final WebDriver driver;
     private final WebDriverWait wait;
     private final Map<String, String> envVars = AppProperties.getProperties();
-    private final Integer waitTimeout = Integer.parseInt(envVars.get("DRIVER_WAIT_ELEMENT_TIMEOUT"));
     private final Integer implicitWait = Integer.parseInt(envVars.get("DRIVER_IMPLICIT_WAIT_MILLIS"));
 
     public Waits(WebDriver driver) {
         this.driver = driver;
-        PageFactory.initElements(driver, this);
-        this.wait = new WebDriverWait(driver, Duration.ofMillis(this.waitTimeout));
+        PageFactory.initElements(this.driver, this);
+        int waitTimeout = Integer.parseInt(envVars.get("DRIVER_WAIT_ELEMENT_TIMEOUT"));
+        this.wait = new WebDriverWait(this.driver, Duration.ofMillis(waitTimeout));
         this.driver.manage().timeouts().implicitlyWait(Duration.ofMillis(implicitWait));
     }
 

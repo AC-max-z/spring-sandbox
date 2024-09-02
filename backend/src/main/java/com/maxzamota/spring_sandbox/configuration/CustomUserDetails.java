@@ -1,7 +1,7 @@
 package com.maxzamota.spring_sandbox.configuration;
 
 import com.maxzamota.spring_sandbox.model.UserEntity;
-import com.maxzamota.spring_sandbox.repository.jpa.UserRepository;
+import com.maxzamota.spring_sandbox.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
