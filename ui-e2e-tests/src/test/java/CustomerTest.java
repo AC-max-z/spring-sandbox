@@ -151,8 +151,8 @@ public class CustomerTest {
         return Stream.of(
                 Arguments.of(DriverType.CHROME_REMOTE, generator.generate(), generator.generate()),
                 Arguments.of(DriverType.FIREFOX_REMOTE, generator.generate(), generator.generate()),
-                Arguments.of(DriverType.CHROME_REMOTE, generator.generate(), generator.generate()),
-                Arguments.of(DriverType.FIREFOX_REMOTE, generator.generate(), generator.generate())
+                Arguments.of(DriverType.CHROME_REMOTE_HEADLESS, generator.generate(), generator.generate()),
+                Arguments.of(DriverType.FIREFOX_REMOTE_HEADLESS, generator.generate(), generator.generate())
         );
     }
 }

@@ -7,6 +7,7 @@ import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.firefox.GeckoDriverService;
+import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.springsandbox.enums.DriverType;
 import org.springsandbox.util.AppProperties;
@@ -70,6 +71,35 @@ public class WebDriverFactory {
                     }
                 });
                 yield new RemoteWebDriver(new URI(gridUrl).toURL(), options);
+            }
+
+            case CHROME_REMOTE_HEADLESS -> {
+                var options = new ChromeOptions();
+                options.setEnableDownloads(true);
+                options.setCapability("selenoid:options", new HashMap<String, Object>() {
+                    {
+                        put("enableVideo", Boolean.valueOf(envVars.get("SELENOID_ENABLE_VIDEO")));
+                        put("enableVNC", Boolean.valueOf(envVars.get("SELENOID_ENABLE_VNC")));
+                    }
+                });
+                options.addArguments("--headless",  "--no-sandbox", "--disable-dev-shm-usage");
+                var capabilities = new DesiredCapabilities();
+                capabilities.setCapability(ChromeOptions.CAPABILITY, options);
+                yield new RemoteWebDriver(new URI(gridUrl).toURL(), capabilities);
+            }
+
+            case DriverType.FIREFOX_REMOTE_HEADLESS -> {
+                var opts = new FirefoxOptions();
+                opts.addArguments("--headless");
+                opts.setEnableDownloads(true);
+                opts.setCapability("selenoid:options", new HashMap<String, Object>() {
+                    {
+                        put("enableVideo", Boolean.valueOf(envVars.get("SELENOID_ENABLE_VIDEO")));
+                        put("enableVNC", Boolean.valueOf(envVars.get("SELENOID_ENABLE_VNC")));
+                    }
+                });
+                var capabilities = new DesiredCapabilities();
+                yield new RemoteWebDriver(new URI(gridUrl).toURL(), capabilities);
             }
 
         };
