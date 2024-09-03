@@ -76,7 +76,6 @@ public class ProductEntity {
     @NotFound(action = NotFoundAction.IGNORE)
     @JoinColumn(name = "brand_id", referencedColumnName = "id")
     @ToString.Include
-    @NonNull
     private BrandEntity brand;
 
     @Column(

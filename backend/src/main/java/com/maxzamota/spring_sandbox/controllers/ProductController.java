@@ -120,12 +120,20 @@ public class ProductController implements EntityController<Integer, ProductEntit
         ProductEntity product;
 
         try {
-            BrandEntity brand = this.brandService.findByName(productDto.getBrand().getName());
             product = this.mapper.fromDto(productDto);
-            if (Objects.isNull(brand)) {
-                brand = this.brandService.save(product.getBrand());
+            // Check if dto contains info about brand
+            if (Objects.nonNull(productDto.getBrand())) {
+                // check if this brand already exists
+                BrandEntity brand = this.brandService.findByName(productDto.getBrand().getName());
+                // create new brand if it does not exist
+                if (Objects.isNull(brand)) {
+                    brand = product.getBrand();
+                    brand.setDateAdded(new Timestamp(System.currentTimeMillis()));
+                    brand = this.brandService.save(brand);
+                }
+                // update brand data with the one stored in database
+                product.setBrand(brand);
             }
-            product.setBrand(brand);
         } catch (Exception e) {
             throw new BadRequestException(e.getMessage());
         }

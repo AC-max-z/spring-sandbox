@@ -18,7 +18,6 @@ public class ProductDto {
     private Double price;
     @NonNull
     private Timestamp issueDate;
-    @NonNull
     private BrandDto brand;
     @NonNull
     private Integer availableAmount;
