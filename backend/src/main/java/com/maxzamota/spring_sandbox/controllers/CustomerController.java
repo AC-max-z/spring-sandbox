@@ -2,7 +2,6 @@ package com.maxzamota.spring_sandbox.controllers;
 
 import com.maxzamota.spring_sandbox.model.model_assemblers.CustomerModelAssembler;
 import com.maxzamota.spring_sandbox.dto.CustomerDto;
-import com.maxzamota.spring_sandbox.exception.BadRequestException;
 import com.maxzamota.spring_sandbox.mappers.CustomerMapper;
 import com.maxzamota.spring_sandbox.model.CustomerEntity;
 import com.maxzamota.spring_sandbox.service.CustomerService;
@@ -73,15 +72,11 @@ public class CustomerController implements EntityController<Integer, CustomerEnt
     @Override
     @PostMapping
     public ResponseEntity<EntityModel<CustomerDto>> post(@RequestBody CustomerDto customerDto) {
-        CustomerEntity customer;
-
-        try {
-            customer = this.mapper.fromDto(customerDto);
-        } catch (Exception e) {
-            throw new BadRequestException(e.getCause().getMessage());
-        }
-
+        CustomerEntity customer = this.mapper.fromDto(customerDto);
+        customer.setId(null);
+        customer = this.customerService.save(customer);
         CustomerDto dto = this.mapper.toDto(customer);
+
         EntityModel<CustomerDto> customerDtoModel = assembler.toDtoModel(dto);
 
         return ResponseEntity
@@ -102,13 +97,7 @@ public class CustomerController implements EntityController<Integer, CustomerEnt
             @PathVariable Integer id,
             @RequestBody CustomerDto customerDto
     ) {
-        CustomerEntity customerEntity;
-
-        try {
-            customerEntity = this.mapper.fromDto(customerDto);
-        } catch (Exception e) {
-            throw new BadRequestException(e.getCause().getMessage());
-        }
+        CustomerEntity customerEntity = this.mapper.fromDto(customerDto);
 
         customerEntity.setId(id);
         customerEntity = customerService.update(customerEntity);

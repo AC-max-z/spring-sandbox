@@ -71,8 +71,7 @@ public class BrandController implements EntityController<Integer, BrandEntity, B
     @Override
     @PostMapping
     public ResponseEntity<EntityModel<BrandDto>> post(@RequestBody BrandDto brandDto) {
-        BrandEntity brand;
-        brand = this.mapper.fromDto(brandDto);
+        BrandEntity brand = this.mapper.fromDto(brandDto);
 
         brand.setDateAdded(new Timestamp(System.currentTimeMillis()));
         brand.setId(null);
@@ -100,9 +99,7 @@ public class BrandController implements EntityController<Integer, BrandEntity, B
             @PathVariable Integer id,
             @RequestBody BrandDto brandDto
     ) {
-        BrandEntity brand;
-
-        brand = this.mapper.fromDto(brandDto);
+        BrandEntity brand = this.mapper.fromDto(brandDto);
 
         brand.setId(id);
         brand = this.brandService.update(brand);

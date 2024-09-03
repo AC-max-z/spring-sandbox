@@ -2,7 +2,6 @@ package com.maxzamota.spring_sandbox.controllers;
 
 import com.maxzamota.spring_sandbox.model.model_assemblers.UserModelAssembler;
 import com.maxzamota.spring_sandbox.dto.UserDto;
-import com.maxzamota.spring_sandbox.exception.BadRequestException;
 import com.maxzamota.spring_sandbox.mappers.UserMapper;
 import com.maxzamota.spring_sandbox.model.UserEntity;
 import com.maxzamota.spring_sandbox.service.UserService;
@@ -75,13 +74,7 @@ public class UserController implements EntityController<Integer, UserEntity, Use
     @Override
     @PostMapping
     public ResponseEntity<EntityModel<UserDto>> post(@RequestBody UserDto userDto) {
-        UserEntity user;
-
-        try {
-            user = mapper.fromDto(userDto);
-        } catch (Exception e) {
-            throw new BadRequestException(e.getMessage());
-        }
+        UserEntity user = mapper.fromDto(userDto);
 
         user.setPassword(passwordEncoder.encode(userDto.getPassword()));
         user = userService.save(user);

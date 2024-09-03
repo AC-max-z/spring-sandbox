@@ -94,7 +94,7 @@ public class ProductController implements EntityController<Integer, ProductEntit
             product.setBrand(brand);
         }
 
-        this.productService.save(product);
+        product = this.productService.save(product);
         ProductDto dto = this.mapper.toDto(product);
         EntityModel<ProductDto> productDtoModel = this.assembler.toDtoModel(dto);
 
