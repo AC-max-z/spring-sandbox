@@ -60,6 +60,7 @@ public class ProductController implements EntityController<Integer, ProductEntit
         PagedModel<EntityModel<ProductEntity>> pagedModel = pagedAssembler.toModel(
                 products, assembler
         );
+
         return ResponseEntity
                 .ok()
                 .headers(headers)
@@ -77,8 +78,9 @@ public class ProductController implements EntityController<Integer, ProductEntit
 
     @Override
     @PostMapping
-    public ResponseEntity<EntityModel<ProductEntity>> post(@RequestBody ProductDto productDto) {
+    public ResponseEntity<EntityModel<ProductDto>> post(@RequestBody ProductDto productDto) {
         ProductEntity product;
+
         try {
             BrandEntity brand = this.brandService.findByName(productDto.getBrand().getName());
             product = this.mapper.fromDto(productDto);
@@ -92,11 +94,14 @@ public class ProductController implements EntityController<Integer, ProductEntit
         } catch (Exception e) {
             throw new BadRequestException(e.getMessage());
         }
+
         this.productService.save(product);
-        EntityModel<ProductEntity> productEntityModel = this.assembler.toModel(product);
+        ProductDto dto = this.mapper.toDto(product);
+        EntityModel<ProductDto> productDtoModel = this.assembler.toDtoModel(dto);
+
         return ResponseEntity
-                .created(productEntityModel.getRequiredLink(IanaLinkRelations.SELF).toUri())
-                .body(productEntityModel);
+                .created(productDtoModel.getRequiredLink(IanaLinkRelations.SELF).toUri())
+                .body(productDtoModel);
     }
 
     @Override
@@ -108,11 +113,12 @@ public class ProductController implements EntityController<Integer, ProductEntit
 
     @Override
     @PutMapping("/{id}")
-    public ResponseEntity<EntityModel<ProductEntity>> update(
+    public ResponseEntity<EntityModel<ProductDto>> update(
             @PathVariable Integer id,
             @RequestBody ProductDto productDto
     ) {
         ProductEntity product;
+
         try {
             BrandEntity brand = this.brandService.findByName(productDto.getBrand().getName());
             product = this.mapper.fromDto(productDto);
@@ -123,11 +129,15 @@ public class ProductController implements EntityController<Integer, ProductEntit
         } catch (Exception e) {
             throw new BadRequestException(e.getMessage());
         }
+
         product.setId(id);
         product = productService.update(product);
-        EntityModel<ProductEntity> productEntityModel = this.assembler.toModel(product);
+        ProductDto dto = this.mapper.toDto(product);
+
+        EntityModel<ProductDto> productDtoModel = this.assembler.toDtoModel(dto);
+
         return ResponseEntity
-                .created(productEntityModel.getRequiredLink(IanaLinkRelations.SELF).toUri())
-                .body(productEntityModel);
+                .created(productDtoModel.getRequiredLink(IanaLinkRelations.SELF).toUri())
+                .body(productDtoModel);
     }
 }

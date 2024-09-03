@@ -71,17 +71,21 @@ public class CustomerController implements EntityController<Integer, CustomerEnt
 
     @Override
     @PostMapping
-    public ResponseEntity<EntityModel<CustomerEntity>> post(@RequestBody CustomerDto customerDto) {
+    public ResponseEntity<EntityModel<CustomerDto>> post(@RequestBody CustomerDto customerDto) {
         CustomerEntity customer;
+
         try {
             customer = this.mapper.fromDto(customerDto);
         } catch (Exception e) {
             throw new BadRequestException(e.getMessage());
         }
-        EntityModel<CustomerEntity> customerEntityModel = assembler.toModel(customer);
+
+        CustomerDto dto = this.mapper.toDto(customer);
+        EntityModel<CustomerDto> customerDtoModel = assembler.toDtoModel(dto);
+
         return ResponseEntity
-                .created(customerEntityModel.getRequiredLink(IanaLinkRelations.SELF).toUri())
-                .body(customerEntityModel);
+                .created(customerDtoModel.getRequiredLink(IanaLinkRelations.SELF).toUri())
+                .body(customerDtoModel);
     }
 
     @Override
@@ -93,21 +97,26 @@ public class CustomerController implements EntityController<Integer, CustomerEnt
 
     @Override
     @PutMapping("/{id}")
-    public ResponseEntity<EntityModel<CustomerEntity>> update(
+    public ResponseEntity<EntityModel<CustomerDto>> update(
             @PathVariable Integer id,
             @RequestBody CustomerDto customerDto
     ) {
         CustomerEntity customerEntity;
+
         try {
             customerEntity = this.mapper.fromDto(customerDto);
         } catch (Exception e) {
             throw new BadRequestException(e.getMessage());
         }
+
         customerEntity.setId(id);
         customerEntity = customerService.update(customerEntity);
-        EntityModel<CustomerEntity> customerEntityModel = assembler.toModel(customerEntity);
+        CustomerDto dto = this.mapper.toDto(customerEntity);
+
+        EntityModel<CustomerDto> customerDtoModel = assembler.toDtoModel(dto);
+
         return ResponseEntity
-                .created(customerEntityModel.getRequiredLink(IanaLinkRelations.SELF).toUri())
-                .body(customerEntityModel);
+                .created(customerDtoModel.getRequiredLink(IanaLinkRelations.SELF).toUri())
+                .body(customerDtoModel);
     }
 }

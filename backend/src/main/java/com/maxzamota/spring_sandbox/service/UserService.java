@@ -14,6 +14,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.mapping.PropertyReferenceException;
 import org.springframework.stereotype.Service;
 
+import java.util.Collection;
+
 @Service
 public class UserService {
     private UserRepository repository;
@@ -49,6 +51,10 @@ public class UserService {
                 .orElseThrow(() ->
                         new ResourceNotFoundException("User with id={%s} not found!".formatted(id))
                 );
+    }
+
+    public Collection<UserEntity> getByEmail(String email) {
+        return repository.findByEmail(email);
     }
 
     public UserEntity save(UserEntity user) {

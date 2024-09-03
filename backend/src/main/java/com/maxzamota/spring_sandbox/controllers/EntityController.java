@@ -18,9 +18,9 @@ public interface EntityController<T, E, V> {
 
     ResponseEntity<EntityModel<V>> get(@PathVariable("id") T id);
 
-    ResponseEntity<EntityModel<E>> post(V dto);
+    ResponseEntity<EntityModel<V>> post(V dto);
 
     ResponseEntity<?> deleteById(T id);
 
-    ResponseEntity<EntityModel<E>> update(T id, V dto);
+    ResponseEntity<EntityModel<V>> update(T id, V dto);
 }

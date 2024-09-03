@@ -55,6 +55,7 @@ public class UserController implements EntityController<Integer, UserEntity, Use
         PagedModel<EntityModel<UserEntity>> pagedModel = pagedAssembler.toModel(
                 users, assembler
         );
+
         return ResponseEntity
                 .ok()
                 .headers(headers)
@@ -66,27 +67,34 @@ public class UserController implements EntityController<Integer, UserEntity, Use
     public ResponseEntity<EntityModel<UserDto>> get(@PathVariable Integer id) {
         UserEntity user = userService.getById(id);
         UserDto dto = this.mapper.toDto(user);
+        dto.setPassword("*****");
         EntityModel<UserDto> dtoModel = assembler.toDtoModel(dto);
         return ResponseEntity.ok(dtoModel);
     }
 
     @Override
     @PostMapping
-    public ResponseEntity<EntityModel<UserEntity>> post(@RequestBody UserDto userDto) {
+    public ResponseEntity<EntityModel<UserDto>> post(@RequestBody UserDto userDto) {
         UserEntity user;
+
         try {
             user = mapper.fromDto(userDto);
         } catch (Exception e) {
             throw new BadRequestException(e.getMessage());
         }
+
         user.setPassword(passwordEncoder.encode(userDto.getPassword()));
         user = userService.save(user);
-        EntityModel<UserEntity> userEntityModel = assembler.toModel(user);
+        UserDto dto = this.mapper.toDto(user);
+        dto.setPassword("*****");
+
+        EntityModel<UserDto> userDtoModel = assembler.toDtoModel(dto);
+
         return ResponseEntity
                 .created(
-                        userEntityModel.getRequiredLink(IanaLinkRelations.SELF).toUri()
+                        userDtoModel.getRequiredLink(IanaLinkRelations.SELF).toUri()
                 )
-                .body(userEntityModel);
+                .body(userDtoModel);
     }
 
     @Override
@@ -98,7 +106,7 @@ public class UserController implements EntityController<Integer, UserEntity, Use
 
     @Override
     @PutMapping("/{id}")
-    public ResponseEntity<EntityModel<UserEntity>> update(
+    public ResponseEntity<EntityModel<UserDto>> update(
             @PathVariable Integer id,
             @RequestBody UserDto userDto
     ) {

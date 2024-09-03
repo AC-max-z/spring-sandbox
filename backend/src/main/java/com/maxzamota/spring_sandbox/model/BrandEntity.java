@@ -1,5 +1,6 @@
 package com.maxzamota.spring_sandbox.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.persistence.Table;
 import lombok.*;
@@ -87,6 +88,7 @@ public class BrandEntity {
             name = "is_deleted",
             nullable = false
     )
+    @JsonIgnore
     private boolean isDeleted = Boolean.FALSE;
 
     public BrandEntity(BrandBuilder builder) {

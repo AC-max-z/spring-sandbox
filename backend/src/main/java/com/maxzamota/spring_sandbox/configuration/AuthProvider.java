@@ -2,6 +2,7 @@ package com.maxzamota.spring_sandbox.configuration;
 
 import com.maxzamota.spring_sandbox.model.UserEntity;
 import com.maxzamota.spring_sandbox.repository.UserRepository;
+import com.maxzamota.spring_sandbox.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -18,12 +19,12 @@ import java.util.List;
 
 @Service
 public class AuthProvider implements AuthenticationProvider {
-    private final UserRepository repository;
+    private final UserService userService;
     private final PasswordEncoder encoder;
 
     @Autowired
-    public AuthProvider(UserRepository repository, PasswordEncoder encoder) {
-        this.repository = repository;
+    public AuthProvider(UserService userService, PasswordEncoder encoder) {
+        this.userService = userService;
         this.encoder = encoder;
     }
 
@@ -31,7 +32,8 @@ public class AuthProvider implements AuthenticationProvider {
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         String username = authentication.getName();
         String password = authentication.getCredentials().toString();
-        List<UserEntity> users = (List<UserEntity>) repository.findByEmail(username);
+        List<UserEntity> users = userService.getByEmail(username)
+                .stream().filter(UserEntity::getIsActive).toList();
         if (!users.isEmpty()) {
             if (encoder.matches(password, users.getFirst().getPassword())) {
                 List<GrantedAuthority> authorities = new ArrayList<>();

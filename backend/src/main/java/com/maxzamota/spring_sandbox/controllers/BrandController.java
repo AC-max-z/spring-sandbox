@@ -54,6 +54,7 @@ public class BrandController implements EntityController<Integer, BrandEntity, B
         PagedModel<EntityModel<BrandEntity>> pagedModel = pagedAssembler.toModel(
                 brands, assembler
         );
+
         return ResponseEntity
                 .ok()
                 .headers(headers)
@@ -70,21 +71,24 @@ public class BrandController implements EntityController<Integer, BrandEntity, B
 
     @Override
     @PostMapping
-    public ResponseEntity<EntityModel<BrandEntity>> post(@RequestBody BrandDto brandDto) {
+    public ResponseEntity<EntityModel<BrandDto>> post(@RequestBody BrandDto brandDto) {
         BrandEntity brand;
+
         try {
             brand = this.mapper.fromDto(brandDto);
         } catch (Exception e) {
             throw new BadRequestException(e.getMessage());
         }
+
         brand.setDateAdded(new Timestamp(System.currentTimeMillis()));
         brand.setId(null);
         brand = this.brandService.save(brand);
-        EntityModel<BrandEntity> brandEntityModel = assembler.toModel(brand);
+        BrandDto dto = this.mapper.toDto(brand);
+        EntityModel<BrandDto> brandDtoModel = assembler.toDtoModel(dto);
 
         return ResponseEntity
-                .created(brandEntityModel.getRequiredLink(IanaLinkRelations.SELF).toUri())
-                .body(brandEntityModel);
+                .created(brandDtoModel.getRequiredLink(IanaLinkRelations.SELF).toUri())
+                .body(brandDtoModel);
     }
 
     @Override
@@ -98,21 +102,25 @@ public class BrandController implements EntityController<Integer, BrandEntity, B
 
     @Override
     @PutMapping("/{id}")
-    public ResponseEntity<EntityModel<BrandEntity>> update(
+    public ResponseEntity<EntityModel<BrandDto>> update(
             @PathVariable Integer id,
             @RequestBody BrandDto brandDto
     ) {
         BrandEntity brand;
+
         try {
             brand = this.mapper.fromDto(brandDto);
         } catch (Exception e) {
             throw new BadRequestException(e.getMessage());
         }
+
         brand.setId(id);
         brand = this.brandService.update(brand);
-        EntityModel<BrandEntity> brandEntityModel = assembler.toModel(brand);
+        BrandDto dto = this.mapper.toDto(brand);
+        EntityModel<BrandDto> brandDtoModel = assembler.toDtoModel(dto);
+
         return ResponseEntity
-                .created(brandEntityModel.getRequiredLink(IanaLinkRelations.SELF).toUri())
-                .body(brandEntityModel);
+                .created(brandDtoModel.getRequiredLink(IanaLinkRelations.SELF).toUri())
+                .body(brandDtoModel);
     }
 }

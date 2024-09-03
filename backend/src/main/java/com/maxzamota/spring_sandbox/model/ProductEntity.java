@@ -1,9 +1,12 @@
 package com.maxzamota.spring_sandbox.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
 
 import java.sql.Timestamp;
 import java.util.Objects;
@@ -13,6 +16,8 @@ import java.util.Objects;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@SQLDelete(sql = "UPDATE product SET is_deleted = true WHERE id=?")
+@SQLRestriction("is_deleted <> TRUE")
 @ToString(onlyExplicitlyIncluded = true)
 @Table(
         name = "product",
@@ -99,6 +104,7 @@ public class ProductEntity {
             name = "is_deleted",
             nullable = false
     )
+    @JsonIgnore
     private boolean isDeleted = Boolean.FALSE;
 
     public ProductEntity(

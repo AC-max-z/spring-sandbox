@@ -2,6 +2,7 @@ package com.maxzamota.spring_sandbox.configuration;
 
 import com.maxzamota.spring_sandbox.model.UserEntity;
 import com.maxzamota.spring_sandbox.repository.UserRepository;
+import com.maxzamota.spring_sandbox.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -14,14 +15,15 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class CustomUserDetails implements UserDetailsService {
-    private UserRepository userRepository;
+    private UserService userService;
 
     @Autowired
-    public CustomUserDetails(UserRepository userRepository) {
-        this.userRepository = userRepository;
+    public CustomUserDetails(UserService userService) {
+        this.userService = userService;
     }
 
     @Override
@@ -29,7 +31,11 @@ public class CustomUserDetails implements UserDetailsService {
         String userName;
         String password;
         List<GrantedAuthority> authorityList = null;
-        Collection<UserEntity> users = userRepository.findByEmail(username);
+        Collection<UserEntity> users = userService
+                .getByEmail(username)
+                .stream()
+                .filter(UserEntity::getIsActive)
+                .toList();
         if (users.isEmpty()) {
             throw new UsernameNotFoundException(username);
         }

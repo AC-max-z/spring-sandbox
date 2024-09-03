@@ -1,7 +1,10 @@
 package com.maxzamota.spring_sandbox.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
 
 import java.util.Objects;
 
@@ -10,6 +13,8 @@ import java.util.Objects;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@SQLDelete(sql = "UPDATE users SET is_active = false WHERE id=?")
+@SQLRestriction("is_active <> FALSE")
 @ToString(onlyExplicitlyIncluded = true)
 @Table(
         name = "users",
@@ -34,6 +39,7 @@ public class UserEntity {
 
     @Column(nullable = false, name = "password")
     @ToString.Include
+    @JsonIgnore
     @NonNull
     private String password;
 
@@ -43,8 +49,9 @@ public class UserEntity {
     private String role;
 
     @Column(nullable = false, name = "is_active")
+    @JsonIgnore
     @ToString.Include
-    private Boolean isActive;
+    private Boolean isActive = Boolean.TRUE;
 
     public UserEntity(
             @NonNull String email,
