@@ -35,14 +35,15 @@ public class SecurityConfig {
                 .cors(cors -> cors.configurationSource(configurationSource()))
                 .csrf(csrf -> csrf
                         .csrfTokenRequestHandler(requestHandler)
-                        .ignoringRequestMatchers("/api/**")
+                        .ignoringRequestMatchers("/api/**", "/login")
                         .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
                 )
                 .addFilterAfter(new CsrfCookieFilter(), BasicAuthenticationFilter.class)
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(
                                 "/api/v1/user",
-                                "/error"
+                                "/error",
+                                "/api/v1/login"
                         )
                         .permitAll()
                         .anyRequest()
@@ -65,29 +66,6 @@ public class SecurityConfig {
 //    @Bean
 //    public CompromisedPasswordChecker compromisedPasswordChecker() {
 //        return new HaveIBeenPwnedRestApiPasswordChecker();
-//    }
-
-//    @Bean
-//    public InMemoryUserDetailsManager userDetailsService() {
-//        InMemoryUserDetailsManager manager = new InMemoryUserDetailsManager();
-//        UserDetails admin = User
-//                .withUsername("admin")
-//                .password("12345")
-//                .authorities("admin")
-//                .build();
-//        UserDetails user = User
-//                .withUsername("user")
-//                .password("12345")
-//                .authorities("read")
-//                .build();
-//        manager.createUser(admin);
-//        manager.createUser(user);
-//        return manager;
-//    }
-
-//    @Bean
-//    public UserDetailsService userDetailsService(DataSource dataSource) {
-//        return new JdbcUserDetailsManager(dataSource);
 //    }
 
     @Bean

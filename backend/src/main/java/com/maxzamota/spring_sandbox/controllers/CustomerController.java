@@ -62,10 +62,11 @@ public class CustomerController implements EntityController<Integer, CustomerEnt
 
     @Override
     @GetMapping("/{id}")
-    public ResponseEntity<EntityModel<CustomerEntity>> get(@PathVariable("id") Integer id) {
+    public ResponseEntity<EntityModel<CustomerDto>> get(@PathVariable("id") Integer id) {
         CustomerEntity customerEntity = this.customerService.getCustomerById(id);
-        EntityModel<CustomerEntity> customerEntityModel = assembler.toModel(customerEntity);
-        return ResponseEntity.ok(customerEntityModel);
+        CustomerDto dto = this.mapper.toDto(customerEntity);
+        EntityModel<CustomerDto> customerDtoEntityModel = assembler.toDtoModel(dto);
+        return ResponseEntity.ok(customerDtoEntityModel);
     }
 
     @Override

@@ -1,6 +1,7 @@
 package com.maxzamota.spring_sandbox.model_assemblers;
 
 import com.maxzamota.spring_sandbox.controllers.BrandController;
+import com.maxzamota.spring_sandbox.dto.BrandDto;
 import com.maxzamota.spring_sandbox.model.BrandEntity;
 import org.springframework.data.domain.Pageable;
 import org.springframework.hateoas.CollectionModel;
@@ -23,6 +24,14 @@ public class BrandModelAssembler implements RepresentationModelAssembler<BrandEn
         return EntityModel.of(
                 entity,
                 linkTo(methodOn(BrandController.class).get(entity.getId())).withSelfRel(),
+                linkTo(methodOn(BrandController.class).getAll(Pageable.ofSize(10))).withRel("all")
+        );
+    }
+
+    public EntityModel<BrandDto> toDtoModel(BrandDto brandDto) {
+        return EntityModel.of(
+                brandDto,
+                linkTo(methodOn(BrandController.class).get(brandDto.getId())).withSelfRel(),
                 linkTo(methodOn(BrandController.class).getAll(Pageable.ofSize(10))).withRel("all")
         );
     }

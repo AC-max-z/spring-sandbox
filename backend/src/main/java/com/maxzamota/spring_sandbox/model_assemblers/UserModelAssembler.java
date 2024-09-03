@@ -1,6 +1,7 @@
 package com.maxzamota.spring_sandbox.model_assemblers;
 
 import com.maxzamota.spring_sandbox.controllers.UserController;
+import com.maxzamota.spring_sandbox.dto.UserDto;
 import com.maxzamota.spring_sandbox.model.UserEntity;
 import org.springframework.data.domain.Pageable;
 import org.springframework.hateoas.CollectionModel;
@@ -23,6 +24,14 @@ public class UserModelAssembler implements RepresentationModelAssembler<UserEnti
         return EntityModel.of(
                 entity,
                 linkTo(methodOn(UserController.class).get(entity.getId())).withSelfRel(),
+                linkTo(methodOn(UserController.class).getAll(Pageable.ofSize(10))).withRel("all")
+        );
+    }
+
+    public EntityModel<UserDto> toDtoModel(UserDto dto) {
+        return EntityModel.of(
+                dto,
+                linkTo(methodOn(UserController.class).get(dto.getId())).withSelfRel(),
                 linkTo(methodOn(UserController.class).getAll(Pageable.ofSize(10))).withRel("all")
         );
     }

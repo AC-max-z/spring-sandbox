@@ -7,6 +7,7 @@ import lombok.*;
 @Getter
 @Setter
 public class UserDto {
+    private Integer id;
     @NonNull
     private String email;
     @NonNull

@@ -63,10 +63,11 @@ public class UserController implements EntityController<Integer, UserEntity, Use
 
     @Override
     @GetMapping("/{id}")
-    public ResponseEntity<EntityModel<UserEntity>> get(@PathVariable Integer id) {
+    public ResponseEntity<EntityModel<UserDto>> get(@PathVariable Integer id) {
         UserEntity user = userService.getById(id);
-        EntityModel<UserEntity> entityModel = assembler.toModel(user);
-        return ResponseEntity.ok(entityModel);
+        UserDto dto = this.mapper.toDto(user);
+        EntityModel<UserDto> dtoModel = assembler.toDtoModel(dto);
+        return ResponseEntity.ok(dtoModel);
     }
 
     @Override

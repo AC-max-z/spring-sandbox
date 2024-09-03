@@ -9,6 +9,7 @@ import java.sql.Timestamp;
 @Getter
 @Setter
 public class ProductDto {
+    private Integer id;
     @NonNull
     private String name;
     @NonNull

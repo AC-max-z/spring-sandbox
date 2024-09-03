@@ -8,6 +8,7 @@ import lombok.*;
 @Getter
 @Setter
 public class CustomerDto {
+    private Integer id;
     @NonNull
     private String name;
     @NonNull

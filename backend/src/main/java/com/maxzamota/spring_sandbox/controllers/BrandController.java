@@ -47,7 +47,7 @@ public class BrandController implements EntityController<Integer, BrandEntity, B
     public ResponseEntity<PagedModel<EntityModel<BrandEntity>>> getAll(
             @PageableDefault Pageable pageable
     ) {
-        Page<BrandEntity> brands = brandService.getAll(pageable, false);
+        Page<BrandEntity> brands = brandService.getAll(pageable);
         HttpHeaders headers = new HttpHeaders();
         headers.add("X-Page-Number", String.valueOf(brands.getNumber()));
         headers.add("X-Page-Size", String.valueOf(brands.getSize()));
@@ -62,9 +62,10 @@ public class BrandController implements EntityController<Integer, BrandEntity, B
 
     @Override
     @GetMapping("/{id}")
-    public ResponseEntity<EntityModel<BrandEntity>> get(@PathVariable("id") Integer id) {
+    public ResponseEntity<EntityModel<BrandDto>> get(@PathVariable("id") Integer id) {
         BrandEntity brand = this.brandService.getById(id);
-        return ResponseEntity.ok(this.assembler.toModel(brand));
+        BrandDto brandDto = this.mapper.toDto(brand);
+        return ResponseEntity.ok(this.assembler.toDtoModel(brandDto));
     }
 
     @Override
@@ -77,6 +78,7 @@ public class BrandController implements EntityController<Integer, BrandEntity, B
             throw new BadRequestException(e.getMessage());
         }
         brand.setDateAdded(new Timestamp(System.currentTimeMillis()));
+        brand.setId(null);
         brand = this.brandService.save(brand);
         EntityModel<BrandEntity> brandEntityModel = assembler.toModel(brand);
 

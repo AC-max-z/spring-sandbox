@@ -6,8 +6,6 @@ import com.maxzamota.spring_sandbox.exception.ResourceNotFoundException;
 import com.maxzamota.spring_sandbox.model.BrandEntity;
 import com.maxzamota.spring_sandbox.repository.BrandRepository;
 import jakarta.persistence.EntityManager;
-import org.hibernate.Filter;
-import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -77,17 +75,10 @@ public class BrandService {
         return this.repository.saveAll(brands);
     }
 
-    public Page<BrandEntity> getAll(Pageable pageable, boolean isDeleted) {
-        Page<BrandEntity> brands;
-        Session session = entityManager.unwrap(Session.class);
-        Filter filter = session.enableFilter("deletedFilter");
-        filter.setParameter("isDeleted", isDeleted);
+    public Page<BrandEntity> getAll(Pageable pageable) {
         try {
-            brands = this.repository.findAll(pageable);
-            session.disableFilter("deletedFilter");
-            return brands;
+            return this.repository.findAll(pageable);
         } catch (PropertyReferenceException e) {
-            session.disableFilter("deletedFilter");
             throw new BadRequestException(e.getMessage());
         }
     }

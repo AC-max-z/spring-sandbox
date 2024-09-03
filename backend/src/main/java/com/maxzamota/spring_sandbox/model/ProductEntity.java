@@ -2,6 +2,8 @@ package com.maxzamota.spring_sandbox.model;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
 
 import java.sql.Timestamp;
 import java.util.Objects;
@@ -65,7 +67,8 @@ public class ProductEntity {
     @NonNull
     private Timestamp issueDate;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
+    @NotFound(action = NotFoundAction.IGNORE)
     @JoinColumn(name = "brand_id", referencedColumnName = "id")
     @ToString.Include
     @NonNull
@@ -96,7 +99,7 @@ public class ProductEntity {
             name = "is_deleted",
             nullable = false
     )
-    private boolean isDeleted;
+    private boolean isDeleted = Boolean.FALSE;
 
     public ProductEntity(
             @NonNull String name,

@@ -16,7 +16,7 @@ public interface EntityController<T, E, V> {
             @PageableDefault Pageable pageable
     );
 
-    ResponseEntity<EntityModel<E>> get(@PathVariable("id") T id);
+    ResponseEntity<EntityModel<V>> get(@PathVariable("id") T id);
 
     ResponseEntity<EntityModel<E>> post(V dto);
 

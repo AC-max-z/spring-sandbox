@@ -1,6 +1,7 @@
 package com.maxzamota.spring_sandbox.model_assemblers;
 
 import com.maxzamota.spring_sandbox.controllers.CustomerController;
+import com.maxzamota.spring_sandbox.dto.CustomerDto;
 import com.maxzamota.spring_sandbox.model.CustomerEntity;
 import org.springframework.data.domain.Pageable;
 import org.springframework.hateoas.CollectionModel;
@@ -23,6 +24,14 @@ public class CustomerModelAssembler implements RepresentationModelAssembler<Cust
         return EntityModel.of(
                 entity,
                 linkTo(methodOn(CustomerController.class).get(entity.getId())).withSelfRel(),
+                linkTo(methodOn(CustomerController.class).getAll(Pageable.ofSize(10))).withRel("all")
+        );
+    }
+
+    public EntityModel<CustomerDto> toDtoModel(CustomerDto dto) {
+        return EntityModel.of(
+                dto,
+                linkTo(methodOn(CustomerController.class).get(dto.getId())).withSelfRel(),
                 linkTo(methodOn(CustomerController.class).getAll(Pageable.ofSize(10))).withRel("all")
         );
     }

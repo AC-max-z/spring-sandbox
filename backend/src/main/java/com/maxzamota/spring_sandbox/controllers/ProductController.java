@@ -68,10 +68,11 @@ public class ProductController implements EntityController<Integer, ProductEntit
 
     @Override
     @GetMapping("/{id}")
-    public ResponseEntity<EntityModel<ProductEntity>> get(@PathVariable Integer id) {
+    public ResponseEntity<EntityModel<ProductDto>> get(@PathVariable Integer id) {
         ProductEntity product = this.productService.getById(id);
-        EntityModel<ProductEntity> productEntityModel = this.assembler.toModel(product);
-        return ResponseEntity.ok(productEntityModel);
+        ProductDto dto = this.mapper.toDto(product);
+        EntityModel<ProductDto> productDtoEntityModel = this.assembler.toDtoModel(dto);
+        return ResponseEntity.ok(productDtoEntityModel);
     }
 
     @Override
