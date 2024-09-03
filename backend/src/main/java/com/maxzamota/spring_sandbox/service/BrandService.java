@@ -5,11 +5,12 @@ import com.maxzamota.spring_sandbox.exception.DuplicateResourceException;
 import com.maxzamota.spring_sandbox.exception.ResourceNotFoundException;
 import com.maxzamota.spring_sandbox.model.BrandEntity;
 import com.maxzamota.spring_sandbox.repository.BrandRepository;
+import jakarta.persistence.EntityManager;
+import org.hibernate.Filter;
+import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.mapping.PropertyReferenceException;
 import org.springframework.stereotype.Service;
 
@@ -20,13 +21,15 @@ import java.util.Objects;
 @Service
 public class BrandService {
     private final BrandRepository repository;
+    private final EntityManager entityManager;
 
     @Autowired
-    public BrandService(BrandRepository brandRepository) {
+    public BrandService(BrandRepository brandRepository, EntityManager entityManager) {
         this.repository = brandRepository;
+        this.entityManager = entityManager;
     }
 
-    public BrandEntity getBrandById(Integer id) {
+    public BrandEntity getById(Integer id) {
         return this.repository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Brand with id={%s} not found!".formatted(id)));
     }
@@ -66,7 +69,7 @@ public class BrandService {
         return this.repository.save(brand);
     }
 
-    public BrandEntity findBrandByName(String name) {
+    public BrandEntity findByName(String name) {
         return this.repository.findOneByName(name);
     }
 
@@ -74,24 +77,17 @@ public class BrandService {
         return this.repository.saveAll(brands);
     }
 
-    public Page<BrandEntity> getAll(
-            Integer pageNum,
-            Integer pageSize,
-            String sortBy,
-            String sortDirection
-    ) {
-        Sort sort = Sort.by(Sort.Direction.fromString(sortDirection), sortBy);
-        Pageable pageable = PageRequest.of(pageNum, pageSize, sort);
-
-        return this.repository.findAll(pageable);
-    }
-
-    public Page<BrandEntity> getAll(Pageable pageable) {
+    public Page<BrandEntity> getAll(Pageable pageable, boolean isDeleted) {
         Page<BrandEntity> brands;
+        Session session = entityManager.unwrap(Session.class);
+        Filter filter = session.enableFilter("deletedFilter");
+        filter.setParameter("isDeleted", isDeleted);
         try {
             brands = this.repository.findAll(pageable);
+            session.disableFilter("deletedFilter");
             return brands;
         } catch (PropertyReferenceException e) {
+            session.disableFilter("deletedFilter");
             throw new BadRequestException(e.getMessage());
         }
     }

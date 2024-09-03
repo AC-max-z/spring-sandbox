@@ -29,12 +29,15 @@ public class Waits {
     public Waits(WebDriver driver) {
         this.driver = driver;
         PageFactory.initElements(this.driver, this);
+
         int waitTimeout = Integer.parseInt(envVars.get("DRIVER_WAIT_ELEMENT_TIMEOUT"));
         int pollingInterval = Integer.parseInt(envVars.get("DRIVER_POLLING_INTERVAL_MILLIS"));
+
         this.wait = new FluentWait<>(this.driver)
                 .withTimeout(Duration.ofMillis(waitTimeout))
                 .pollingEvery(Duration.ofMillis(pollingInterval))
                 .ignoring(NoSuchElementException.class);
+
         this.driver.manage().timeouts().implicitlyWait(Duration.ofMillis(implicitWait));
     }
 

@@ -51,16 +51,24 @@ public class CustomerEntity {
     @NonNull
     private Gender gender;
 
+    @Column(
+            name = "is_deleted",
+            nullable = false
+    )
+    private boolean isDeleted;
+
     public CustomerEntity(
             @NonNull String name,
             @NonNull String email,
             @NonNull Integer age,
-            @NonNull Gender gender
+            @NonNull Gender gender,
+            boolean isDeleted
     ) {
         this.name = name;
         this.email = email;
         this.age = age;
         this.gender = gender;
+        this.isDeleted = isDeleted;
     }
 
     public CustomerEntity(CustomerBuilder builder) {
@@ -69,6 +77,7 @@ public class CustomerEntity {
         this.email = builder.email;
         this.age = builder.age;
         this.gender = builder.gender;
+        this.isDeleted = builder.isDeleted;
     }
 
     @Setter
@@ -78,6 +87,7 @@ public class CustomerEntity {
         private String email;
         private Integer age;
         private Gender gender;
+        private boolean isDeleted;
 
         public CustomerEntity build() {
             return new CustomerEntity(this);
@@ -93,11 +103,12 @@ public class CustomerEntity {
                 && Objects.equals(name, that.name)
                 && Objects.equals(email, that.email)
                 && Objects.equals(age, that.age)
-                && gender == that.gender;
+                && gender == that.gender
+                && isDeleted == that.isDeleted;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, email, age, gender);
+        return Objects.hash(id, name, email, age, gender, isDeleted);
     }
 }

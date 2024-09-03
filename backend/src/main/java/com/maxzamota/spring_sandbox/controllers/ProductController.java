@@ -79,7 +79,7 @@ public class ProductController implements EntityController<Integer, ProductEntit
     public ResponseEntity<EntityModel<ProductEntity>> post(@RequestBody ProductDto productDto) {
         ProductEntity product;
         try {
-            BrandEntity brand = this.brandService.findBrandByName(productDto.getBrand().getName());
+            BrandEntity brand = this.brandService.findByName(productDto.getBrand().getName());
             product = this.mapper.fromDto(productDto);
             if (Objects.nonNull(brand)) {
                 product.setBrand(brand);
@@ -113,7 +113,7 @@ public class ProductController implements EntityController<Integer, ProductEntit
     ) {
         ProductEntity product;
         try {
-            BrandEntity brand = this.brandService.findBrandByName(productDto.getBrand().getName());
+            BrandEntity brand = this.brandService.findByName(productDto.getBrand().getName());
             product = this.mapper.fromDto(productDto);
             if (Objects.isNull(brand)) {
                 brand = this.brandService.save(product.getBrand());

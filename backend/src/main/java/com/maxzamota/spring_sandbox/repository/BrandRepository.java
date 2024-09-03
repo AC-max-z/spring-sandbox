@@ -8,10 +8,6 @@ import java.util.Collection;
 
 @Repository
 public interface BrandRepository extends JpaRepository<BrandEntity, Integer> {
-    Collection<BrandEntity> findAllByOrderByIdAsc();
-    Collection<BrandEntity> findAllByOrderByIdDesc();
-    Collection<BrandEntity> findAllByOrderByNameAsc();
-    Collection<BrandEntity> findAllByOrderByNameDesc();
     boolean existsBrandByName(String name);
     boolean existsBrandById(Integer id);
     Collection<BrandEntity> findAllByName(String name);

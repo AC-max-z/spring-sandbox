@@ -1,7 +1,9 @@
 package com.maxzamota.spring_sandbox.model;
 
 import jakarta.persistence.*;
+import jakarta.persistence.Table;
 import lombok.*;
+import org.hibernate.annotations.*;
 
 import java.sql.Timestamp;
 import java.util.Objects;
@@ -11,6 +13,12 @@ import java.util.Objects;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@SQLDelete(sql = "UPDATE brand SET is_deleted = true WHERE id=?")
+@FilterDef(
+        name = "deletedFilter",
+        parameters = @ParamDef(name = "isDeleted", type = Boolean.class)
+)
+@Filter(name = "deletedFilter", condition = "is_deleted = :isDeleted")
 @ToString(onlyExplicitlyIncluded = true)
 @Table(
         name = "brand",
@@ -83,7 +91,7 @@ public class BrandEntity {
             name = "is_deleted",
             nullable = false
     )
-    private boolean isDeleted;
+    private boolean isDeleted = Boolean.FALSE;
 
     public BrandEntity(BrandBuilder builder) {
         this.id = builder.id;
