@@ -1,6 +1,7 @@
 package com.maxzamota.spring_sandbox.exception;
 
 import jakarta.persistence.EntityNotFoundException;
+import org.modelmapper.MappingException;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -15,6 +16,9 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Order(Ordered.HIGHEST_PRECEDENCE)
 @ControllerAdvice
@@ -63,5 +67,14 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(DuplicateResourceException.class)
     public ResponseEntity<Object> handleDuplicateResource(Exception ex) {
         return buildResponseEntity(new ApiError(HttpStatus.CONFLICT, ex));
+    }
+
+    @ExceptionHandler(MappingException.class)
+    public ResponseEntity<Object> handleMappingError(Exception ex) {
+        ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST, ex);
+        ApiValidationError validationError = new ApiValidationError(
+                null, ex.getCause().getLocalizedMessage());
+        apiError.setSubErrors(List.of(validationError));
+        return buildResponseEntity(apiError);
     }
 }
