@@ -17,7 +17,6 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Order(Ordered.HIGHEST_PRECEDENCE)
@@ -40,14 +39,14 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler(CompromisedPasswordException.class)
-    public String handleCompromisedPasswordException(CompromisedPasswordException e, RedirectAttributes attributes) {
+    public String handleCompromisedPasswordException(CompromisedPasswordException e,
+                                                     RedirectAttributes attributes) {
         attributes.addFlashAttribute("error", e.getMessage());
         return "redirect:/reset-password";
     }
 
     @ExceptionHandler(EntityNotFoundException.class)
-    protected ResponseEntity<Object> handleEntityNotFound(
-            EntityNotFoundException ex) {
+    protected ResponseEntity<Object> handleEntityNotFound(EntityNotFoundException ex) {
         ApiError apiError = new ApiError(HttpStatus.NOT_FOUND, ex);
         return buildResponseEntity(apiError);
     }

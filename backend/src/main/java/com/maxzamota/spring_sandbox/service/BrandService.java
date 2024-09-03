@@ -5,10 +5,13 @@ import com.maxzamota.spring_sandbox.exception.DuplicateResourceException;
 import com.maxzamota.spring_sandbox.exception.ResourceNotFoundException;
 import com.maxzamota.spring_sandbox.model.BrandEntity;
 import com.maxzamota.spring_sandbox.repository.BrandRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.mapping.PropertyReferenceException;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
@@ -16,6 +19,7 @@ import java.util.Collection;
 import java.util.Objects;
 
 @Service
+@Slf4j
 public class BrandService {
     private final BrandRepository repository;
 
@@ -24,16 +28,28 @@ public class BrandService {
         this.repository = brandRepository;
     }
 
-    public BrandEntity getById(Integer id) {
+    private String getUsername() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        return authentication.getName();
+    }
+
+    public BrandEntity getBrandByIdOrThrow(Integer id) {
+        String username = getUsername();
+        log.info("Attempt to fetch Brand by id {} by user {}", id, username);
         return this.repository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Brand with id={%s} not found!".formatted(id)));
     }
 
     public BrandEntity save(BrandEntity brand) {
+        String username = getUsername();
+        log.info("Attempt to save Brand {} by user {}", brand, username);
         if (this.repository.existsByName(brand.getName())) {
+            log.error("Attempt to save Brand {} with duplicate name by user {}", brand, username);
             throw new DuplicateResourceException("Brand with name={%s} already exists!".formatted(brand.getName()));
         }
-        return this.repository.save(brand);
+        BrandEntity savedBrand = this.repository.save(brand);
+        log.info("Brand {} successfully saved by user {}", brand, username);
+        return savedBrand;
     }
 
     public String deleteById(Integer id) {
@@ -43,11 +59,19 @@ public class BrandService {
     }
 
     public BrandEntity update(BrandEntity brand) {
+        String username = getUsername();
+        log.info("Attempt to update Brand {}, by user {}", brand, username);
+
+        // corner cases to prevent update queries to db
+        // that maybe create more performance issues than mitigate
+        // TODO: check under load
         if (!this.repository.existsById(brand.getId())) {
+            log.error("Attempt to update non-existent Brand {}, by user {}", brand, username);
             throw new ResourceNotFoundException("Brand with id={%s} not found!".formatted(brand.getId()));
         }
-        BrandEntity currentBrand = this.repository.findById(brand.getId()).orElseGet(() -> null);
+        BrandEntity currentBrand = this.repository.findById(brand.getId()).orElse(null);
         if (brand.equals(currentBrand)) {
+            log.info("Attempt to update Brand {} with identical data by user {}", brand, username);
             return brand;
         }
         if (!this.repository.findAllByName(brand.getName())
@@ -56,12 +80,15 @@ public class BrandService {
                 .toList()
                 .isEmpty()
         ) {
+            log.error("Attempt to save Brand with duplicate name {} by user {}", brand, username);
             throw new DuplicateResourceException("Brand with name={%s} already exists".formatted(brand.getName()));
         }
         brand.setDateAdded(Objects.nonNull(currentBrand.getDateAdded())
                 ? currentBrand.getDateAdded()
                 : new Timestamp(System.currentTimeMillis()));
-        return this.repository.save(brand);
+        BrandEntity savedBrand = this.repository.save(brand);
+        log.info("Brand {} successfully updated by user {}", savedBrand, username);
+        return savedBrand;
     }
 
     public BrandEntity findByName(String name) {
@@ -73,6 +100,8 @@ public class BrandService {
     }
 
     public Page<BrandEntity> getAll(Pageable pageable) {
+        String username = getUsername();
+        log.info("Attempt to fetch all Brands with pageable {} by user {}", pageable, username);
         try {
             return this.repository.findAll(pageable);
         } catch (PropertyReferenceException e) {

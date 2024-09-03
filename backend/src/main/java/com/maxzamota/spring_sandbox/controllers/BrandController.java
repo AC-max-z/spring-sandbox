@@ -2,7 +2,6 @@ package com.maxzamota.spring_sandbox.controllers;
 
 import com.maxzamota.spring_sandbox.model.model_assemblers.BrandModelAssembler;
 import com.maxzamota.spring_sandbox.dto.BrandDto;
-import com.maxzamota.spring_sandbox.exception.BadRequestException;
 import com.maxzamota.spring_sandbox.mappers.BrandMapper;
 import com.maxzamota.spring_sandbox.model.BrandEntity;
 import com.maxzamota.spring_sandbox.service.BrandService;
@@ -64,7 +63,7 @@ public class BrandController implements EntityController<Integer, BrandEntity, B
     @Override
     @GetMapping("/{id}")
     public ResponseEntity<EntityModel<BrandDto>> get(@PathVariable("id") Integer id) {
-        BrandEntity brand = this.brandService.getById(id);
+        BrandEntity brand = this.brandService.getBrandByIdOrThrow(id);
         BrandDto brandDto = this.mapper.toDto(brand);
         return ResponseEntity.ok(this.assembler.toDtoModel(brandDto));
     }
@@ -73,12 +72,7 @@ public class BrandController implements EntityController<Integer, BrandEntity, B
     @PostMapping
     public ResponseEntity<EntityModel<BrandDto>> post(@RequestBody BrandDto brandDto) {
         BrandEntity brand;
-
-        try {
-            brand = this.mapper.fromDto(brandDto);
-        } catch (Exception e) {
-            throw new BadRequestException(e.getCause().getMessage());
-        }
+        brand = this.mapper.fromDto(brandDto);
 
         brand.setDateAdded(new Timestamp(System.currentTimeMillis()));
         brand.setId(null);
@@ -108,11 +102,7 @@ public class BrandController implements EntityController<Integer, BrandEntity, B
     ) {
         BrandEntity brand;
 
-        try {
-            brand = this.mapper.fromDto(brandDto);
-        } catch (Exception e) {
-            throw new BadRequestException(e.getCause().getMessage());
-        }
+        brand = this.mapper.fromDto(brandDto);
 
         brand.setId(id);
         brand = this.brandService.update(brand);

@@ -9,7 +9,6 @@ import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.EnumSource;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -61,7 +60,11 @@ public class CustomerTest {
             @Tag("acceptance")
     })
     @Severity(SeverityLevel.BLOCKER)
-    public void shouldDisplayNewCustomerAfterCreate(DriverType driverType, Customer customer, Customer updatedCustomer) throws MalformedURLException, URISyntaxException {
+    public void shouldDisplayNewCustomerAfterCreate(
+            DriverType driverType,
+            Customer customer,
+            Customer updatedCustomer
+    ) throws MalformedURLException, URISyntaxException {
         // Arrange
         step("Create driver instance %s".formatted(driverType));
         driverThreadLocal.set(WebDriverFactory.getDriver(driverType));
@@ -104,7 +107,9 @@ public class CustomerTest {
             @Tag("acceptance")
     })
     @Severity(SeverityLevel.BLOCKER)
-    void shouldDisplayUpdatedCustomerAfterEdit(DriverType driverType, Customer initialCustomer, Customer updatedCustomer) throws MalformedURLException, URISyntaxException {
+    void shouldDisplayUpdatedCustomerAfterEdit(
+            DriverType driverType, Customer initialCustomer, Customer updatedCustomer
+    ) throws MalformedURLException, URISyntaxException {
         // Arrange
         step("Create driver instance %s".formatted(driverType));
         driverThreadLocal.set(WebDriverFactory.getDriver(driverType));
