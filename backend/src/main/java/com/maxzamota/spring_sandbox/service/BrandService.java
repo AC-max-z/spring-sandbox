@@ -5,7 +5,6 @@ import com.maxzamota.spring_sandbox.exception.DuplicateResourceException;
 import com.maxzamota.spring_sandbox.exception.ResourceNotFoundException;
 import com.maxzamota.spring_sandbox.model.BrandEntity;
 import com.maxzamota.spring_sandbox.repository.BrandRepository;
-import jakarta.persistence.EntityManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -19,12 +18,10 @@ import java.util.Objects;
 @Service
 public class BrandService {
     private final BrandRepository repository;
-    private final EntityManager entityManager;
 
     @Autowired
-    public BrandService(BrandRepository brandRepository, EntityManager entityManager) {
+    public BrandService(BrandRepository brandRepository) {
         this.repository = brandRepository;
-        this.entityManager = entityManager;
     }
 
     public BrandEntity getById(Integer id) {
