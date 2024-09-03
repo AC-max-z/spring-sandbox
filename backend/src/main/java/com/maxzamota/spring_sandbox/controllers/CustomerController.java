@@ -54,6 +54,7 @@ public class CustomerController implements EntityController<Integer, CustomerEnt
         PagedModel<EntityModel<CustomerEntity>> pagedModel = pagedAssembler.toModel(
                 customers, assembler
         );
+
         return ResponseEntity
                 .ok()
                 .headers(headers)
@@ -63,7 +64,7 @@ public class CustomerController implements EntityController<Integer, CustomerEnt
     @Override
     @GetMapping("/{id}")
     public ResponseEntity<EntityModel<CustomerDto>> get(@PathVariable("id") Integer id) {
-        CustomerEntity customerEntity = this.customerService.getCustomerById(id);
+        CustomerEntity customerEntity = this.customerService.getById(id);
         CustomerDto dto = this.mapper.toDto(customerEntity);
         EntityModel<CustomerDto> customerDtoEntityModel = assembler.toDtoModel(dto);
         return ResponseEntity.ok(customerDtoEntityModel);
@@ -77,7 +78,7 @@ public class CustomerController implements EntityController<Integer, CustomerEnt
         try {
             customer = this.mapper.fromDto(customerDto);
         } catch (Exception e) {
-            throw new BadRequestException(e.getMessage());
+            throw new BadRequestException(e.getCause().getMessage());
         }
 
         CustomerDto dto = this.mapper.toDto(customer);
@@ -106,7 +107,7 @@ public class CustomerController implements EntityController<Integer, CustomerEnt
         try {
             customerEntity = this.mapper.fromDto(customerDto);
         } catch (Exception e) {
-            throw new BadRequestException(e.getMessage());
+            throw new BadRequestException(e.getCause().getMessage());
         }
 
         customerEntity.setId(id);

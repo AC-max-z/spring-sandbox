@@ -77,7 +77,7 @@ public class BrandController implements EntityController<Integer, BrandEntity, B
         try {
             brand = this.mapper.fromDto(brandDto);
         } catch (Exception e) {
-            throw new BadRequestException(e.getMessage());
+            throw new BadRequestException(e.getCause().getMessage());
         }
 
         brand.setDateAdded(new Timestamp(System.currentTimeMillis()));
@@ -111,7 +111,7 @@ public class BrandController implements EntityController<Integer, BrandEntity, B
         try {
             brand = this.mapper.fromDto(brandDto);
         } catch (Exception e) {
-            throw new BadRequestException(e.getMessage());
+            throw new BadRequestException(e.getCause().getMessage());
         }
 
         brand.setId(id);

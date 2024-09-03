@@ -178,7 +178,7 @@ class CustomerEntityServiceTest {
         step("Call getCustomerById() service layer method");
         CustomerEntity actual = null;
         try {
-            actual = this.serviceUnderTest.getCustomerById(id);
+            actual = this.serviceUnderTest.getById(id);
         } catch (ResourceNotFoundException ignored) {
         }
 
@@ -210,7 +210,7 @@ class CustomerEntityServiceTest {
 
         // Assert
         step("Verify that mock is called and exception is thrown by it");
-        assertThatThrownBy(() -> this.serviceUnderTest.getCustomerById(id))
+        assertThatThrownBy(() -> this.serviceUnderTest.getById(id))
                 .isInstanceOf(ResourceNotFoundException.class)
                 .hasMessage("Customer with id={%s} not found!".formatted(id));
         verify(this.repository).findById(id);
@@ -256,7 +256,7 @@ class CustomerEntityServiceTest {
         step("Generate new customer object");
         var customer = new CustomerGenerator().generate();
         step("Setup mock");
-        when(this.repository.existsCustomerByEmail(customer.getEmail())).thenReturn(true);
+        when(this.repository.existsByEmail(customer.getEmail())).thenReturn(true);
 
         // Act
 
@@ -309,8 +309,8 @@ class CustomerEntityServiceTest {
         var customer = new CustomerGenerator().withId(id).generate();
 
         step("Setup mock");
-        when(this.repository.existsCustomerById(id)).thenReturn(true);
-        when(this.repository.findCustomersByEmail(customer.getEmail())).thenReturn(new ArrayList<>());
+        when(this.repository.existsById(id)).thenReturn(true);
+        when(this.repository.findAllByEmail(customer.getEmail())).thenReturn(new ArrayList<>());
         when(this.repository.save(customer)).thenReturn(customer);
 
         // Act
@@ -324,11 +324,11 @@ class CustomerEntityServiceTest {
         // Assert
         step("Verify mock is called");
         verify(this.repository)
-                .existsCustomerById(id);
+                .existsById(id);
         verify(this.repository)
                 .findById(id);
         verify(this.repository)
-                .findCustomersByEmail(customer.getEmail());
+                .findAllByEmail(customer.getEmail());
         verify(this.repository)
                 .save(customer);
         step("Verify returned customer is as expected");
@@ -352,7 +352,7 @@ class CustomerEntityServiceTest {
         var id = 42;
         var customer = new CustomerGenerator().withId(id).generate();
         step("Setup mock");
-        when(this.repository.existsCustomerById(id)).thenReturn(false);
+        when(this.repository.existsById(id)).thenReturn(false);
 
         // Act
 
@@ -386,8 +386,8 @@ class CustomerEntityServiceTest {
                 .withEmail(updatedCustomer.getEmail())
                 .generate();
         step("Setup mock");
-        when(this.repository.existsCustomerById(id)).thenReturn(true);
-        when(this.repository.findCustomersByEmail(updatedCustomer.getEmail()))
+        when(this.repository.existsById(id)).thenReturn(true);
+        when(this.repository.findAllByEmail(updatedCustomer.getEmail()))
                 .thenReturn(List.of(updatedCustomer, anotherExistingCustomer));
 
         // Act

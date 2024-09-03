@@ -30,7 +30,7 @@ public class BrandService {
     }
 
     public BrandEntity save(BrandEntity brand) {
-        if (this.repository.existsBrandByName(brand.getName())) {
+        if (this.repository.existsByName(brand.getName())) {
             throw new DuplicateResourceException("Brand with name={%s} already exists!".formatted(brand.getName()));
         }
         return this.repository.save(brand);
@@ -43,7 +43,7 @@ public class BrandService {
     }
 
     public BrandEntity update(BrandEntity brand) {
-        if (!this.repository.existsBrandById(brand.getId())) {
+        if (!this.repository.existsById(brand.getId())) {
             throw new ResourceNotFoundException("Brand with id={%s} not found!".formatted(brand.getId()));
         }
         BrandEntity currentBrand = this.repository.findById(brand.getId()).orElseGet(() -> null);

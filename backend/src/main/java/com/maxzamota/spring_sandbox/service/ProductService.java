@@ -7,9 +7,7 @@ import com.maxzamota.spring_sandbox.model.ProductEntity;
 import com.maxzamota.spring_sandbox.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.mapping.PropertyReferenceException;
 import org.springframework.stereotype.Service;
 
@@ -33,7 +31,7 @@ public class ProductService {
     }
 
     public ProductEntity save(ProductEntity product) {
-        if (this.repository.existsBrandByName(product.getName())) {
+        if (this.repository.existsByName(product.getName())) {
             throw new DuplicateResourceException("Entity with name={%s} already exists"
                     .formatted(product.getName()));
         }
@@ -48,7 +46,7 @@ public class ProductService {
     }
 
     public ProductEntity update(ProductEntity product) {
-        if (!this.repository.existsBrandById(product.getId())) {
+        if (!this.repository.existsById(product.getId())) {
             throw new ResourceNotFoundException("Product with id={%s} not found!"
                     .formatted(product.getId()));
         }
@@ -76,22 +74,9 @@ public class ProductService {
         return this.repository.saveAll(products);
     }
 
-    public Page<ProductEntity> getAll(
-            Integer pageNum,
-            Integer pageSize,
-            String sortBy,
-            String sortDirection
-    ) {
-        Sort sort = Sort.by(Sort.Direction.fromString(sortDirection), sortBy);
-        Pageable pageable = PageRequest.of(pageNum, pageSize, sort);
-        return this.repository.findAll(pageable);
-    }
-
     public Page<ProductEntity> getAll(Pageable pageable) {
-        Page<ProductEntity> products;
         try {
-            products = this.repository.findAll(pageable);
-            return products;
+            return this.repository.findAll(pageable);
         } catch (PropertyReferenceException e) {
             throw new BadRequestException(e.getMessage());
         }

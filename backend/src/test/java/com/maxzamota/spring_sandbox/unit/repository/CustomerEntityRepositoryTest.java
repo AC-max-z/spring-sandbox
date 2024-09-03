@@ -48,7 +48,7 @@ class CustomerEntityRepositoryTest extends AbstractTestcontainersTest {
         // Arrange
         var customer = this.classUnderTest.save(new CustomerGenerator().generate());
         // Act
-        var customerExists = this.classUnderTest.existsCustomerByEmail(customer.getEmail());
+        var customerExists = this.classUnderTest.existsByEmail(customer.getEmail());
         // Assert
         assertThat(customerExists).isTrue();
     }
@@ -67,7 +67,7 @@ class CustomerEntityRepositoryTest extends AbstractTestcontainersTest {
         // Arrange
         var email = this.faker.internet().safeEmailAddress();
         // Act
-        var customerExists = this.classUnderTest.existsCustomerByEmail(email);
+        var customerExists = this.classUnderTest.existsByEmail(email);
         // Assert
         assertThat(customerExists).isFalse();
     }
@@ -86,7 +86,7 @@ class CustomerEntityRepositoryTest extends AbstractTestcontainersTest {
         // Arrange
         var customer = this.classUnderTest.save(new CustomerGenerator().generate());
         // Act
-        var customerExists = this.classUnderTest.existsCustomerById(customer.getId());
+        var customerExists = this.classUnderTest.existsById(customer.getId());
         // Assert
         assertThat(customerExists).isTrue();
     }
@@ -105,7 +105,7 @@ class CustomerEntityRepositoryTest extends AbstractTestcontainersTest {
         // Arrange
         Integer id = -1;
         // Act
-        var customerExists = this.classUnderTest.existsCustomerById(id);
+        var customerExists = this.classUnderTest.existsById(id);
         // Assert
         assertThat(customerExists).isFalse();
     }
@@ -124,7 +124,7 @@ class CustomerEntityRepositoryTest extends AbstractTestcontainersTest {
         // Arrange
         var customer = this.classUnderTest.save(new CustomerGenerator().generate());
         // Act
-        var customers = this.classUnderTest.findCustomersByEmail(customer.getEmail());
+        var customers = this.classUnderTest.findAllByEmail(customer.getEmail());
         // Assert
         assertThat(customers)
                 .isNotEmpty()
@@ -147,7 +147,7 @@ class CustomerEntityRepositoryTest extends AbstractTestcontainersTest {
         // Arrange
         var email = this.faker.internet().safeEmailAddress();
         // Act
-        var customers = this.classUnderTest.findCustomersByEmail(email);
+        var customers = this.classUnderTest.findAllByEmail(email);
         // Assert
         assertThat(customers).isEmpty();
     }

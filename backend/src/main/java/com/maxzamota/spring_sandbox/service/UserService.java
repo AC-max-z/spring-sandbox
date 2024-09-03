@@ -3,14 +3,11 @@ package com.maxzamota.spring_sandbox.service;
 import com.maxzamota.spring_sandbox.exception.BadRequestException;
 import com.maxzamota.spring_sandbox.exception.DuplicateResourceException;
 import com.maxzamota.spring_sandbox.exception.ResourceNotFoundException;
-import com.maxzamota.spring_sandbox.mappers.UserMapper;
 import com.maxzamota.spring_sandbox.model.UserEntity;
 import com.maxzamota.spring_sandbox.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.mapping.PropertyReferenceException;
 import org.springframework.stereotype.Service;
 
@@ -25,22 +22,9 @@ public class UserService {
         this.repository = repository;
     }
 
-    public Page<UserEntity> findAll(
-            Integer pageNum,
-            Integer pageSize,
-            String sortBy,
-            String sortDirection
-    ) {
-        Sort sort = Sort.by(Sort.Direction.fromString(sortDirection), sortBy);
-        Pageable pageable = PageRequest.of(pageNum, pageSize, sort);
-        return repository.findAll(pageable);
-    }
-
     public Page<UserEntity> findAll(Pageable pageable) {
-        Page<UserEntity> users;
         try {
-            users = this.repository.findAll(pageable);
-            return users;
+            return this.repository.findAll(pageable);
         } catch (PropertyReferenceException e) {
             throw new BadRequestException(e.getMessage());
         }

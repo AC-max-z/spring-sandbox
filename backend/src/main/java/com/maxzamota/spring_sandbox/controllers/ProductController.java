@@ -79,20 +79,20 @@ public class ProductController implements EntityController<Integer, ProductEntit
     @Override
     @PostMapping
     public ResponseEntity<EntityModel<ProductDto>> post(@RequestBody ProductDto productDto) {
-        ProductEntity product;
+        ProductEntity product = this.mapper.fromDto(productDto);
 
-        try {
+        // Check if dto contains info about brand
+        if (Objects.nonNull(productDto.getBrand())) {
+            // check if this brand already exists
             BrandEntity brand = this.brandService.findByName(productDto.getBrand().getName());
-            product = this.mapper.fromDto(productDto);
-            if (Objects.nonNull(brand)) {
-                product.setBrand(brand);
-            } else {
-                brand = this.brandService.save(product.getBrand());
-                product.setBrand(brand);
+            // create new brand if it does not exist
+            if (Objects.isNull(brand)) {
+                brand = product.getBrand();
+                brand.setDateAdded(new Timestamp(System.currentTimeMillis()));
+                brand = this.brandService.save(brand);
             }
-            product.setDateAdded(new Timestamp(System.currentTimeMillis()));
-        } catch (Exception e) {
-            throw new BadRequestException(e.getMessage());
+            // update brand data with the one stored in database
+            product.setBrand(brand);
         }
 
         this.productService.save(product);
@@ -117,31 +117,25 @@ public class ProductController implements EntityController<Integer, ProductEntit
             @PathVariable Integer id,
             @RequestBody ProductDto productDto
     ) {
-        ProductEntity product;
+        ProductEntity product = this.mapper.fromDto(productDto);
 
-        try {
-            product = this.mapper.fromDto(productDto);
-            // Check if dto contains info about brand
-            if (Objects.nonNull(productDto.getBrand())) {
-                // check if this brand already exists
-                BrandEntity brand = this.brandService.findByName(productDto.getBrand().getName());
-                // create new brand if it does not exist
-                if (Objects.isNull(brand)) {
-                    brand = product.getBrand();
-                    brand.setDateAdded(new Timestamp(System.currentTimeMillis()));
-                    brand = this.brandService.save(brand);
-                }
-                // update brand data with the one stored in database
-                product.setBrand(brand);
+        // Check if dto contains info about brand
+        if (Objects.nonNull(productDto.getBrand())) {
+            // check if this brand already exists
+            BrandEntity brand = this.brandService.findByName(productDto.getBrand().getName());
+            // create new brand if it does not exist
+            if (Objects.isNull(brand)) {
+                brand = product.getBrand();
+                brand.setDateAdded(new Timestamp(System.currentTimeMillis()));
+                brand = this.brandService.save(brand);
             }
-        } catch (Exception e) {
-            throw new BadRequestException(e.getMessage());
+            // update brand data with the one stored in database
+            product.setBrand(brand);
         }
 
         product.setId(id);
         product = productService.update(product);
         ProductDto dto = this.mapper.toDto(product);
-
         EntityModel<ProductDto> productDtoModel = this.assembler.toDtoModel(dto);
 
         return ResponseEntity

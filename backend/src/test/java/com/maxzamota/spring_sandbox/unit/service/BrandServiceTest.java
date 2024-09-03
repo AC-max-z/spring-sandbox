@@ -273,7 +273,7 @@ public class BrandServiceTest {
         step("Generate new BrandEntity object");
         var brand = new BrandGenerator().generate();
         step("Setup repository mock");
-        when(this.brandRepository.existsBrandByName(brand.getName()))
+        when(this.brandRepository.existsByName(brand.getName()))
                 .thenReturn(true);
         // Act
         step("Call save()");
@@ -283,7 +283,7 @@ public class BrandServiceTest {
         }
         // Assert
         step("Verify that existsBrandByName() repository mock method was called");
-        verify(this.brandRepository, atMostOnce()).existsBrandByName(brand.getName());
+        verify(this.brandRepository, atMostOnce()).existsByName(brand.getName());
         step("Verify that save() repository mock method was never called");
         verify(this.brandRepository, never()).save(any());
         step("Verify exception is thrown");
@@ -347,7 +347,7 @@ public class BrandServiceTest {
         step("Setup repository mock");
         when(this.brandRepository.save(initialBrand))
                 .thenReturn(initialBrand);
-        when(this.brandRepository.existsBrandById(updatedBrand.getId()))
+        when(this.brandRepository.existsById(updatedBrand.getId()))
                 .thenReturn(true);
         when(this.brandRepository.save(updatedBrand))
                 .thenReturn(updatedBrand);
@@ -363,8 +363,8 @@ public class BrandServiceTest {
         // Assert
         step("Verify mock was called");
         verify(this.brandRepository, atLeast(1)).save(any());
-        verify(this.brandRepository, atMostOnce()).existsBrandByName(initialBrand.getName());
-        verify(this.brandRepository, atMostOnce()).existsBrandById(updatedBrand.getId());
+        verify(this.brandRepository, atMostOnce()).existsByName(initialBrand.getName());
+        verify(this.brandRepository, atMostOnce()).existsById(updatedBrand.getId());
         verify(this.brandRepository, atMostOnce()).findAllByName(updatedBrand.getName());
         step("Verify expected brand data was returned");
         assertThat(initialSave).isEqualTo(initialBrand);
@@ -393,7 +393,7 @@ public class BrandServiceTest {
         } catch (ResourceNotFoundException ignored) {}
         // Assert
         step("Verify mock was called");
-        verify(this.brandRepository).existsBrandById(brand.getId());
+        verify(this.brandRepository).existsById(brand.getId());
         verify(this.brandRepository, never()).save(any());
         step("Verify exception thrown");
         assertThatThrownBy(() -> this.serviceUnderTest.update(brand))
@@ -420,7 +420,7 @@ public class BrandServiceTest {
                 .withName(updatedBrand.getName())
                 .generate();
         step("Setup mock");
-        when(this.brandRepository.existsBrandById(updatedBrand.getId()))
+        when(this.brandRepository.existsById(updatedBrand.getId()))
                 .thenReturn(true);
         when(this.brandRepository.findAllByName(updatedBrand.getName()))
                 .thenReturn(List.of(existingBrand, updatedBrand));

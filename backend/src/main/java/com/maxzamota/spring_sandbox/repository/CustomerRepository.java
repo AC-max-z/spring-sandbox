@@ -10,15 +10,7 @@ import java.util.Collection;
 @Repository("jpa")
 @Primary
 public interface CustomerRepository extends JpaRepository<CustomerEntity, Integer> {
-    boolean existsCustomerByEmail(String email);
-    boolean existsCustomerById(Integer id);
-    Collection<CustomerEntity> findCustomersByEmail(String email);
-    Collection<CustomerEntity> findAllByOrderByIdAsc();
-    Collection<CustomerEntity> findAllByOrderByIdDesc();
-    Collection<CustomerEntity> findAllByOrderByNameAsc();
-    Collection<CustomerEntity> findAllByOrderByNameDesc();
-    Collection<CustomerEntity> findAllByOrderByEmailAsc();
-    Collection<CustomerEntity> findAllByOrderByEmailDesc();
-    Collection<CustomerEntity> findAllByOrderByAgeAsc();
-    Collection<CustomerEntity> findAllByOrderByAgeDesc();
+    boolean existsByEmail(String email);
+    boolean existsById(Integer id);
+    Collection<CustomerEntity> findAllByEmail(String email);
 }

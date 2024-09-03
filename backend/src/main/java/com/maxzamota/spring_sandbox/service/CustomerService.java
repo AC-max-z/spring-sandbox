@@ -10,9 +10,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.mapping.PropertyReferenceException;
 import org.springframework.stereotype.Service;
 
@@ -29,35 +27,22 @@ public class CustomerService {
         this.customerRepository = customerRepository;
     }
 
-    public Page<CustomerEntity> getAll(
-            Integer pageNum,
-            Integer pageSize,
-            String sortBy,
-            String sortDirection
-    ) {
-        Sort sort = Sort.by(Sort.Direction.fromString(sortDirection), sortBy);
-        Pageable pageable = PageRequest.of(pageNum, pageSize, sort);
-        return this.customerRepository.findAll(pageable);
-    }
-
     public Page<CustomerEntity> getAll(Pageable pageable) {
-        Page<CustomerEntity> customers;
         try {
-            customers = this.customerRepository.findAll(pageable);
-            return customers;
+            return this.customerRepository.findAll(pageable);
         } catch (PropertyReferenceException e) {
             throw new BadRequestException(e.getMessage());
         }
     }
 
-    public CustomerEntity getCustomerById(Integer id) {
+    public CustomerEntity getById(Integer id) {
         return this.customerRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Customer with id={%s} not found!"
                         .formatted(id)));
     }
 
     public CustomerEntity save(CustomerEntity customerEntity) {
-        if (this.customerRepository.existsCustomerByEmail(customerEntity.getEmail())) {
+        if (this.customerRepository.existsByEmail(customerEntity.getEmail())) {
             throw new DuplicateResourceException(
                     "Customer with email={%s} already exists!".formatted(customerEntity.getEmail())
             );
@@ -72,7 +57,7 @@ public class CustomerService {
     }
 
     public CustomerEntity update(CustomerEntity customerEntity) {
-        if (!this.customerRepository.existsCustomerById(customerEntity.getId())) {
+        if (!this.customerRepository.existsById(customerEntity.getId())) {
             throw new ResourceNotFoundException("Customer with id={%s} not found!"
                     .formatted(customerEntity.getId()));
         }
@@ -83,7 +68,7 @@ public class CustomerService {
         ) {
             return customerEntity;
         }
-        if (!this.customerRepository.findCustomersByEmail(customerEntity.getEmail())
+        if (!this.customerRepository.findAllByEmail(customerEntity.getEmail())
                 .stream()
                 .filter(record -> !Objects.equals(record.getId(), customerEntity.getId()))
                 .toList()

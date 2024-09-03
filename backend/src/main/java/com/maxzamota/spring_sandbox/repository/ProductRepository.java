@@ -8,11 +8,7 @@ import java.util.Collection;
 
 @Repository
 public interface ProductRepository extends JpaRepository<ProductEntity, Integer> {
-    Collection<ProductEntity> findAllByOrderByIdAsc();
-    Collection<ProductEntity> findAllByOrderByIdDesc();
-    Collection<ProductEntity> findAllByOrderByNameAsc();
-    Collection<ProductEntity> findAllByOrderByNameDesc();
-    boolean existsBrandByName(String name);
-    boolean existsBrandById(Integer id);
+    boolean existsByName(String name);
+    boolean existsById(Integer id);
     Collection<ProductEntity> findAllByName(String name);
 }
