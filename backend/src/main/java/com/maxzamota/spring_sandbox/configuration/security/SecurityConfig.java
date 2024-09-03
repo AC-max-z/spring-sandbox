@@ -1,4 +1,4 @@
-package com.maxzamota.spring_sandbox.configuration;
+package com.maxzamota.spring_sandbox.configuration.security;
 
 import com.maxzamota.spring_sandbox.filters.CsrfCookieFilter;
 import org.springframework.context.annotation.Bean;

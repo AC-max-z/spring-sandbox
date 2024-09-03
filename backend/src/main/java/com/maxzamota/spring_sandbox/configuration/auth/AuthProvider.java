@@ -1,7 +1,6 @@
-package com.maxzamota.spring_sandbox.configuration;
+package com.maxzamota.spring_sandbox.configuration.auth;
 
 import com.maxzamota.spring_sandbox.model.UserEntity;
-import com.maxzamota.spring_sandbox.repository.UserRepository;
 import com.maxzamota.spring_sandbox.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationProvider;

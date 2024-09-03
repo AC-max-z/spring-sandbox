@@ -6,5 +6,5 @@ pluginManagement {
     }
 }
 include("backend")
-include("ui-e2e-tests")
+include("ui-tests")
 include("performance-tests")
