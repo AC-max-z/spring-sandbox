@@ -38,7 +38,7 @@ public class ProductService {
         log.info("Attempt to fetch Product by id {} by user {}", id, username);
         return this.repository.findById(id)
                 .orElseThrow(() -> {
-                    log.error("Fetch Product by id {} by user {} failed - not found", id, username);
+                    log.warn("Fetch Product by id {} by user {} failed - not found", id, username);
                     return new ResourceNotFoundException("Entity with id={%s} not found"
                             .formatted(id));
                 });
@@ -48,7 +48,7 @@ public class ProductService {
         String username = getUsername();
         log.info("Attempt to save Product {} by user {}", product, username);
         if (this.repository.existsByName(product.getName())) {
-            log.error("Attempt to save Product {} with duplicate name by user {}",
+            log.warn("Attempt to save Product {} with duplicate name by user {}",
                     product, username);
             throw new DuplicateResourceException("Entity with name={%s} already exists"
                     .formatted(product.getName()));
@@ -71,7 +71,7 @@ public class ProductService {
         log.info("Attempt to update Product {} by user {}", product, username);
 
         if (!this.repository.existsById(product.getId())) {
-            log.error("Product with id {} not found, update by user {} is aborted",
+            log.warn("Product with id {} not found, update by user {} is aborted",
                     product.getId(), username);
             throw new ResourceNotFoundException("Product with id={%s} not found!"
                     .formatted(product.getId()));
@@ -90,7 +90,7 @@ public class ProductService {
                 .toList()
                 .isEmpty()
         ) {
-            log.error("Product {} update by user {} failed: product with name {} already exists",
+            log.warn("Product {} update by user {} failed: product with name {} already exists",
                     product, username, product.getName());
             throw new DuplicateResourceException("Product with name={%s} already exists"
                     .formatted(product.getName()));
@@ -115,12 +115,12 @@ public class ProductService {
         try {
             Page<ProductEntity> products = this.repository.findAll(pageable);
             log.info("Products successfully fetched by user {}", username);
-            log.info(products.toString());
+            log.debug(products.toString());
             return products;
         } catch (PropertyReferenceException e) {
             log.error("Exception fetching Products by user {}", username);
             log.error("Message: {}", e.getMessage());
-            log.error("Stacktrace: {}", (Object) e.getStackTrace());
+            log.debug("Stacktrace: {}", (Object) e.getStackTrace());
             throw new BadRequestException(e.getMessage());
         }
     }
