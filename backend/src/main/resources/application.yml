@@ -35,6 +35,10 @@ spring:
     web-application-type: servlet
   flyway:
     baseline-on-migrate: true
+  output:
+    ansi:
+      enabled: always
+
 management:
   endpoints:
     web:

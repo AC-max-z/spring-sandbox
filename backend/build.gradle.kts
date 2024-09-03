@@ -63,6 +63,9 @@ dependencies {
     testImplementation(platform("io.qameta.allure:allure-bom:$allureVersion"))
     testImplementation("io.qameta.allure:allure-junit5")
     agent("org.aspectj:aspectjweaver:1.9.20.1")
+
+    implementation ("com.github.skjolber.logback-logstash-syntax-highlighting-decorators:logback-logstash-syntax-highlighting-decorators:1.0.6")
+
 }
 
 tasks {

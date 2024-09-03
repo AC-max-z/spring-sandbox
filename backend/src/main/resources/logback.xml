@@ -1,24 +1,54 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
     <appender name="stdout" class="ch.qos.logback.core.ConsoleAppender">
-<!--        <encoder class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">-->
-<!--        <layout class="ch.qos.logback.contrib.json.classic.JsonLayout">-->
-<!--            <timestampFormat>yyyy-MM-dd'T'HH:mm:ss.SSSX</timestampFormat>-->
-<!--            <timestampFormatTimezoneId>Etc/UTC</timestampFormatTimezoneId>-->
+        <!--        <encoder class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">-->
+        <!--            <layout class="ch.qos.logback.contrib.json.classic.JsonLayout">-->
+        <!--                <timestampFormat>yyyy-MM-dd'T'HH:mm:ss.SSSX</timestampFormat>-->
+        <!--                <timestampFormatTimezoneId>Etc/UTC</timestampFormatTimezoneId>-->
 
-<!--            <jsonFormatter class="ch.qos.logback.contrib.jackson.JacksonJsonFormatter">-->
-<!--                <prettyPrint>true</prettyPrint>-->
-<!--            </jsonFormatter>-->
-<!--        </layout>-->
-<!--    </encoder>-->
-        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
-            <pattern>%d %-5level [%thread] %logger{0}: %msg%n</pattern>
-            <outputPatternAsHeader>true</outputPatternAsHeader>
+        <!--                <jsonFormatter class="ch.qos.logback.contrib.jackson.JacksonJsonFormatter">-->
+        <!--                    <prettyPrint>true</prettyPrint>-->
+        <!--                </jsonFormatter>-->
+        <!--            </layout>-->
+        <!--        </encoder>-->
+        <encoder class="net.logstash.logback.encoder.LogstashEncoder">
+            <!-- add pretty-printing and syntax highlighting for testing -->
+            <jsonGeneratorDecorator class="com.github.skjolber.decorators.SyntaxHighlightingDecorator">
+                <syntaxHighlighterFactory
+                        class="com.github.skjolber.decorators.factory.ConfigurableSyntaxHighlighterFactory">
+                    <stringValue>blue</stringValue>
+                    <!--                    <numberValue>black highIntensity</numberValue>-->
+                    <fieldName>green</fieldName>
+                    <binaryValue>yellowBackground</binaryValue>
+                    <booleanValue>cyan</booleanValue>
+                    <nullValue>black</nullValue>
+                    <curlyBrackets>green</curlyBrackets>
+                    <squareBrackets>green</squareBrackets>
+                    <colon>green</colon>
+                    <whitespace>green</whitespace>
+                    <comma>green</comma>
+                </syntaxHighlighterFactory>
+                <syntaxHighlighterFactory
+                        class="com.github.skjolber.decorators.factory.LogLevelSyntaxHighlighterFactory">
+                    <level>
+                        <info>green</info>
+                        <warning>yellow</warning>
+                        <error>red</error>
+                    </level>
+                    <message>highIntensity blue</message>
+                </syntaxHighlighterFactory>
+            </jsonGeneratorDecorator>
         </encoder>
+        <!--                <withJansi>true</withJansi>-->
+        <!--        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">-->
+        <!--            <pattern>%d %-5level [%thread] %logger{0}: %msg%n</pattern>-->
+        <!--            <outputPatternAsHeader>true</outputPatternAsHeader>-->
+        <!--        </encoder>-->
     </appender>
 
+
     <logger name="org.springframework.security" level="trace" additivity="false">
-        <appender-ref ref="Console" />
+        <appender-ref ref="Console"/>
     </logger>
 
     <root level="info">

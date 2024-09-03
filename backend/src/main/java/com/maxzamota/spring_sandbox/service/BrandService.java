@@ -103,8 +103,14 @@ public class BrandService {
         String username = getUsername();
         log.info("Attempt to fetch all Brands with pageable {} by user {}", pageable, username);
         try {
-            return this.repository.findAll(pageable);
+            Page<BrandEntity> brands = this.repository.findAll(pageable);
+            log.info("Brands successfully fetched by user {}", username);
+            log.info(brands.toString());
+            return brands;
         } catch (PropertyReferenceException e) {
+            log.error("Exception fetching Brands by user {}", username);
+            log.error("Message: {}", e.getMessage());
+            log.error("Stacktrace: {}", (Object) e.getStackTrace());
             throw new BadRequestException(e.getMessage());
         }
     }
