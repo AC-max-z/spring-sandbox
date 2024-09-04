@@ -9,42 +9,56 @@ import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.firefox.GeckoDriverService;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
+import org.springsandbox.config.DriverConfig;
+import org.springsandbox.config.EnvConfig;
 import org.springsandbox.enums.DriverType;
-import org.springsandbox.util.AppProperties;
+import org.springsandbox.util.AppConfig;
 
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.HashMap;
-import java.util.Map;
 
 public class WebDriverFactory {
-    private static final Map<String, String> envVars = AppProperties.getProperties();
-    private static final String gridUrl = envVars.get("GRID_URL");
+    private static final DriverConfig driverConfig = AppConfig.getDriverConfig();
+    private static final EnvConfig envConfig = AppConfig.getEnvConfig();
 
     public static WebDriver getDriver(DriverType driverType) throws URISyntaxException, MalformedURLException {
         return switch (driverType) {
 
             case DriverType.CHROME -> {
-                File logLocation = new File(envVars.get("CHROME_LOCAL_LOG_OUTPUT"));
-                ChromeDriverService service =
-                        new ChromeDriverService.Builder()
-                                .withLogOutput(System.out)
-                                .withLogFile(logLocation)
-                                .withReadableTimestamp(true)
-                                .build();
+                ChromeDriverService service;
+                if (driverConfig.getChromeLocalLoggingEnabled()) {
+                    File logLocation = new File(driverConfig.getChromeLocalLogPath());
+                    service = new ChromeDriverService.Builder()
+                            .withLogOutput(System.out)
+                            .withLogFile(logLocation)
+                            .withReadableTimestamp(true)
+                            .build();
+                } else {
+                    service = new ChromeDriverService.Builder()
+                            .withLogOutput(System.out)
+                            .withReadableTimestamp(true)
+                            .build();
+                }
                 var opts = new ChromeOptions();
                 yield new ChromeDriver(service, opts);
             }
 
             case DriverType.FIREFOX -> {
-                File logLocation = new File(envVars.get("FIREFOX_LOCAL_LOG_OUTPUT"));
-                GeckoDriverService geckoService =
-                        new GeckoDriverService.Builder()
-                                .withLogFile(logLocation)
-//                                .withLogOutput(System.out)
-                                .build();
+                GeckoDriverService geckoService;
+                if (driverConfig.getFirefoxLocalLoggingEnabled()) {
+                    File logLocation = new File(driverConfig.getFirefoxLocalLogPath());
+                    geckoService =
+                            new GeckoDriverService.Builder()
+                                    .withLogFile(logLocation)
+                                    .build();
+                } else {
+                    geckoService = new GeckoDriverService.Builder()
+                            .withLogOutput(System.out)
+                            .build();
+                }
                 var opts = new FirefoxOptions();
                 yield new FirefoxDriver(geckoService, opts);
             }
@@ -52,54 +66,61 @@ public class WebDriverFactory {
             case DriverType.FIREFOX_REMOTE -> {
                 FirefoxOptions opts = new FirefoxOptions();
                 opts.setEnableDownloads(true);
-                opts.setCapability("selenoid:options", new HashMap<String, Object>() {
-                    {
-                        put("enableVideo", Boolean.valueOf(envVars.get("SELENOID_ENABLE_VIDEO")));
-                        put("enableVNC", Boolean.valueOf(envVars.get("SELENOID_ENABLE_VNC")));
-                    }
-                });
-                yield new RemoteWebDriver(new URI(gridUrl).toURL(), opts);
+                if (envConfig.getSelenoidEnabled()) {
+                    opts.setCapability("selenoid:options", new HashMap<String, Object>() {
+                        {
+                            put("enableVideo", envConfig.getSelenoidVideoEnabled());
+                            put("enableVNC", envConfig.getSelenoidVncEnabled());
+                        }
+                    });
+                }
+                yield new RemoteWebDriver(new URI(envConfig.getGridUrl()).toURL(), opts);
             }
 
             case DriverType.CHROME_REMOTE -> {
                 ChromeOptions options = new ChromeOptions();
                 options.setEnableDownloads(true);
-                options.setCapability("selenoid:options", new HashMap<String, Object>() {
-                    {
-                        put("enableVideo", Boolean.valueOf(envVars.get("SELENOID_ENABLE_VIDEO")));
-                        put("enableVNC", Boolean.valueOf(envVars.get("SELENOID_ENABLE_VNC")));
-                    }
-                });
-                yield new RemoteWebDriver(new URI(gridUrl).toURL(), options);
+                if (envConfig.getSelenoidEnabled()) {
+                    options.setCapability("selenoid:options", new HashMap<String, Object>() {
+                        {
+                            put("enableVideo", envConfig.getSelenoidVideoEnabled());
+                            put("enableVNC", envConfig.getSelenoidVncEnabled());
+                        }
+                    });
+                }
+                yield new RemoteWebDriver(new URI(envConfig.getGridUrl()).toURL(), options);
             }
 
             case CHROME_REMOTE_HEADLESS -> {
                 var options = new ChromeOptions();
                 options.setEnableDownloads(true);
-                options.setCapability("selenoid:options", new HashMap<String, Object>() {
-                    {
-                        put("enableVideo", Boolean.valueOf(envVars.get("SELENOID_ENABLE_VIDEO")));
-                        put("enableVNC", Boolean.valueOf(envVars.get("SELENOID_ENABLE_VNC")));
-                    }
-                });
-                options.addArguments("--headless",  "--no-sandbox", "--disable-dev-shm-usage");
+                if (envConfig.getSelenoidEnabled()) {
+                    options.setCapability("selenoid:options", new HashMap<String, Object>() {
+                        {
+                            put("enableVideo", envConfig.getSelenoidVideoEnabled());
+                            put("enableVNC", envConfig.getSelenoidVncEnabled());
+                        }
+                    });
+                }
+                options.addArguments("--headless", "--no-sandbox", "--disable-dev-shm-usage");
                 var capabilities = new DesiredCapabilities();
                 capabilities.setCapability(ChromeOptions.CAPABILITY, options);
-                yield new RemoteWebDriver(new URI(gridUrl).toURL(), capabilities);
+                yield new RemoteWebDriver(new URI(envConfig.getGridUrl()).toURL(), capabilities);
             }
 
             case DriverType.FIREFOX_REMOTE_HEADLESS -> {
                 var opts = new FirefoxOptions();
-                opts.addArguments("--headless");
+                opts.addArguments("-headless");
                 opts.setEnableDownloads(true);
-                opts.setCapability("selenoid:options", new HashMap<String, Object>() {
-                    {
-                        put("enableVideo", Boolean.valueOf(envVars.get("SELENOID_ENABLE_VIDEO")));
-                        put("enableVNC", Boolean.valueOf(envVars.get("SELENOID_ENABLE_VNC")));
-                    }
-                });
-                var capabilities = new DesiredCapabilities();
-                yield new RemoteWebDriver(new URI(gridUrl).toURL(), capabilities);
+                if (envConfig.getSelenoidEnabled()) {
+                    opts.setCapability("selenoid:options", new HashMap<String, Object>() {
+                        {
+                            put("enableVideo", envConfig.getSelenoidVideoEnabled());
+                            put("enableVNC", envConfig.getSelenoidVncEnabled());
+                        }
+                    });
+                }
+                yield new RemoteWebDriver(new URI(envConfig.getGridUrl()).toURL(), opts);
             }
 
         };

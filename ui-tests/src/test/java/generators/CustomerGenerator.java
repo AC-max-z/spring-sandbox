@@ -11,7 +11,7 @@ public class CustomerGenerator implements ObjectGenerator<Customer> {
 
     @Override
     public Customer generate() {
-        Faker faker = FakerProvider.getFaker();
+        Faker faker = FakerProvider.getInstance();
         String name = faker.name().firstName();
         String email = name + "@" + faker.internet().domainName();
         int age = faker.number().numberBetween(16, 99);

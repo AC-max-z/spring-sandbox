@@ -4,6 +4,7 @@ import io.qameta.allure.Description;
 import io.qameta.allure.Epic;
 import io.qameta.allure.Severity;
 import io.qameta.allure.SeverityLevel;
+import matchers.CustomerMatchers;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
@@ -12,6 +13,9 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.spi.SLF4JServiceProvider;
 import org.springsandbox.domain.Customer;
 import org.springsandbox.enums.DriverType;
 import org.springsandbox.factories.WebDriverFactory;
@@ -38,6 +42,7 @@ public class CustomerTest {
 
     private final ThreadLocal<WebDriver> driverThreadLocal = new ThreadLocal<>();
     private static final CustomerGenerator generator = new CustomerGenerator();
+    private final ThreadLocal<Logger> loggerThreadLocal = new ThreadLocal<>();
 
     @BeforeAll
     static void beforeAll() {
@@ -63,35 +68,55 @@ public class CustomerTest {
     public void shouldDisplayNewCustomerAfterCreate(
             DriverType driverType,
             Customer customer,
-            Customer updatedCustomer
+            Customer updatedCustomer,
+            TestInfo testInfo
     ) throws MalformedURLException, URISyntaxException {
         // Arrange
-        step("Create driver instance %s".formatted(driverType));
+        loggerThreadLocal.set(LoggerFactory.getLogger(testInfo.getTestClass().get().getName()
+                + ":" + driverType));
+        var logger = loggerThreadLocal.get();
+
+        var step = "Create driver instance %s".formatted(driverType);
+        step(step);
+        logger.info(step);
         driverThreadLocal.set(WebDriverFactory.getDriver(driverType));
         var driver = driverThreadLocal.get();
         var indexPage = new IndexPage(driver);
 
         // Act
-        step("Go to index page");
+        var step1 = "Go to index page";
+        step(step1);
+        logger.info(step1);
         indexPage.goTo();
-        step("Click create customer button");
+
+        var step2 = "Click create customer button";
+        step(step2);
+        logger.info(step2);
         indexPage.clickCreateCustomerButton();
-        step("Fill in create customer form " + customer.toString());
+
+        var step3 = "Fill in create customer form " + customer.toString();
+        step(step3);
+        logger.info(step3);
         CreateCustomerForm createCustomerForm = new CreateCustomerForm(driver);
         CustomerHelper.createCustomer(createCustomerForm, customer);
 
         // Assert
-        step("Check that new customer card is displayed on index page");
+        var step4 = "Check that new customer card is displayed on index page";
+        step(step4);
+        logger.info(step4);
         WebElement createdCustomerCard = indexPage.getCustomerCardWithEmail(customer.getEmail());
         assertThat(createdCustomerCard).isNotNull();
+
         // TODO: add success toast isDisplayed check
-        step("Check that data on that card is the same as generated");
-        assertThat(indexPage.getCustomerNameFromCard(createdCustomerCard)).isEqualTo(customer.getName());
-        assertThat(indexPage.getCustomerAgeFromCard(createdCustomerCard)).isEqualTo(customer.getAge());
-        assertThat(indexPage.getCustomerGenderFromCard(createdCustomerCard)).isEqualTo(customer.getGender());
+        var step5 = "Check that data on that card is the same as generated";
+        step(step5);
+        logger.info(step5);
+        CustomerMatchers.formContainsCustomer(indexPage, createdCustomerCard, customer);
 
         // Cleanup
-        step("Delete created customer");
+        var step6 = "Delete created customer";
+        step(step6);
+        logger.info(step6);
         indexPage.clickDeleteCustomer(createdCustomerCard);
         indexPage.confirmDeleteCustomer();
         assertThat(indexPage.getCustomerCardWithEmail(customer.getEmail())).isNull();
@@ -108,44 +133,70 @@ public class CustomerTest {
     })
     @Severity(SeverityLevel.BLOCKER)
     void shouldDisplayUpdatedCustomerAfterEdit(
-            DriverType driverType, Customer initialCustomer, Customer updatedCustomer
+            DriverType driverType, Customer initialCustomer, Customer updatedCustomer, TestInfo testInfo
     ) throws MalformedURLException, URISyntaxException {
         // Arrange
-        step("Create driver instance %s".formatted(driverType));
+        loggerThreadLocal.set(LoggerFactory.getLogger(testInfo.getTestClass().get().getName()
+                + ":" + driverType));
+        var logger = loggerThreadLocal.get();
+
+        var step0 = "Create driver instance %s".formatted(driverType);
+        step(step0);
+        logger.info(step0);
         driverThreadLocal.set(WebDriverFactory.getDriver(driverType));
         var driver = driverThreadLocal.get();
         var indexPage = new IndexPage(driver);
 
         // Act
-        step("Go to index page");
+        var step1 = "Go to index page";
+        step(step1);
+        logger.info(step1);
         indexPage.goTo();
-        step("Click create customer button");
+
+        var step2 = "Click create customer button";
+        step(step2);
+        logger.info(step2);
         indexPage.clickCreateCustomerButton();
-        step("Fill in create customer form with initial data " + initialCustomer.toString());
+
+        var step3 = "Fill in create customer form with initial data " + initialCustomer.toString();
+        step(step3);
+        logger.info(step3);
         CreateCustomerForm createCustomerForm = new CreateCustomerForm(driver);
         CustomerHelper.createCustomer(createCustomerForm, initialCustomer);
 
-        step("Find created customer card on index page");
+        var step4 = "Find created customer card on index page";
+        step(step4);
+        logger.info(step4);
         WebElement createdCustomerCard = indexPage.getCustomerCardWithEmail(initialCustomer.getEmail());
         indexPage.clickEditCustomer(createdCustomerCard);
 
-        step("Click edit customer button");
+        var step5 = "Click edit customer button";
+        step(step5);
+        logger.info(step5);
         UpdateCustomerForm updateCustomerForm = new UpdateCustomerForm(driver);
-        step("Edit customer with updated data " + updatedCustomer.toString());
+
+        var step6 = "Edit customer with updated data " + updatedCustomer.toString();
+        step(step6);
+        logger.info(step6);
         CustomerHelper.editCustomer(updateCustomerForm, updatedCustomer);
 
         // Assert
-        step("Find updated customer card");
+        var step7 = "Find updated customer card";
+        step(step7);
+        logger.info(step7);
         WebElement updatedCustomerCard = indexPage.getCustomerCardWithEmail(updatedCustomer.getEmail());
         assertThat(updatedCustomerCard).isNotNull();
+
         // TODO: add success toast isDisplayed check
-        step("Check that data on that card is as generated");
-        assertThat(indexPage.getCustomerNameFromCard(updatedCustomerCard)).isEqualTo(updatedCustomer.getName());
-        assertThat(indexPage.getCustomerAgeFromCard(updatedCustomerCard)).isEqualTo(updatedCustomer.getAge());
-        assertThat(indexPage.getCustomerGenderFromCard(updatedCustomerCard)).isEqualTo(updatedCustomer.getGender());
+        var step8 = "Check that data on that card is as generated";
+        step(step8);
+        logger.info(step8);
+        CustomerMatchers.formContainsCustomer(indexPage, updatedCustomerCard, updatedCustomer);
 
         // Cleanup
-        step("Delete customer");
+        var step9 = "Delete customer";
+        step(step9);
+        logger.info(step9);
         indexPage.clickDeleteCustomer(updatedCustomerCard);
         indexPage.confirmDeleteCustomer();
         assertThat(indexPage.getCustomerCardWithEmail(updatedCustomer.getEmail())).isNull();

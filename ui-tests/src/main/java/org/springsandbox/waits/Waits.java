@@ -8,8 +8,10 @@ import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.FluentWait;
 import org.openqa.selenium.support.ui.Wait;
+import org.springsandbox.config.DriverConfig;
+import org.springsandbox.config.EnvConfig;
 import org.springsandbox.enums.WaitCondition;
-import org.springsandbox.util.AppProperties;
+import org.springsandbox.util.AppConfig;
 
 import java.time.Duration;
 import java.util.List;
@@ -22,16 +24,15 @@ import java.util.NoSuchElementException;
 public class Waits {
     private final WebDriver driver;
     private final Wait<WebDriver> wait;
-    // Environment variables and properties from application.properties
-    private final Map<String, String> envVars = AppProperties.getProperties();
-    private final Integer implicitWait = Integer.parseInt(envVars.get("DRIVER_IMPLICIT_WAIT_MILLIS"));
+    private final DriverConfig driverConfig = AppConfig.getDriverConfig();
+    private final Integer implicitWait = driverConfig.getImplicitWaitMillis();
 
     public Waits(WebDriver driver) {
         this.driver = driver;
         PageFactory.initElements(this.driver, this);
 
-        int waitTimeout = Integer.parseInt(envVars.get("DRIVER_WAIT_ELEMENT_TIMEOUT"));
-        int pollingInterval = Integer.parseInt(envVars.get("DRIVER_POLLING_INTERVAL_MILLIS"));
+        int waitTimeout = driverConfig.getWaitTimeoutMillis();
+        int pollingInterval = driverConfig.getPollingIntervalMillis();
 
         this.wait = new FluentWait<>(this.driver)
                 .withTimeout(Duration.ofMillis(waitTimeout))
