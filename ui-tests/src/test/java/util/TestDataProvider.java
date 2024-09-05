@@ -12,7 +12,7 @@ import java.io.IOException;
 import java.util.Arrays;
 
 public class TestDataProvider {
-    private static ObjectMapper yamlMapper = ObjectMapperProvider.getInstance();
+    private static final ObjectMapper yamlMapper = ObjectMapperProvider.getInstance();
 
     public static CustomerTestDataYaml provideCustomerData() {
         String customerTestDataFilePath = "src/test/resources/data/customer-tests-data-provider.yml";
@@ -21,8 +21,8 @@ public class TestDataProvider {
         } catch (IllegalArgumentException | NullPointerException ignored) {
         }
         try {
-            return yamlMapper.readValue(new File(customerTestDataFilePath)
-                    , CustomerTestDataYaml.class);
+            return yamlMapper.readValue(new File(customerTestDataFilePath),
+                    CustomerTestDataYaml.class);
         } catch (IOException e) {
             Logger logger = LoggerFactory.getLogger(AppConfig.class.getSimpleName());
             logger.error(e.getMessage());

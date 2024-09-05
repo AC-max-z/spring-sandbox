@@ -18,9 +18,19 @@ public class AppConfig {
     private static ObjectMapper yamlMapper = ObjectMapperProvider.getInstance();
 
     private static void setAppConfig() {
+        String envConfigFilePath = "src/main/resources/environment.yml";
+        String driverConfigFilePath = "src/main/resources/driver.yml";
         try {
-            envConfig = yamlMapper.readValue(new File("src/main/resources/environment.yml"), EnvConfig.class);
-            driverConfig = yamlMapper.readValue(new File("src/main/resources/driver.yml"), DriverConfig.class);
+            envConfigFilePath = System.getProperty("envConfigFilePath");
+        } catch (IllegalArgumentException | NullPointerException ignored) {
+        }
+        try {
+            driverConfigFilePath = System.getProperty("driverConfigFilePath");
+        } catch (IllegalArgumentException | NullPointerException ignored) {
+        }
+        try {
+            envConfig = yamlMapper.readValue(new File(envConfigFilePath), EnvConfig.class);
+            driverConfig = yamlMapper.readValue(new File(driverConfigFilePath), DriverConfig.class);
         } catch (IOException e) {
             Logger logger = LoggerFactory.getLogger(AppConfig.class.getSimpleName());
             logger.error(e.getMessage());
