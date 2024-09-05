@@ -15,8 +15,13 @@ public class TestDataProvider {
     private static ObjectMapper yamlMapper = ObjectMapperProvider.getInstance();
 
     public static CustomerTestDataYaml provideCustomerData() {
+        String customerTestDataFilePath = "src/test/resources/data/customer-tests-data-provider.yml";
         try {
-            return yamlMapper.readValue(new File("src/test/resources/data/customer-tests-data-provider.yml")
+            customerTestDataFilePath = System.getProperty("customerTestDataFilePath");
+        } catch (IllegalArgumentException | NullPointerException ignored) {
+        }
+        try {
+            return yamlMapper.readValue(new File(customerTestDataFilePath)
                     , CustomerTestDataYaml.class);
         } catch (IOException e) {
             Logger logger = LoggerFactory.getLogger(AppConfig.class.getSimpleName());
