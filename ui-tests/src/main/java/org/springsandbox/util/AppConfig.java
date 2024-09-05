@@ -25,7 +25,7 @@ public class AppConfig {
             Logger logger = LoggerFactory.getLogger(AppConfig.class.getSimpleName());
             logger.error(e.getMessage());
             logger.error(Arrays.toString(e.getStackTrace()));
-            System.exit(0);
+            System.exit(1);
         }
     }
 
@@ -49,6 +49,7 @@ public class AppConfig {
             logger.error("Oopsie-woopsie, file not found at: {}", appPropertiesFilePath);
             logger.error(e.getMessage());
             logger.error(Arrays.toString(e.getStackTrace()));
+            System.exit(1);
         }
     }
 
