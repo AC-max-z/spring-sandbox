@@ -1,7 +1,8 @@
 package org.springsandbox.util;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springsandbox.config.DriverConfig;
 import org.springsandbox.config.EnvConfig;
 
@@ -21,8 +22,9 @@ public class AppConfig {
             envConfig = yamlMapper.readValue(new File("src/main/resources/environment.yml"), EnvConfig.class);
             driverConfig = yamlMapper.readValue(new File("src/main/resources/driver.yml"), DriverConfig.class);
         } catch (IOException e) {
-            System.out.println(e.getMessage());
-            System.out.println(Arrays.toString(e.getStackTrace()));
+            Logger logger = LoggerFactory.getLogger(AppConfig.class.getSimpleName());
+            logger.error(e.getMessage());
+            logger.error(Arrays.toString(e.getStackTrace()));
             System.exit(0);
         }
     }
@@ -43,9 +45,10 @@ public class AppConfig {
                 }
             }
         } catch (FileNotFoundException e) {
-            System.out.println("Oopsie-woopsie, file not found at: " + appPropertiesFilePath);
-            System.out.println(e.getMessage());
-            System.out.println(Arrays.toString(e.getStackTrace()));
+            Logger logger = LoggerFactory.getLogger(AppConfig.class.getSimpleName());
+            logger.error("Oopsie-woopsie, file not found at: {}", appPropertiesFilePath);
+            logger.error(e.getMessage());
+            logger.error(Arrays.toString(e.getStackTrace()));
         }
     }
 

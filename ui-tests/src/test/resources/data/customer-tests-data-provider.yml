@@ -1,0 +1,21 @@
+data:
+  - driverType: CHROME_REMOTE
+    customers:
+      - name: Bob
+        email: uncle-bob-molester-420@gmail.com
+        age: 69
+        gender: MALE
+      - name: Paul
+        email: paul@paul.paul
+        age: 30
+        gender: MALE
+  - driverType: FIREFOX_REMOTE
+    customers:
+      - name: Alice
+        email: heriohgeri@giewhgwoieg.gewihgw
+        age: 25
+        gender: FEMALE
+      - name: agiehgiewbovw
+        email: xxx@xx.io
+        age: 90
+        gender: DIFFERENT

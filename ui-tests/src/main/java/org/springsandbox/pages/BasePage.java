@@ -9,10 +9,9 @@ import org.openqa.selenium.support.ui.Select;
 import org.springsandbox.config.EnvConfig;
 import org.springsandbox.enums.WaitCondition;
 import org.springsandbox.util.AppConfig;
-import org.springsandbox.waits.Waits;
+import org.springsandbox.util.WaitConfiguration;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * Abstract page class for other page object classes to inherit from
@@ -23,12 +22,12 @@ public abstract class BasePage {
     protected final WebDriver driver;
     private final EnvConfig envConfig = AppConfig.getEnvConfig();
     protected final String baseUrl = envConfig.getAppUrl();
-    protected final Waits waits;
+    protected final WaitConfiguration waits;
 
     protected BasePage(WebDriver driver) {
         this.driver = driver;
         PageFactory.initElements(this.driver, this);
-        this.waits = new Waits(this.driver);
+        this.waits = new WaitConfiguration(this.driver);
     }
 
     public String getPageUrl() {

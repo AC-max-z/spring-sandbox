@@ -1,4 +1,4 @@
-package org.springsandbox.waits;
+package org.springsandbox.util;
 
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
@@ -9,25 +9,22 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.FluentWait;
 import org.openqa.selenium.support.ui.Wait;
 import org.springsandbox.config.DriverConfig;
-import org.springsandbox.config.EnvConfig;
 import org.springsandbox.enums.WaitCondition;
-import org.springsandbox.util.AppConfig;
 
 import java.time.Duration;
 import java.util.List;
-import java.util.Map;
 import java.util.NoSuchElementException;
 
 /**
  * Encapsulates the waiting logic
  */
-public class Waits {
+public class WaitConfiguration {
     private final WebDriver driver;
     private final Wait<WebDriver> wait;
     private final DriverConfig driverConfig = AppConfig.getDriverConfig();
     private final Integer implicitWait = driverConfig.getImplicitWaitMillis();
 
-    public Waits(WebDriver driver) {
+    public WaitConfiguration(WebDriver driver) {
         this.driver = driver;
         PageFactory.initElements(this.driver, this);
 
