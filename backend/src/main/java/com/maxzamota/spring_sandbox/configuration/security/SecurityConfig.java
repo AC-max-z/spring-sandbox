@@ -1,9 +1,11 @@
 package com.maxzamota.spring_sandbox.configuration.security;
 
 import com.maxzamota.spring_sandbox.filters.CsrfCookieFilter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -23,19 +25,31 @@ import static org.springframework.security.config.Customizer.withDefaults;
 
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity
 public class SecurityConfig {
+    private final CustomUserDetailsService userDetailsService;
+
+    @Autowired
+    public SecurityConfig(CustomUserDetailsService userDetailsService) {
+        this.userDetailsService = userDetailsService;
+    }
+
     @Bean
     @Order(0)
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         CsrfTokenRequestAttributeHandler requestHandler = new CsrfTokenRequestAttributeHandler();
         requestHandler.setCsrfRequestAttributeName("_csrf");
-        http
+        return http
                 .securityContext(ctx -> ctx.requireExplicitSave(false))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.ALWAYS))
                 .cors(cors -> cors.configurationSource(configurationSource()))
                 .csrf(csrf -> csrf
                         .csrfTokenRequestHandler(requestHandler)
-                        .ignoringRequestMatchers("/api/**", "/login")
+                        .ignoringRequestMatchers(
+                                "/api/**",
+                                "/login",
+                                "/actuator/**"
+                        )
                         .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
                 )
                 .addFilterAfter(new CsrfCookieFilter(), BasicAuthenticationFilter.class)
@@ -43,15 +57,15 @@ public class SecurityConfig {
                         .requestMatchers(
                                 "/api/v1/user",
                                 "/error",
-                                "/api/v1/login"
+                                "/login"
                         )
                         .permitAll()
                         .anyRequest()
                         .authenticated()
                 )
-                .formLogin(withDefaults())
-                .httpBasic(withDefaults());
-        return http.build();
+                .userDetailsService(userDetailsService)
+                .httpBasic(withDefaults())
+                .build();
     }
 
     CorsConfigurationSource configurationSource() {

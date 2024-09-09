@@ -14,6 +14,7 @@ import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.PagedModel;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.hateoas.IanaLinkRelations;
 
@@ -42,6 +43,7 @@ public class BrandController implements EntityController<Integer, BrandEntity, B
     }
 
     @Override
+    @PreAuthorize("hasRole('ROLE_user') || hasRole('ROLE_admin')")
     @GetMapping({"/all", "/list"})
     public ResponseEntity<PagedModel<EntityModel<BrandEntity>>> getAll(
             @PageableDefault Pageable pageable
@@ -61,6 +63,7 @@ public class BrandController implements EntityController<Integer, BrandEntity, B
     }
 
     @Override
+    @PreAuthorize("hasRole('ROLE_user') || hasRole('ROLE_admin')")
     @GetMapping("/{id}")
     public ResponseEntity<EntityModel<BrandDto>> get(@PathVariable("id") Integer id) {
         BrandEntity brand = this.brandService.getBrandByIdOrThrow(id);
@@ -69,6 +72,7 @@ public class BrandController implements EntityController<Integer, BrandEntity, B
     }
 
     @Override
+    @PreAuthorize("hasRole('ROLE_admin')")
     @PostMapping
     public ResponseEntity<EntityModel<BrandDto>> post(@RequestBody BrandDto brandDto) {
         BrandEntity brand = this.mapper.fromDto(brandDto);
@@ -85,6 +89,7 @@ public class BrandController implements EntityController<Integer, BrandEntity, B
     }
 
     @Override
+    @PreAuthorize("hasRole('ROLE_admin')")
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteById(@PathVariable Integer id) {
         this.brandService.deleteById(id);
@@ -94,6 +99,7 @@ public class BrandController implements EntityController<Integer, BrandEntity, B
     }
 
     @Override
+    @PreAuthorize("hasRole('ROLE_admin')")
     @PutMapping("/{id}")
     public ResponseEntity<EntityModel<BrandDto>> update(
             @PathVariable Integer id,

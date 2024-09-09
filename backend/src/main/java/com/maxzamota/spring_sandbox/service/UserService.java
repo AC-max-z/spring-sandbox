@@ -12,6 +12,7 @@ import org.springframework.data.mapping.PropertyReferenceException;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
+import java.util.Optional;
 
 @Service
 public class UserService {
@@ -37,7 +38,11 @@ public class UserService {
                 );
     }
 
-    public Collection<UserEntity> getByEmail(String email) {
+    public Collection<UserEntity> getAllByEmail(String email) {
+        return repository.findAllByEmail(email);
+    }
+
+    public Optional<UserEntity> getByEmail(String email) {
         return repository.findByEmail(email);
     }
 

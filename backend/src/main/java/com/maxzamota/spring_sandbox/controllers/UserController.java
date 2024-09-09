@@ -15,6 +15,8 @@ import org.springframework.hateoas.IanaLinkRelations;
 import org.springframework.hateoas.PagedModel;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PostAuthorize;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
@@ -62,6 +64,7 @@ public class UserController implements EntityController<Integer, UserEntity, Use
     }
 
     @Override
+    @PostAuthorize("returnObject.body.content.email == authentication.principal.username")
     @GetMapping("/{id}")
     public ResponseEntity<EntityModel<UserDto>> get(@PathVariable Integer id) {
         UserEntity user = userService.getById(id);
@@ -91,6 +94,7 @@ public class UserController implements EntityController<Integer, UserEntity, Use
     }
 
     @Override
+//    @PreAuthorize("#id != userService.getByEmail(authentication.principal.username).get().getId()")
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteById(@PathVariable Integer id) {
         this.userService.deleteById(id);
@@ -98,6 +102,7 @@ public class UserController implements EntityController<Integer, UserEntity, Use
     }
 
     @Override
+//    @PreAuthorize("#id != userService.getByEmail(authentication.principal.username).get().getId()")
     @PutMapping("/{id}")
     public ResponseEntity<EntityModel<UserDto>> update(
             @PathVariable Integer id,

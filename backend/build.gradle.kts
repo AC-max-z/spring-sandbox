@@ -30,11 +30,18 @@ allprojects {
 }
 
 dependencies {
+    // faker
     implementation(libs.faker)
+    // mapper
     implementation(libs.modelMapper)
+    implementation("org.modelmapper:modelmapper-module-record:1.0.0")
+    // logging
     implementation(libs.logbackJson)
     implementation(libs.logbackJackson)
     implementation(libs.jacksonDatabind)
+    implementation ("com.github.skjolber.logback-logstash-syntax-highlighting-decorators:logback-logstash-syntax-highlighting-decorators:1.0.6")
+    agent("org.aspectj:aspectjweaver:1.9.20.1")
+    // spring-boot-starter
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.springframework.boot:spring-boot-starter-data-jdbc")
@@ -42,30 +49,29 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-actuator")
     implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.boot:spring-boot-starter-hateoas")
-    implementation("org.modelmapper:modelmapper-module-record:1.0.0")
+    testImplementation("org.springframework.boot:spring-boot-starter-test")
+    // webflux
+    implementation("org.springframework:spring-webflux:6.1.2")
+    // flyway (db migration)
     implementation("org.flywaydb:flyway-core")
     implementation("org.flywaydb:flyway-database-postgresql")
+    // http client
     implementation("io.projectreactor.netty:reactor-netty-http:1.1.14")
-    // https://mvnrepository.com/artifact/org.springframework/spring-webflux
-    implementation("org.springframework:spring-webflux:6.1.2")
+    // swagger
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.1.0")
-
+    //
     runtimeOnly("org.postgresql:postgresql")
-
-    // https://mvnrepository.com/artifact/org.projectlombok/lombok
+    // lombOK
     compileOnly("org.projectlombok:lombok:1.18.+")
-
-    testImplementation("org.springframework.boot:spring-boot-starter-test")
+    // junit
     testImplementation(libs.junit)
+    // test containers
     testImplementation(libs.testContainers)
     testImplementation(libs.testContainersJunit)
     testImplementation(libs.testContainersPostgres)
+    // allure
     testImplementation(platform("io.qameta.allure:allure-bom:$allureVersion"))
     testImplementation("io.qameta.allure:allure-junit5")
-    agent("org.aspectj:aspectjweaver:1.9.20.1")
-
-    implementation ("com.github.skjolber.logback-logstash-syntax-highlighting-decorators:logback-logstash-syntax-highlighting-decorators:1.0.6")
-
 }
 
 tasks {

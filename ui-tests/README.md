@@ -8,5 +8,3 @@ Configurable UI tests with raw Selenium and Junit.
 
 Number of fork threads for tests is currently specified in `build.gradle.kts` but probably should be moved to
 configuration as well.
-
-It's overengineered by design.

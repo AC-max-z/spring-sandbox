@@ -18,6 +18,7 @@ import org.springframework.hateoas.IanaLinkRelations;
 import org.springframework.hateoas.PagedModel;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.Timestamp;
@@ -48,6 +49,7 @@ public class ProductController implements EntityController<Integer, ProductEntit
     }
 
     @Override
+    @PreAuthorize("hasRole('ROLE_admin') || hasRole('ROLE_user')")
     @GetMapping({"/all", "/list"})
     public ResponseEntity<PagedModel<EntityModel<ProductEntity>>> getAll(
             @PageableDefault Pageable pageable
@@ -67,6 +69,7 @@ public class ProductController implements EntityController<Integer, ProductEntit
     }
 
     @Override
+    @PreAuthorize("hasRole('ROLE_admin') || hasRole('ROLE_user')")
     @GetMapping("/{id}")
     public ResponseEntity<EntityModel<ProductDto>> get(@PathVariable Integer id) {
         ProductEntity product = this.productService.getById(id);
@@ -76,6 +79,7 @@ public class ProductController implements EntityController<Integer, ProductEntit
     }
 
     @Override
+    @PreAuthorize("hasRole('ROLE_admin')")
     @PostMapping
     public ResponseEntity<EntityModel<ProductDto>> post(@RequestBody ProductDto productDto) {
         ProductEntity product = this.mapper.fromDto(productDto);
@@ -104,6 +108,7 @@ public class ProductController implements EntityController<Integer, ProductEntit
     }
 
     @Override
+    @PreAuthorize("hasRole('ROLE_admin')")
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteById(@PathVariable Integer id) {
         this.productService.deleteById(id);
@@ -111,6 +116,7 @@ public class ProductController implements EntityController<Integer, ProductEntit
     }
 
     @Override
+    @PreAuthorize("hasRole('ROLE_admin')")
     @PutMapping("/{id}")
     public ResponseEntity<EntityModel<ProductDto>> update(
             @PathVariable Integer id,
