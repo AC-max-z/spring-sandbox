@@ -6,8 +6,6 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
-
 @Component
 public class UserMapper implements EntityMapper<UserDto, UserEntity> {
     private final ModelMapper mapper;
@@ -25,19 +23,5 @@ public class UserMapper implements EntityMapper<UserDto, UserEntity> {
     @Override
     public UserEntity fromDto(UserDto userDto) {
         return mapper.map(userDto, UserEntity.class);
-    }
-
-    @Override
-    public List<UserDto> toDtoList(List<UserEntity> userEntities) {
-        return userEntities.stream()
-                .map(this::toDto)
-                .toList();
-    }
-
-    @Override
-    public List<UserEntity> fromDtoList(List<UserDto> userDtos) {
-        return userDtos.stream()
-                .map(this::fromDto)
-                .toList();
     }
 }
