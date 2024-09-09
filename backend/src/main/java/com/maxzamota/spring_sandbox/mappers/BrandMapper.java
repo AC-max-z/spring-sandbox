@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 
 @Component
-public class BrandMapper {
+public class BrandMapper implements EntityMapper<BrandDto, BrandEntity> {
 
     private final ModelMapper mapper;
 
@@ -18,20 +18,24 @@ public class BrandMapper {
         this.mapper = mapper;
     }
 
+    @Override
     public BrandDto toDto(BrandEntity brandEntity) {
         return mapper.map(brandEntity, BrandDto.class);
     }
 
+    @Override
     public BrandEntity fromDto(BrandDto brandDto) {
         return mapper.map(brandDto, BrandEntity.class);
     }
 
+    @Override
     public List<BrandDto> toDtoList(List<BrandEntity> brandEntities) {
         return brandEntities.stream()
                 .map(this::toDto)
                 .toList();
     }
 
+    @Override
     public List<BrandEntity> fromDtoList(List<BrandDto> brandDtos) {
         return brandDtos.stream()
                 .map(this::fromDto)

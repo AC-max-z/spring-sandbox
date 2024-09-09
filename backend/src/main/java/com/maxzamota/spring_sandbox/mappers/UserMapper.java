@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 
 @Component
-public class UserMapper {
+public class UserMapper implements EntityMapper<UserDto, UserEntity> {
     private final ModelMapper mapper;
 
     @Autowired
@@ -17,20 +17,24 @@ public class UserMapper {
         this.mapper = mapper;
     }
 
+    @Override
     public UserDto toDto(UserEntity userEntity) {
         return mapper.map(userEntity, UserDto.class);
     }
 
+    @Override
     public UserEntity fromDto(UserDto userDto) {
         return mapper.map(userDto, UserEntity.class);
     }
 
+    @Override
     public List<UserDto> toDtoList(List<UserEntity> userEntities) {
         return userEntities.stream()
                 .map(this::toDto)
                 .toList();
     }
 
+    @Override
     public List<UserEntity> fromDtoList(List<UserDto> userDtos) {
         return userDtos.stream()
                 .map(this::fromDto)
