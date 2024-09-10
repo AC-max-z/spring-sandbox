@@ -1,13 +1,17 @@
 package com.maxzamota.spring_sandbox.configuration.security;
 
 import com.maxzamota.spring_sandbox.filters.CsrfCookieFilter;
+import jakarta.servlet.DispatcherType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.annotation.web.configurers.oauth2.server.resource.OAuth2ResourceServerConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -61,6 +65,37 @@ public class SecurityConfig {
                         )
                         .permitAll()
                         .anyRequest()
+                        .authenticated()
+                )
+                .userDetailsService(userDetailsService)
+                .httpBasic(withDefaults())
+                .build();
+    }
+
+
+    @Bean
+    @Order(1)
+    public SecurityFilterChain restApiFilterChain(HttpSecurity http) throws Exception {
+        return http
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .cors(cors -> cors.configurationSource(configurationSource()))
+                .csrf(AbstractHttpConfigurer::disable)
+                .authorizeHttpRequests(authorize -> authorize
+                        .requestMatchers(
+                                HttpMethod.POST,
+                                "/api/v1/user",
+                                "/api/v1/signin",
+                                "/api/v1/signup"
+                        )
+                        .permitAll()
+                        .requestMatchers(
+                                HttpMethod.GET,
+                                "/api/v1/brand/all",
+                                "/api/v1/product/all",
+                                "/error"
+                        )
+                        .permitAll()
+                        .requestMatchers("/api/v1/**", "/actuator/**")
                         .authenticated()
                 )
                 .userDetailsService(userDetailsService)

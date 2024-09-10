@@ -55,7 +55,7 @@ public class CustomerTest {
         }
     }
 
-    @ParameterizedTest
+    @ParameterizedTest(name = "{displayName} (driver: {0})")
     @MethodSource("provideCustomersAndDriverTypes")
     @DisplayName("Should display new customer after creating one")
     @Description("This test creates new customer, checks if it is present on page, then deletes it")
@@ -108,7 +108,7 @@ public class CustomerTest {
         assertThat(indexPage.getCustomerCardWithEmail(customer.getEmail())).isNull();
     }
 
-    @ParameterizedTest
+    @ParameterizedTest(name = "{displayName} (driver: {0})")
     @MethodSource("provideCustomerDataFromYml")
     @DisplayName("Should display updated customer data after editing one")
     @Description("This test creates new customer, then edits it, checks if customer was updated and then deletes it")

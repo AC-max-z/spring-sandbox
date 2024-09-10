@@ -18,6 +18,8 @@ import java.sql.Timestamp;
 import java.util.Collection;
 import java.util.Objects;
 
+import static net.logstash.logback.argument.StructuredArguments.keyValue;
+
 @Service
 @Slf4j
 public class BrandService {
@@ -30,36 +32,46 @@ public class BrandService {
 
     private String getUsername() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        return authentication.getName();
+        return Objects.nonNull(authentication.getName()) ? authentication.getName() : "anonymous";
     }
 
     public BrandEntity getBrandByIdOrThrow(Integer id) {
         String username = getUsername();
-        log.info("Attempt to fetch Brand by id {} by user {}", id, username);
+        log.info("Attempt to fetch Brand by id {} by user {}", id, keyValue("username", username));
         return this.repository.findById(id)
                 .orElseThrow(() -> {
-                    log.warn("Fetch Brand by id {} by user {} failed - not found", id, username);
+                    log.warn("Fetch Brand by id {} by user {} failed - not found",
+                            id,
+                            keyValue("username", username)
+                    );
                     return new ResourceNotFoundException("Brand with id={%s} not found!".formatted(id));
                 });
     }
 
     public BrandEntity save(BrandEntity brand) {
         String username = getUsername();
-        log.info("Attempt to save Brand {} by user {}", brand, username);
+        log.info("Attempt to save Brand {} by user {}", brand, keyValue("username", username));
 
         if (this.repository.existsByName(brand.getName())) {
-            log.warn("Attempt to save Brand {} with duplicate name by user {}", brand, username);
-            throw new DuplicateResourceException("Brand with name={%s} already exists!".formatted(brand.getName()));
+            log.warn("Attempt to save Brand {} with duplicate name by user {}",
+                    brand,
+                    keyValue("username", username)
+            );
+            throw new DuplicateResourceException("Brand with name={%s} already exists!"
+                    .formatted(brand.getName()));
         }
 
         BrandEntity savedBrand = this.repository.save(brand);
-        log.info("Brand {} successfully saved by user {}", brand, username);
+        log.info("Brand {} successfully saved by user {}", brand, keyValue("username", username));
         return savedBrand;
     }
 
     public String deleteById(Integer id) {
         String username = getUsername();
-        log.info("Attempt to soft-delete Brand by id {} by user {}", id, username);
+        log.info("Attempt to soft-delete Brand by id {} by user {}",
+                id,
+                keyValue("username", username)
+        );
 
         this.repository.deleteById(id);
         return "Entity with id={%s} successfully deleted (or ignored if it did not exist in the first place)!"
@@ -68,18 +80,20 @@ public class BrandService {
 
     public BrandEntity update(BrandEntity brand) {
         String username = getUsername();
-        log.info("Attempt to update Brand {}, by user {}", brand, username);
+        log.info("Attempt to update Brand {}, by user {}", brand, keyValue("username", username));
 
         // corner cases to prevent update queries to db
         // that maybe create more performance issues than mitigate
         // TODO: check under load
         if (!this.repository.existsById(brand.getId())) {
-            log.warn("Attempt to update non-existent Brand {}, by user {}", brand, username);
+            log.warn("Attempt to update non-existent Brand {}, by user {}",
+                    brand, keyValue("username", username));
             throw new ResourceNotFoundException("Brand with id={%s} not found!".formatted(brand.getId()));
         }
         BrandEntity currentBrand = this.repository.findById(brand.getId()).orElse(null);
         if (brand.equals(currentBrand)) {
-            log.warn("Attempt to update Brand {} with identical data by user {}", brand, username);
+            log.warn("Attempt to update Brand {} with identical data by user {}",
+                    brand, keyValue("username", username));
             return brand;
         }
         if (!this.repository.findAllByName(brand.getName())
@@ -88,14 +102,17 @@ public class BrandService {
                 .toList()
                 .isEmpty()
         ) {
-            log.warn("Attempt to save Brand with duplicate name {} by user {}", brand, username);
-            throw new DuplicateResourceException("Brand with name={%s} already exists".formatted(brand.getName()));
+            log.warn("Attempt to save Brand with duplicate name {} by user {}",
+                    brand, keyValue("username", username));
+            throw new DuplicateResourceException("Brand with name={%s} already exists"
+                    .formatted(brand.getName()));
         }
         brand.setDateAdded(Objects.nonNull(currentBrand.getDateAdded())
                 ? currentBrand.getDateAdded()
                 : new Timestamp(System.currentTimeMillis()));
         BrandEntity savedBrand = this.repository.save(brand);
-        log.info("Brand {} successfully updated by user {}", savedBrand, username);
+        log.info("Brand {} successfully updated by user {}",
+                savedBrand, keyValue("username", username));
         return savedBrand;
     }
 
@@ -109,14 +126,15 @@ public class BrandService {
 
     public Page<BrandEntity> getAll(Pageable pageable) {
         String username = getUsername();
-        log.info("Attempt to fetch all Brands with pageable {} by user {}", pageable, username);
+        log.info("Attempt to fetch all Brands with pageable {} by user {}",
+                pageable, keyValue("username", username));
         try {
             Page<BrandEntity> brands = this.repository.findAll(pageable);
-            log.info("Brands successfully fetched by user {}", username);
+            log.info("Brands successfully fetched by user {}", keyValue("username", username));
             log.debug(brands.toString());
             return brands;
         } catch (PropertyReferenceException e) {
-            log.error("Exception fetching Brands by user {}", username);
+            log.error("Exception fetching Brands by user {}", keyValue("username", username));
             log.error("Message: {}", e.getMessage());
             log.debug("Stacktrace: {}", (Object) e.getStackTrace());
             throw new BadRequestException(e.getMessage());

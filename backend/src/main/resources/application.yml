@@ -52,3 +52,6 @@ management:
         custom:
           show-components: "always"
           show-details: "always"
+rsa:
+  private-key: classpath:certificates/private.pem
+  public-key: classpath:certificates/public.pem

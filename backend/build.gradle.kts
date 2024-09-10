@@ -40,7 +40,9 @@ dependencies {
     implementation(libs.logbackJackson)
     implementation(libs.jacksonDatabind)
     implementation ("com.github.skjolber.logback-logstash-syntax-highlighting-decorators:logback-logstash-syntax-highlighting-decorators:1.0.6")
-    agent("org.aspectj:aspectjweaver:1.9.20.1")
+    agent("org.aspectj:aspectjweaver:1.9.22.1")
+    runtimeOnly("org.aspectj:aspectjweaver:1.9.22.1")
+    runtimeOnly("org.aspectj:aspectjrt:1.9.22.1")
     // spring-boot-starter
     implementation("org.springframework.boot:spring-boot-starter-web")
     implementation("org.springframework.boot:spring-boot-starter-data-jpa")
@@ -50,8 +52,10 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.boot:spring-boot-starter-hateoas")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
+    implementation("org.springframework:spring-aspects:6.1.12")
     // webflux
     implementation("org.springframework:spring-webflux:6.1.2")
+    implementation("org.springframework.boot:spring-boot-configuration-processor:3.3.3")
     // flyway (db migration)
     implementation("org.flywaydb:flyway-core")
     implementation("org.flywaydb:flyway-database-postgresql")

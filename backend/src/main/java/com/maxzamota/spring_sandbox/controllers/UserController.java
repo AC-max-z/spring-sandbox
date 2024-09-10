@@ -87,9 +87,7 @@ public class UserController implements EntityController<Integer, UserEntity, Use
         EntityModel<UserDto> userDtoModel = assembler.toDtoModel(dto);
 
         return ResponseEntity
-                .created(
-                        userDtoModel.getRequiredLink(IanaLinkRelations.SELF).toUri()
-                )
+                .created(userDtoModel.getRequiredLink(IanaLinkRelations.SELF).toUri())
                 .body(userDtoModel);
     }
 

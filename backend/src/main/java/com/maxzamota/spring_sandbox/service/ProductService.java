@@ -18,6 +18,8 @@ import java.sql.Timestamp;
 import java.util.Collection;
 import java.util.Objects;
 
+import static net.logstash.logback.argument.StructuredArguments.keyValue;
+
 @Service
 @Slf4j
 public class ProductService {
@@ -35,10 +37,12 @@ public class ProductService {
 
     public ProductEntity getById(Integer id) {
         String username = getUsername();
-        log.info("Attempt to fetch Product by id {} by user {}", id, username);
+        log.info("Attempt to fetch Product by id {} by user {}",
+                id, keyValue("username", username));
         return this.repository.findById(id)
                 .orElseThrow(() -> {
-                    log.warn("Fetch Product by id {} by user {} failed - not found", id, username);
+                    log.warn("Fetch Product by id {} by user {} failed - not found",
+                            id, keyValue("username", username));
                     return new ResourceNotFoundException("Entity with id={%s} not found"
                             .formatted(id));
                 });
@@ -46,21 +50,23 @@ public class ProductService {
 
     public ProductEntity save(ProductEntity product) {
         String username = getUsername();
-        log.info("Attempt to save Product {} by user {}", product, username);
+        log.info("Attempt to save Product {} by user {}", product, keyValue("username", username));
         if (this.repository.existsByName(product.getName())) {
             log.warn("Attempt to save Product {} with duplicate name by user {}",
-                    product, username);
+                    product, keyValue("username", username));
             throw new DuplicateResourceException("Entity with name={%s} already exists"
                     .formatted(product.getName()));
         }
         ProductEntity savedProduct = this.repository.save(product);
-        log.info("Product {} successfully saved by user {}", savedProduct, username);
+        log.info("Product {} successfully saved by user {}", savedProduct,
+                keyValue("username", username));
         return savedProduct;
     }
 
     public String deleteById(Integer id) {
         String username = getUsername();
-        log.info("Attempt to soft-delete Product by id {} by user {}", id, username);
+        log.info("Attempt to soft-delete Product by id {} by user {}",
+                id, keyValue("username", username));
         this.repository.deleteById(id);
         return "Entity with id={%s} successfully deleted (or ignored if it did not exist in the first place)!"
                 .formatted(id);
@@ -68,11 +74,12 @@ public class ProductService {
 
     public ProductEntity update(ProductEntity product) {
         String username = getUsername();
-        log.info("Attempt to update Product {} by user {}", product, username);
+        log.info("Attempt to update Product {} by user {}",
+                product, keyValue("username", username));
 
         if (!this.repository.existsById(product.getId())) {
             log.warn("Product with id {} not found, update by user {} is aborted",
-                    product.getId(), username);
+                    product.getId(), keyValue("username", username));
             throw new ResourceNotFoundException("Product with id={%s} not found!"
                     .formatted(product.getId()));
         }
@@ -80,7 +87,7 @@ public class ProductService {
         ProductEntity currentProduct = this.repository.findById(product.getId()).orElse(null);
         if (product.equals(currentProduct)) {
             log.info("Product {} update by user {} aborted because it is identical to currently stored",
-                    product, username);
+                    product, keyValue("username", username));
             return product;
         }
 
@@ -91,7 +98,7 @@ public class ProductService {
                 .isEmpty()
         ) {
             log.warn("Product {} update by user {} failed: product with name {} already exists",
-                    product, username, product.getName());
+                    product, keyValue("username", username), product.getName());
             throw new DuplicateResourceException("Product with name={%s} already exists"
                     .formatted(product.getName()));
         }
@@ -101,7 +108,8 @@ public class ProductService {
                 : new Timestamp(System.currentTimeMillis())
         );
         ProductEntity updated = this.repository.save(product);
-        log.info("Product {} successfully updated by user {}", updated, username);
+        log.info("Product {} successfully updated by user {}",
+                updated, keyValue("username", username));
         return updated;
     }
 
@@ -111,14 +119,16 @@ public class ProductService {
 
     public Page<ProductEntity> getAll(Pageable pageable) {
         String username = getUsername();
-        log.info("Attempt to fetch all Products with pageable {} by user {}", pageable, username);
+        log.info("Attempt to fetch all Products with pageable {} by user {}",
+                pageable, keyValue("username", username));
         try {
             Page<ProductEntity> products = this.repository.findAll(pageable);
-            log.info("Products successfully fetched by user {}", username);
+            log.info("Products successfully fetched by user {}",
+                    keyValue("username", username));
             log.debug(products.toString());
             return products;
         } catch (PropertyReferenceException e) {
-            log.error("Exception fetching Products by user {}", username);
+            log.error("Exception fetching Products by user {}", keyValue("username", username));
             log.error("Message: {}", e.getMessage());
             log.debug("Stacktrace: {}", (Object) e.getStackTrace());
             throw new BadRequestException(e.getMessage());
