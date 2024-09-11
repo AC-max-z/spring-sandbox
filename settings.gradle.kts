@@ -7,4 +7,3 @@ pluginManagement {
 }
 include("backend")
 include("ui-tests")
-include("performance-tests-gatling")

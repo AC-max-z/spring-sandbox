@@ -18,15 +18,15 @@
                         class="com.github.skjolber.decorators.factory.ConfigurableSyntaxHighlighterFactory">
                     <stringValue>blue</stringValue>
                     <!--                    <numberValue>black highIntensity</numberValue>-->
-                    <fieldName>green</fieldName>
+                    <fieldName>cyan</fieldName>
                     <binaryValue>yellowBackground</binaryValue>
                     <booleanValue>cyan</booleanValue>
-                    <nullValue>black</nullValue>
-                    <curlyBrackets>green</curlyBrackets>
-                    <squareBrackets>green</squareBrackets>
-                    <colon>green</colon>
+                    <nullValue>magenta</nullValue>
+                    <curlyBrackets>white</curlyBrackets>
+                    <squareBrackets>white</squareBrackets>
+                    <colon>white</colon>
                     <whitespace>green</whitespace>
-                    <comma>green</comma>
+                    <comma>white</comma>
                 </syntaxHighlighterFactory>
                 <syntaxHighlighterFactory
                         class="com.github.skjolber.decorators.factory.LogLevelSyntaxHighlighterFactory">
@@ -34,6 +34,8 @@
                         <info>green</info>
                         <warning>yellow</warning>
                         <error>red</error>
+                        <trace>white</trace>
+                        <debug>magenta</debug>
                     </level>
                     <message>highIntensity blue</message>
                 </syntaxHighlighterFactory>

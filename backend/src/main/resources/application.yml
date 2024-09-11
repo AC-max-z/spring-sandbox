@@ -12,6 +12,9 @@ cors:
 logging:
   level:
     org.springframework.security: TRACE
+    org.springframework.web: TRACE
+    org.hibernate.SQL: DEBUG
+    com.maxzamota.spring_sandbox: TRACE
 
 spring:
 #  security:
@@ -40,6 +43,9 @@ spring:
   output:
     ansi:
       enabled: always
+  threads:
+    virtual:
+      enabled: true
 
 management:
   endpoints:

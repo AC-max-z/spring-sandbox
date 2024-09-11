@@ -9,6 +9,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
+import java.util.Objects;
+
 import static net.logstash.logback.argument.StructuredArguments.keyValue;
 
 @Aspect
@@ -18,7 +20,7 @@ public class LoggingAspect {
     @Before("execution(* com.maxzamota.spring_sandbox.service.*.*(..))")
     public void logBeforeExecution(JoinPoint joinPoint) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String username = auth != null ? auth.getName() : "anonymous";
+        String username = Objects.nonNull(auth) ? auth.getName() : "anonymous";
         log.info("User {} entering method {}",
                 keyValue("username", username),
                 joinPoint.getSignature().toShortString()
@@ -28,7 +30,7 @@ public class LoggingAspect {
     @After("execution(* com.maxzamota.spring_sandbox.service.*.*(..))")
     public void logAfterExecution(JoinPoint joinPoint) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        String username = auth != null ? auth.getName() : "anonymous";
+        String username = Objects.nonNull(auth) ? auth.getName() : "anonymous";
         log.info("User {} leaving method {}",
                 keyValue("username", username),
                 joinPoint.getSignature().toShortString()

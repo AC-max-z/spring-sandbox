@@ -139,7 +139,7 @@ tasks {
 
 jib {
     from {
-        image = "eclipse-temurin:21"
+        image = "eclipse-temurin:21-alpine"
         platforms {
             platform {
                 architecture = "amd64"
