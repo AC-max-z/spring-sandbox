@@ -28,12 +28,9 @@ public class WaitConfiguration {
         this.driver = driver;
         PageFactory.initElements(this.driver, this);
 
-        int waitTimeout = driverConfig.getWaitTimeoutMillis();
-        int pollingInterval = driverConfig.getPollingIntervalMillis();
-
         this.wait = new FluentWait<>(this.driver)
-                .withTimeout(Duration.ofMillis(waitTimeout))
-                .pollingEvery(Duration.ofMillis(pollingInterval))
+                .withTimeout(Duration.ofMillis(driverConfig.getWaitTimeoutMillis()))
+                .pollingEvery(Duration.ofMillis(driverConfig.getPollingIntervalMillis()))
                 .ignoring(NoSuchElementException.class);
 
         this.driver.manage().timeouts().implicitlyWait(Duration.ofMillis(implicitWait));

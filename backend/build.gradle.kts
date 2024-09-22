@@ -12,14 +12,20 @@ plugins {
     id("io.freefair.lombok")
     id("org.gradle.test-retry") version "1.5.8"
     id("com.google.cloud.tools.jib") version "3.4.0"
+    application
 }
-
 group = "com.maxzamota"
 version = "0.0.1-SNAPSHOT"
 
 java {
     sourceCompatibility = JavaVersion.VERSION_21
 }
+
+application {
+    mainClass = "com.maxzamota.spring_sandbox.SpringBootExampleApplication"
+    applicationDefaultJvmArgs = listOf("-XX:+UseZGC")
+}
+
 
 repositories {
     mavenCentral()
@@ -51,6 +57,7 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-actuator")
     implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.boot:spring-boot-starter-hateoas")
+    implementation("org.springframework.hateoas:spring-hateoas")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     implementation("org.springframework:spring-aspects:6.1.12")
     // webflux

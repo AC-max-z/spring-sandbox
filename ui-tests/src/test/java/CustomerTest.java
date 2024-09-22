@@ -1,11 +1,9 @@
 import generators.CustomerGenerator;
 import helpers.CustomerHelper;
-import io.qameta.allure.Description;
-import io.qameta.allure.Epic;
-import io.qameta.allure.Severity;
-import io.qameta.allure.SeverityLevel;
+import io.qameta.allure.*;
 import matchers.CustomerMatchers;
 import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -21,6 +19,8 @@ import org.springsandbox.factories.WebDriverFactory;
 import org.springsandbox.pages.CreateCustomerForm;
 import org.springsandbox.pages.IndexPage;
 import org.springsandbox.pages.UpdateCustomerForm;
+import util.DriverLogger;
+import util.ScreenshotExtension;
 import util.TestDataProvider;
 
 import java.net.MalformedURLException;
@@ -32,6 +32,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static util.Step.step;
 
 @Execution(ExecutionMode.CONCURRENT)
+@ExtendWith({ScreenshotExtension.class})
 @Epic("Customer UI tests")
 @Tags({
         @Tag("UI"),
@@ -48,9 +49,16 @@ public class CustomerTest {
     static void beforeAll() {
     }
 
+    @BeforeEach
+    void setUp(TestInfo testInfo) {
+        loggerThreadLocal.set(LoggerFactory.getLogger(
+                testInfo.getTestClass().get().getName()));
+    }
+
     @AfterEach
     void tearDown() {
         if (Objects.nonNull(driverThreadLocal.get())) {
+            Allure.step("Close driver");
             driverThreadLocal.get().quit();
         }
     }
@@ -72,13 +80,13 @@ public class CustomerTest {
             TestInfo testInfo
     ) throws MalformedURLException, URISyntaxException {
         // Arrange
-        loggerThreadLocal.set(LoggerFactory.getLogger(testInfo.getTestClass().get().getName()
-                + ":" + driverType));
         var logger = loggerThreadLocal.get();
 
         step("Create driver instance %s".formatted(driverType), logger);
         driverThreadLocal.set(WebDriverFactory.getDriver(driverType));
         var driver = driverThreadLocal.get();
+        ScreenshotExtension.setDriver(driver);
+
         var indexPage = new IndexPage(driver);
 
         // Act
@@ -106,6 +114,8 @@ public class CustomerTest {
         indexPage.clickDeleteCustomer(createdCustomerCard);
         indexPage.confirmDeleteCustomer();
         assertThat(indexPage.getCustomerCardWithEmail(customer.getEmail())).isNull();
+        // collect driver logs?
+        DriverLogger.log(logger, driver.manage().logs());
     }
 
     @ParameterizedTest(name = "{displayName} (driver: {0})")
@@ -119,16 +129,19 @@ public class CustomerTest {
     })
     @Severity(SeverityLevel.BLOCKER)
     void shouldDisplayUpdatedCustomerAfterEdit(
-            DriverType driverType, Customer initialCustomer, Customer updatedCustomer, TestInfo testInfo
+            DriverType driverType,
+            Customer initialCustomer,
+            Customer updatedCustomer,
+            TestInfo testInfo
     ) throws MalformedURLException, URISyntaxException {
         // Arrange
-        loggerThreadLocal.set(LoggerFactory.getLogger(testInfo.getTestClass().get().getName()
-                + ":" + driverType));
         var logger = loggerThreadLocal.get();
 
         step("Create driver instance %s".formatted(driverType), logger);
         driverThreadLocal.set(WebDriverFactory.getDriver(driverType));
         var driver = driverThreadLocal.get();
+        ScreenshotExtension.setDriver(driver);
+
         var indexPage = new IndexPage(driver);
 
         // Act
@@ -138,12 +151,14 @@ public class CustomerTest {
         step("Click create customer button", logger);
         indexPage.clickCreateCustomerButton();
 
-        step("Fill in create customer form with initial data " + initialCustomer.toString(), logger);
+        step("Fill in create customer form with initial data " +
+                initialCustomer.toString(), logger);
         CreateCustomerForm createCustomerForm = new CreateCustomerForm(driver);
         CustomerHelper.createCustomer(createCustomerForm, initialCustomer);
 
         step("Find created customer card on index page", logger);
-        WebElement createdCustomerCard = indexPage.getCustomerCardWithEmail(initialCustomer.getEmail());
+        WebElement createdCustomerCard = indexPage.getCustomerCardWithEmail(
+                initialCustomer.getEmail());
         indexPage.clickEditCustomer(createdCustomerCard);
 
         step("Click edit customer button", logger);
@@ -154,11 +169,12 @@ public class CustomerTest {
 
         // Assert
         step("Find updated customer card", logger);
-        WebElement updatedCustomerCard = indexPage.getCustomerCardWithEmail(updatedCustomer.getEmail());
+        WebElement updatedCustomerCard = indexPage.getCustomerCardWithEmail(
+                updatedCustomer.getEmail());
         assertThat(updatedCustomerCard).isNotNull();
 
         // TODO: add success toast isDisplayed check
-        step( "Check that data on that card is as generated", logger);
+        step("Check that data on that card is as generated", logger);
         CustomerMatchers.formContainsCustomer(indexPage, updatedCustomerCard, updatedCustomer);
 
         // Cleanup
@@ -166,6 +182,8 @@ public class CustomerTest {
         indexPage.clickDeleteCustomer(updatedCustomerCard);
         indexPage.confirmDeleteCustomer();
         assertThat(indexPage.getCustomerCardWithEmail(updatedCustomer.getEmail())).isNull();
+        // collect driver logs?
+        DriverLogger.log(logger, driver.manage().logs());
 
     }
 
@@ -179,7 +197,8 @@ public class CustomerTest {
     }
 
     private static Stream<Arguments> provideCustomerDataFromYml() {
-        return TestDataProvider.provideCustomerData().getData()
+        return Objects.requireNonNull(TestDataProvider.provideCustomerData())
+                .getData()
                 .stream()
                 .map(data -> Arguments.of(data.getDriverType(),
                         data.getCustomers().iterator().next(),
