@@ -132,7 +132,6 @@ public class BrandService {
         try {
             Page<BrandEntity> brands = this.repository.findAll(pageable);
             log.info("Brands successfully fetched by user {}", keyValue("username", username));
-            log.debug(brands.toString());
             return brands;
         } catch (PropertyReferenceException e) {
             log.error("Exception fetching Brands by user {}", keyValue("username", username));

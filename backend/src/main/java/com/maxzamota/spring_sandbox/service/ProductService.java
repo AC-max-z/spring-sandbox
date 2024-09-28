@@ -126,7 +126,6 @@ public class ProductService {
             Page<ProductEntity> products = this.repository.findAll(pageable);
             log.info("Products successfully fetched by user {}",
                     keyValue("username", username));
-            log.debug(products.toString());
             return products;
         } catch (PropertyReferenceException e) {
             log.error("Exception fetching Products by user {}", keyValue("username", username));
