@@ -23,4 +23,6 @@ public class DriverConfig {
     private Boolean firefoxLocalLoggingEnabled;
     @JsonProperty("firefoxLocalLogPath")
     private String firefoxLocalLogPath;
+    @JsonProperty("pageLoadTimeoutMillis")
+    private Integer pageLoadTimeoutMillis;
 }

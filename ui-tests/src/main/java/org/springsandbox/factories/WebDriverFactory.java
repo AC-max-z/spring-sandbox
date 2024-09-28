@@ -1,15 +1,18 @@
 package org.springsandbox.factories;
 
+import org.openqa.selenium.PageLoadStrategy;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeDriverService;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.firefox.FirefoxDriverLogLevel;
 import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.firefox.GeckoDriverService;
 import org.openqa.selenium.logging.LogType;
 import org.openqa.selenium.logging.LoggingPreferences;
 import org.openqa.selenium.remote.AbstractDriverOptions;
+import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.remote.RemoteWebDriver;
 import org.springsandbox.config.DriverConfig;
@@ -22,6 +25,7 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.time.Duration;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
@@ -84,7 +88,7 @@ public class WebDriverFactory {
 
     private static ChromeOptions getChromeOptions() {
         var opts = new ChromeOptions();
-        opts.setEnableDownloads(true);
+        setGenericDriverOptions(opts);
 
         var logPrefs = getLoggingPreferences();
         opts.setCapability("goog:loggingPrefs", logPrefs);
@@ -102,14 +106,22 @@ public class WebDriverFactory {
 
     private static FirefoxOptions getFirefoxOptions() {
         var opts = new FirefoxOptions();
-        opts.setEnableDownloads(true);
+        setGenericDriverOptions(opts);
 
-        var logPrefs = getLoggingPreferences();
-        // TODO: set option for firefox logging?
+        opts.setLogLevel(FirefoxDriverLogLevel.TRACE);
 
         setSelenoidOptions(opts);
 
         return opts;
+    }
+
+    private static void setGenericDriverOptions(AbstractDriverOptions<?> opts) {
+        opts.setEnableDownloads(true);
+        opts.setBrowserVersion("latest");
+        opts.setPageLoadStrategy(PageLoadStrategy.NORMAL);
+        opts.setPageLoadTimeout(Duration.ofMillis(DRIVER_CONFIG.getPageLoadTimeoutMillis()));
+        opts.setAcceptInsecureCerts(false);
+        opts.setImplicitWaitTimeout(Duration.ofMillis(DRIVER_CONFIG.getImplicitWaitMillis()));
     }
 
     private static ChromeDriverService getChromeService() {
