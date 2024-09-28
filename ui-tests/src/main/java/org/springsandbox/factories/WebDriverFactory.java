@@ -22,6 +22,7 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
@@ -113,7 +114,8 @@ public class WebDriverFactory {
 
     private static ChromeDriverService getChromeService() {
         if (DRIVER_CONFIG.getChromeLocalLoggingEnabled()) {
-            var logFile = new File(DRIVER_CONFIG.getChromeLocalLogPath());
+            var logFile = new File(DRIVER_CONFIG.getChromeLocalLogPath() +
+                    "/chrome_" + LocalDate.ofEpochDay(System.currentTimeMillis()) + ".log");
             return new ChromeDriverService.Builder()
                     .withLogOutput(System.out)
                     .withLogFile(logFile)
@@ -128,7 +130,8 @@ public class WebDriverFactory {
 
     private static GeckoDriverService getGeckoService() {
         if (DRIVER_CONFIG.getFirefoxLocalLoggingEnabled()) {
-            var logFile = new File(DRIVER_CONFIG.getFirefoxLocalLogPath());
+            var logFile = new File(DRIVER_CONFIG.getFirefoxLocalLogPath() +
+                    "/firefox_" + LocalDate.ofEpochDay(System.currentTimeMillis()) + ".log");
             return new GeckoDriverService.Builder()
                     .withLogFile(logFile)
                     .build();

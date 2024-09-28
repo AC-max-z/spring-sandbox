@@ -2,6 +2,6 @@ waitTimeoutMillis: 10000
 implicitWaitMillis: 500
 pollingIntervalMillis: 50
 chromeLocalLoggingEnabled: true
-chromeLocalLogPath: src/test/resources/logs/chrome.log
+chromeLocalLogPath: src/test/resources/logs
 firefoxLocalLoggingEnabled: true
-firefoxLocalLogPath: src/test/resources/logs/firefox.log
+firefoxLocalLogPath: src/test/resources/logs

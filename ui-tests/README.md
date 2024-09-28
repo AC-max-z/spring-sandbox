@@ -36,9 +36,9 @@ implicitWaitMillis: 500
 # WebDriver fluent wait polling interval in ms
 pollingIntervalMillis: 50
 chromeLocalLoggingEnabled: true
-chromeLocalLogPath: src/test/resources/logs/chrome.log
+chromeLocalLogPath: src/test/resources/logs
 firefoxLocalLoggingEnabled: true
-firefoxLocalLogPath: src/test/resources/logs/firefox.log
+firefoxLocalLogPath: src/test/resources/logs
 ```
 Customer test data example:
 ```yaml
