@@ -15,6 +15,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Objects;
 
@@ -130,7 +131,7 @@ public class ProductService {
         } catch (PropertyReferenceException e) {
             log.error("Exception fetching Products by user {}", keyValue("username", username));
             log.error("Message: {}", e.getMessage());
-            log.debug("Stacktrace: {}", (Object) e.getStackTrace());
+            log.debug("Stacktrace: {}", Arrays.toString(e.getStackTrace()));
             throw new BadRequestException(e.getMessage());
         }
     }

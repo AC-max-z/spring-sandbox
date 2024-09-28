@@ -16,12 +16,11 @@ public class CustomerHelper {
     }
 
     public static void editCustomer(UpdateCustomerForm updateCustomerForm, Customer customer) {
-        if (
-                Objects.nonNull(customer.getName())
-                        && !updateCustomerForm
-                        .getNameInput()
-                        .getAttribute("value")
-                        .equals(customer.getName())
+        if (Objects.nonNull(customer.getName())
+                && !updateCustomerForm
+                .getNameInput()
+                .getAttribute("value")
+                .equals(customer.getName())
         ) {
             updateCustomerForm.enterValueToNameInput(customer.getName());
         }

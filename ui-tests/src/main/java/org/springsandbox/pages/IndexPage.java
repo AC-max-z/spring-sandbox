@@ -29,7 +29,7 @@ public class IndexPage extends BasePage {
     private WebElement confirmDeleteButton;
 
     public List<WebElement> getCustomerCards() {
-        return getElements(customerCards);
+        return getVisibleElements(customerCards);
     }
 
     public WebElement getCustomerCardWithEmail(String email) {
@@ -43,14 +43,14 @@ public class IndexPage extends BasePage {
     }
 
     public String getCustomerNameFromCard(WebElement customerCard) {
-        getElement(customerCard);
+        getVisibleElement(customerCard);
         return customerCard
                 .findElement(By.xpath(".//h2"))
                 .getText();
     }
 
     public Integer getCustomerAgeFromCard(WebElement customerCard) {
-        getElement(customerCard);
+        getVisibleElement(customerCard);
         return Integer
                 .parseInt(customerCard
                         .findElement(By.xpath(".//p/span"))
@@ -60,43 +60,43 @@ public class IndexPage extends BasePage {
     }
 
     public String getCustomerGenderFromCard(WebElement customerCard) {
-        getElement(customerCard);
+        getVisibleElement(customerCard);
         return customerCard
                 .findElement(By.xpath(".//span[contains(@class, 'chakra-badge')]"))
                 .getText();
     }
 
     public WebElement getCreateCustomerButton() {
-        return getElement(createCustomerButton);
+        return getVisibleElement(createCustomerButton);
     }
 
     public void clickCreateCustomerButton() {
-        clickElement(createCustomerButton);
+        waitAndClickElement(createCustomerButton);
     }
 
     public void clickDeleteCustomer(WebElement customerCard) {
-        WebElement deleteButton = customerCard.findElement(By.xpath(".//button[text()='Delete']"));
+        var deleteButton = customerCard.findElement(By.xpath(".//button[text()='Delete']"));
         // TODO: this is done with duct tape because success toast in displayed on top of delete button
         //  and prevents from clicking it until it disappears
         //  Solution 0 (shitty): scroll down a bit
         //  Solution 1 (ok): close toast
         //  CBA doing any of them atm so...
         Unreliables.retryUntilSuccess(10, TimeUnit.SECONDS, () -> {
-            clickElement(deleteButton);
+            waitAndClickElement(deleteButton);
             return null;
         });
     }
 
     public void clickEditCustomer(WebElement customerCard) {
-        WebElement editButton = customerCard.findElement(By.xpath(".//button[text()='Edit']"));
+        var editButton = customerCard.findElement(By.xpath(".//button[text()='Edit']"));
         Unreliables.retryUntilSuccess(10, TimeUnit.SECONDS, () -> {
-            clickElement(editButton);
+            waitAndClickElement(editButton);
             return null;
         });
     }
 
     public void confirmDeleteCustomer() {
-        clickElement(confirmDeleteButton);
+        waitAndClickElement(confirmDeleteButton);
     }
 
 }

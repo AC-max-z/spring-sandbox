@@ -8,8 +8,8 @@ import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.Select;
 import org.springsandbox.config.EnvConfig;
 import org.springsandbox.enums.WaitCondition;
-import org.springsandbox.util.AppConfig;
-import org.springsandbox.util.WaitConfiguration;
+import org.springsandbox.utils.Configs;
+import org.springsandbox.utils.DriverWaitConfiguration;
 
 import java.util.List;
 
@@ -19,23 +19,23 @@ import java.util.List;
  * (everything is pretty self-explanatory, but verbosely commented just in case)
  */
 public abstract class BasePage {
-    protected final WebDriver driver;
-    private final EnvConfig envConfig = AppConfig.getEnvConfig();
-    protected final String baseUrl = envConfig.getAppUrl();
-    protected final WaitConfiguration waits;
+    protected final WebDriver DRIVER;
+    private final EnvConfig ENV_CONFIG = Configs.getEnvConfig();
+    protected final String BASE_URL = ENV_CONFIG.getAppUrl();
+    protected final DriverWaitConfiguration DRIVER_WAIT_CONFIG;
 
     protected BasePage(WebDriver driver) {
-        this.driver = driver;
-        PageFactory.initElements(this.driver, this);
-        this.waits = new WaitConfiguration(this.driver);
+        this.DRIVER = driver;
+        PageFactory.initElements(DRIVER, this);
+        this.DRIVER_WAIT_CONFIG = new DriverWaitConfiguration(DRIVER);
     }
 
     public String getPageUrl() {
-        return baseUrl;
+        return BASE_URL;
     }
 
     public void goTo() {
-        driver.get(baseUrl);
+        DRIVER.get(BASE_URL);
     }
 
     /**
@@ -46,12 +46,12 @@ public abstract class BasePage {
      * @param element - WebElement
      * @return - provided Element
      */
-    protected WebElement getElement(WebElement element) {
+    protected WebElement getVisibleElement(WebElement element) {
         try {
-            waits.waitForElement(WaitCondition.VISIBLE, element);
+            DRIVER_WAIT_CONFIG.waitForElement(WaitCondition.VISIBLE, element);
         } catch (StaleElementReferenceException e) {
-            PageFactory.initElements(driver, this);
-            waits.waitForElement(WaitCondition.VISIBLE, element);
+            PageFactory.initElements(DRIVER, this);
+            DRIVER_WAIT_CONFIG.waitForElement(WaitCondition.VISIBLE, element);
         }
         return element;
     }
@@ -66,10 +66,10 @@ public abstract class BasePage {
      */
     protected WebElement getClickableElement(WebElement element) {
         try {
-            waits.waitForElement(WaitCondition.CLICKABLE, element);
+            DRIVER_WAIT_CONFIG.waitForElement(WaitCondition.CLICKABLE, element);
         } catch (StaleElementReferenceException e) {
-            PageFactory.initElements(driver, this);
-            waits.waitForElement(WaitCondition.CLICKABLE, element);
+            PageFactory.initElements(DRIVER, this);
+            DRIVER_WAIT_CONFIG.waitForElement(WaitCondition.CLICKABLE, element);
         }
         return element;
     }
@@ -82,12 +82,12 @@ public abstract class BasePage {
      * @param elements - List of WebElements
      * @return - provided List of WebElements
      */
-    protected List<WebElement> getElements(List<WebElement> elements) {
+    protected List<WebElement> getVisibleElements(List<WebElement> elements) {
         try {
-            waits.waitForElements(WaitCondition.VISIBLE, elements);
+            DRIVER_WAIT_CONFIG.waitForElements(WaitCondition.VISIBLE, elements);
         } catch (StaleElementReferenceException e) {
-            PageFactory.initElements(driver, this);
-            waits.waitForElements(WaitCondition.VISIBLE, elements);
+            PageFactory.initElements(DRIVER, this);
+            DRIVER_WAIT_CONFIG.waitForElements(WaitCondition.VISIBLE, elements);
         }
         return elements;
     }
@@ -97,9 +97,8 @@ public abstract class BasePage {
      *
      * @param element - WebElement to click
      */
-    protected void clickElement(WebElement element) {
-        getClickableElement(element);
-        element.click();
+    protected void waitAndClickElement(WebElement element) {
+        getClickableElement(element).click();
     }
 
     /**
@@ -109,7 +108,7 @@ public abstract class BasePage {
      * @param value - value to enter
      * @param input - input WebElement
      */
-    protected void enterValueToInput(String value, WebElement input) {
+    protected void waitAndEnterValueToInput(String value, WebElement input) {
         getClickableElement(input);
         input.click();
         input.clear();
@@ -120,13 +119,12 @@ public abstract class BasePage {
 
     /**
      * Decorator method that waits until provided select WebElement is clickable
-     * and selects it
+     * and selects provided value in it
      *
      * @param value  - value to select
      * @param select - select type WebElement
      */
-    protected void selectValueInSelect(String value, WebElement select) {
-        getClickableElement(select);
-        new Select(select).selectByValue(value);
+    protected void waitAndSelectValueInSelect(String value, WebElement select) {
+        new Select(getClickableElement(select)).selectByValue(value);
     }
 }

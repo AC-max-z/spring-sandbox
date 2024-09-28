@@ -38,28 +38,18 @@ dependencies {
     implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.17.2")
 }
 
-tasks.test {
-    useJUnitPlatform() {
-        excludeTags("E2E", "UI")
-    }
-    systemProperties["junit.jupiter.execution.parallel.enabled"] = true
-    systemProperties["junit.jupiter.execution.parallel.mode.default"] = "concurrent"
-    maxParallelForks = (Runtime.getRuntime().availableProcessors() / 4).takeIf { it > 0 } ?: 1
-    retry {
-        maxRetries.set(2)
-        failOnPassedAfterRetry.set(false)
-    }
-}
 tasks {
-    register("e2e-ui-tests", Test::class.java) {
+    withType<Test> {
         testLogging {
             showExceptions = true
+            exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
             showCauses = true
+            showStackTraces = true
             events("passed")
         }
         val includeTags = System.getProperty("includeTags")
         val excludeTags = System.getProperty("excludeTags")
-        useJUnitPlatform() {
+        useJUnitPlatform {
             if (!includeTags.isNullOrEmpty()) {
                 includeTags(includeTags)
             }
@@ -68,12 +58,23 @@ tasks {
             }
             includeTags("E2E", "UI")
         }
-        systemProperties["junit.jupiter.execution.parallel.enabled"] = true
-        systemProperties["junit.jupiter.execution.parallel.mode.default"] = "concurrent"
-        maxParallelForks = (Runtime.getRuntime().availableProcessors() / 4).takeIf { it > 0 } ?: 1
         retry {
             maxRetries.set(2)
             failOnPassedAfterRetry.set(false)
         }
+        systemProperties["junit.jupiter.execution.parallel.enabled"] = true
+        systemProperties["junit.jupiter.execution.parallel.mode.default"] = "concurrent"
+        maxParallelForks = (Runtime.getRuntime().availableProcessors() / 4).takeIf { it > 0 } ?: 1
+    }
+    
+    register("e2e-ui-tests", Test::class.java) {
+        useJUnitPlatform {
+            includeTags("E2E", "UI")
+        }
+    }
+
+    register<Delete>("deleteAllureStuff") {
+        delete("${projectDir.path}/build/allure-results")
+        delete("${projectDir.path}/build/reports")
     }
 }

@@ -14,7 +14,7 @@ import static net.logstash.logback.argument.StructuredArguments.keyValue;
 @Component
 @Slf4j
 public class PerformanceAspect {
-    @Around("execution(* com.maxzamota.spring_sandbox.service.*.*(..))")
+    @Around("execution(* com.maxzamota.spring_sandbox.controllers.*.*(..))")
     public Object measureExecutionTime(ProceedingJoinPoint joinPoint) throws Throwable {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String username = auth != null ? auth.getName() : "anonymous";
@@ -25,7 +25,7 @@ public class PerformanceAspect {
             return result;
         } finally {
             long end = System.currentTimeMillis();
-            log.info("User {} executed method {} in {} ms",
+            log.info("User {} executed controller method {} in {} ms",
                     keyValue("username", username),
                     joinPoint.getSignature().toShortString(),
                     end - start

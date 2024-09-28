@@ -89,7 +89,9 @@ tasks {
     withType<Test> {
         testLogging {
             showExceptions = true
+            exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
             showCauses = true
+            showStackTraces = true
             events("passed")
         }
         val includeTags = System.getProperty("includeTags")

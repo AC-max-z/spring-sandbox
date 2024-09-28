@@ -1,8 +1,7 @@
 package generators;
 
-import com.github.javafaker.Faker;
 import org.springsandbox.domain.Customer;
-import util.FakerProvider;
+import utils.FakerProvider;
 
 import java.util.List;
 import java.util.Random;
@@ -11,7 +10,7 @@ public class CustomerGenerator implements ObjectGenerator<Customer> {
 
     @Override
     public Customer generate() {
-        Faker faker = FakerProvider.getInstance();
+        var faker = FakerProvider.getInstance();
         return new Customer(
                 faker.name().firstName(),
                 faker.internet().emailAddress(),

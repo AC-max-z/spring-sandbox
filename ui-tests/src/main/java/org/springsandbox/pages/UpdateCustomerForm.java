@@ -34,39 +34,39 @@ public class UpdateCustomerForm extends BasePage {
     private WebElement submitCustomerButton;
 
     public WebElement getNameInput() {
-        return getElement(nameInput);
+        return getVisibleElement(nameInput);
     }
 
     public WebElement getEmailInput() {
-        return getElement(emailInput);
+        return getVisibleElement(emailInput);
     }
 
     public WebElement getAgeInput() {
-        return getElement(ageInput);
+        return getVisibleElement(ageInput);
     }
 
     public Select getGenderSelect() {
-        return new Select(getElement(genderSelect));
+        return new Select(getVisibleElement(genderSelect));
     }
 
     public List<WebElement> getGenderSelectOptions() {
-        return getElements(genderSelectOptions);
+        return getVisibleElements(genderSelectOptions);
     }
 
     public void enterValueToNameInput(String value) {
-        enterValueToInput(value, nameInput);
+        waitAndEnterValueToInput(value, nameInput);
     }
 
     public void enterValueToEmailInput(String value) {
-        enterValueToInput(value, emailInput);
+        waitAndEnterValueToInput(value, emailInput);
     }
 
     public void enterValueToAgeInput(String value) {
-        enterValueToInput(value, ageInput);
+        waitAndEnterValueToInput(value, ageInput);
     }
 
     public void selectValueInGenderSelect(String value) {
-        selectValueInSelect(value, genderSelect);
+        waitAndSelectValueInSelect(value, genderSelect);
     }
 
     public void selectRandomValueInGenderSelect() {
@@ -75,6 +75,6 @@ public class UpdateCustomerForm extends BasePage {
     }
 
     public void clickSubmitCustomerButton() {
-        clickElement(submitCustomerButton);
+        waitAndClickElement(submitCustomerButton);
     }
 }

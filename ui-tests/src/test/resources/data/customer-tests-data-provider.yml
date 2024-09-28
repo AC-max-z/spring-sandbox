@@ -9,7 +9,7 @@ data:
         email: paul@paul.paul
         age: 30
         gender: MALE
-  - driverType: FIREFOX_REMOTE
+  - driverType: CHROME_REMOTE_HEADLESS
     customers:
       - name: Alice
         email: heriohgeri@giewhgwoieg.gewihgw

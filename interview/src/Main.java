@@ -34,14 +34,7 @@ public class Main {
         System.out.println("Merge and sort arrays: "
                 + Arrays.toString(arr1) + ", " + Arrays.toString(arr2));
         System.out.println("Merge and sort:" +
-                Arrays.toString(
-                        mergeAndSort(
-                                arr1,
-                                3,
-                                arr2,
-                                3
-                        )
-                )
+                Arrays.toString(mergeAndSort(arr1, 3, arr2, 3))
         );
         System.out.println("==========================\n");
 

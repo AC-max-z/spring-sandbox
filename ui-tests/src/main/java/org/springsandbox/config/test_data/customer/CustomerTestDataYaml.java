@@ -1,17 +1,16 @@
-package org.springsandbox.domain;
+package org.springsandbox.config.test_data.customer;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
+
 import java.util.Set;
 
 @AllArgsConstructor
+@NoArgsConstructor
 @Getter
 @Setter
 @ToString
 public class CustomerTestDataYaml {
     @JsonProperty("data")
-    private Set<CustomerData> data;
+    private Set<CustomerTestDataEntry> data;
 }

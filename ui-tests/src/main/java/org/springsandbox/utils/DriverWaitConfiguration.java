@@ -1,4 +1,4 @@
-package org.springsandbox.util;
+package org.springsandbox.utils;
 
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
@@ -16,24 +16,24 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 /**
- * Encapsulates the waiting logic
+ * Encapsulates WebDriver's waiting logic configuration
  */
-public class WaitConfiguration {
-    private final WebDriver driver;
-    private final Wait<WebDriver> wait;
-    private final DriverConfig driverConfig = AppConfig.getDriverConfig();
-    private final Integer implicitWait = driverConfig.getImplicitWaitMillis();
+public class DriverWaitConfiguration {
+    private final WebDriver DRIVER;
+    private final Wait<WebDriver> WAIT;
+    private final DriverConfig DRIVER_CONFIG = Configs.getDriverConfig();
+    private final Integer IMPLICIT_WAIT_MS = DRIVER_CONFIG.getImplicitWaitMillis();
 
-    public WaitConfiguration(WebDriver driver) {
-        this.driver = driver;
-        PageFactory.initElements(this.driver, this);
+    public DriverWaitConfiguration(WebDriver driver) {
+        this.DRIVER = driver;
+        PageFactory.initElements(this.DRIVER, this);
 
-        this.wait = new FluentWait<>(this.driver)
-                .withTimeout(Duration.ofMillis(driverConfig.getWaitTimeoutMillis()))
-                .pollingEvery(Duration.ofMillis(driverConfig.getPollingIntervalMillis()))
+        this.WAIT = new FluentWait<>(this.DRIVER)
+                .withTimeout(Duration.ofMillis(DRIVER_CONFIG.getWaitTimeoutMillis()))
+                .pollingEvery(Duration.ofMillis(DRIVER_CONFIG.getPollingIntervalMillis()))
                 .ignoring(NoSuchElementException.class);
 
-        this.driver.manage().timeouts().implicitlyWait(Duration.ofMillis(implicitWait));
+        this.DRIVER.manage().timeouts().implicitlyWait(Duration.ofMillis(IMPLICIT_WAIT_MS));
     }
 
     @FindBy(xpath = "//span[contains(text(), 'Loading')]")
@@ -45,11 +45,11 @@ public class WaitConfiguration {
      */
     public void waitForPageLoading() {
         temporarilyDisableImplicitWait(() -> {
-            wait.until(webDriver -> ((JavascriptExecutor) webDriver)
+            WAIT.until(webDriver -> ((JavascriptExecutor) webDriver)
                     .executeScript("return document.readyState")
                     .equals("complete")
             );
-            wait.until(ExpectedConditions.invisibilityOf(loadingSpinner));
+            WAIT.until(ExpectedConditions.invisibilityOf(loadingSpinner));
         });
     }
 
@@ -65,11 +65,11 @@ public class WaitConfiguration {
         waitForPageLoading();
         temporarilyDisableImplicitWait(() -> {
             switch (condition) {
-                case VISIBLE -> wait
+                case VISIBLE -> WAIT
                         .until(ExpectedConditions.visibilityOf(element));
-                case CLICKABLE -> wait
+                case CLICKABLE -> WAIT
                         .until(ExpectedConditions.elementToBeClickable(element));
-                case INVISIBLE -> wait
+                case INVISIBLE -> WAIT
                         .until(ExpectedConditions.invisibilityOf(element));
             }
         });
@@ -87,11 +87,12 @@ public class WaitConfiguration {
         waitForPageLoading();
         temporarilyDisableImplicitWait(() -> {
             switch (condition) {
-                case VISIBLE -> wait
+                case VISIBLE -> WAIT
                         .until(ExpectedConditions.visibilityOfAllElements(elements));
-                case INVISIBLE -> wait
+                case INVISIBLE -> WAIT
                         .until(ExpectedConditions.invisibilityOfAllElements(elements));
-                default -> throw new IllegalArgumentException("Unexpected value: " + condition);
+                default -> throw new IllegalArgumentException(
+                        "Unexpected wait condition value provided for list of elements: " + condition);
             }
         });
     }
@@ -103,11 +104,11 @@ public class WaitConfiguration {
      * @param action - Runnable action to execute that contains explicit waits
      */
     private void temporarilyDisableImplicitWait(Runnable action) {
-        driver.manage().timeouts().implicitlyWait(Duration.ofMillis(0));
+        DRIVER.manage().timeouts().implicitlyWait(Duration.ofMillis(0));
         try {
             action.run();
         } finally {
-            driver.manage().timeouts().implicitlyWait(Duration.ofMillis(implicitWait));
+            DRIVER.manage().timeouts().implicitlyWait(Duration.ofMillis(IMPLICIT_WAIT_MS));
         }
     }
 }

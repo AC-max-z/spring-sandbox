@@ -26,6 +26,7 @@ public class CustomUserDetailsService implements UserDetailsService {
                         .roles(userEntity.getRole())
                         .build()
                 )
-                .orElseThrow(() -> new UsernameNotFoundException("User with email={%s} not found!".formatted(username)));
+                .orElseThrow(() -> new UsernameNotFoundException(
+                        "User with email={%s} not found!".formatted(username)));
     }
 }

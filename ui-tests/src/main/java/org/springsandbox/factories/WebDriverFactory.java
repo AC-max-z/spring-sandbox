@@ -15,122 +15,143 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 import org.springsandbox.config.DriverConfig;
 import org.springsandbox.config.EnvConfig;
 import org.springsandbox.enums.DriverType;
-import org.springsandbox.util.AppConfig;
+import org.springsandbox.utils.Configs;
 
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 
 public class WebDriverFactory {
-    private static final DriverConfig driverConfig = AppConfig.getDriverConfig();
-    private static final EnvConfig envConfig = AppConfig.getEnvConfig();
+    private static final DriverConfig DRIVER_CONFIG = Configs.getDriverConfig();
+    private static final EnvConfig ENV_CONFIG = Configs.getEnvConfig();
+    private static final URL GRID_URL;
 
-    public static WebDriver getDriver(DriverType driverType) throws URISyntaxException, MalformedURLException {
+    static {
+        try {
+            GRID_URL = new URI(ENV_CONFIG.getGridUrl()).toURL();
+        } catch (MalformedURLException | URISyntaxException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static WebDriver getDriver(DriverType driverType) {
         return switch (driverType) {
 
             case DriverType.CHROME -> {
-                ChromeDriverService service;
-                if (driverConfig.getChromeLocalLoggingEnabled()) {
-                    File logLocation = new File(driverConfig.getChromeLocalLogPath());
-                    service = new ChromeDriverService.Builder()
-                            .withLogOutput(System.out)
-                            .withLogFile(logLocation)
-                            .withReadableTimestamp(true)
-                            .build();
-                } else {
-                    service = new ChromeDriverService.Builder()
-                            .withLogOutput(System.out)
-                            .withReadableTimestamp(true)
-                            .build();
-                }
-                var opts = new ChromeOptions();
+                var service = getChromeService();
+                var opts = getChromeOptions();
                 yield new ChromeDriver(service, opts);
             }
 
             case DriverType.FIREFOX -> {
-                GeckoDriverService geckoService;
-                if (driverConfig.getFirefoxLocalLoggingEnabled()) {
-                    File logLocation = new File(driverConfig.getFirefoxLocalLogPath());
-                    geckoService =
-                            new GeckoDriverService.Builder()
-                                    .withLogFile(logLocation)
-                                    .build();
-                } else {
-                    geckoService = new GeckoDriverService.Builder()
-                            .withLogOutput(System.out)
-                            .build();
-                }
-                var opts = new FirefoxOptions();
+                var geckoService = getGeckoService();
+                var opts = getFirefoxOptions();
                 yield new FirefoxDriver(geckoService, opts);
             }
 
             case DriverType.FIREFOX_REMOTE -> {
-                FirefoxOptions opts = new FirefoxOptions();
-                opts.setEnableDownloads(true);
-                LoggingPreferences logPrefs = new LoggingPreferences();
-                setLoggingPreferences(logPrefs);
-                // TODO: set capability for firefox logging
-                setSelenoidOptions(opts);
-                yield new RemoteWebDriver(new URI(envConfig.getGridUrl()).toURL(), opts);
+                var opts = getFirefoxOptions();
+                yield new RemoteWebDriver(GRID_URL, opts);
             }
 
             case DriverType.CHROME_REMOTE -> {
-                ChromeOptions options = new ChromeOptions();
-                options.setEnableDownloads(true);
-                LoggingPreferences logPrefs = new LoggingPreferences();
-                setLoggingPreferences(logPrefs);
-                options.setCapability("goog:loggingPrefs", logPrefs);
-                setSelenoidOptions(options);
-                yield new RemoteWebDriver(new URI(envConfig.getGridUrl()).toURL(), options);
+                var opts = getChromeOptions();
+                yield new RemoteWebDriver(GRID_URL, opts);
             }
 
             case CHROME_REMOTE_HEADLESS -> {
-                var options = new ChromeOptions();
-                options.setEnableDownloads(true);
-                LoggingPreferences logPrefs = new LoggingPreferences();
-                setLoggingPreferences(logPrefs);
-                Map<String, Object> perfLogPrefs = new HashMap<>();
-                perfLogPrefs.put("enableNetwork", true);
-                perfLogPrefs.put("traceCategories", "devtools.network");
-                options.setExperimentalOption("perfLoggingPrefs", perfLogPrefs);
-                options.setCapability("goog:loggingPrefs", logPrefs);
-                setSelenoidOptions(options);
-                options.addArguments("--headless", "--no-sandbox", "--disable-dev-shm-usage");
+                var opts = getChromeOptions();
+                opts.addArguments("--headless", "--no-sandbox", "--disable-dev-shm-usage");
                 var capabilities = new DesiredCapabilities();
-                capabilities.setCapability(ChromeOptions.CAPABILITY, options);
-                yield new RemoteWebDriver(new URI(envConfig.getGridUrl()).toURL(), capabilities);
+                capabilities.setCapability(ChromeOptions.CAPABILITY, opts);
+                yield new RemoteWebDriver(GRID_URL, capabilities);
             }
 
             case DriverType.FIREFOX_REMOTE_HEADLESS -> {
-                var opts = new FirefoxOptions();
+                var opts = getFirefoxOptions();
                 opts.addArguments("-headless");
-                opts.setEnableDownloads(true);
-                LoggingPreferences logPrefs = new LoggingPreferences();
-                setLoggingPreferences(logPrefs);
-                // TODO: set capability for firefox logging
-                setSelenoidOptions(opts);
-                yield new RemoteWebDriver(new URI(envConfig.getGridUrl()).toURL(), opts);
+                yield new RemoteWebDriver(GRID_URL, opts);
             }
 
         };
     }
 
-    private static void setLoggingPreferences(LoggingPreferences logPrefs) {
+    private static ChromeOptions getChromeOptions() {
+        var opts = new ChromeOptions();
+        opts.setEnableDownloads(true);
+
+        var logPrefs = getLoggingPreferences();
+        opts.setCapability("goog:loggingPrefs", logPrefs);
+
+        // add perf logging options for network
+        Map<String, Object> perfLogPrefs = new HashMap<>();
+        perfLogPrefs.put("enableNetwork", true);
+        perfLogPrefs.put("traceCategories", "devtools.network");
+        opts.setExperimentalOption("perfLoggingPrefs", perfLogPrefs);
+
+        setSelenoidOptions(opts);
+
+        return opts;
+    }
+
+    private static FirefoxOptions getFirefoxOptions() {
+        var opts = new FirefoxOptions();
+        opts.setEnableDownloads(true);
+
+        var logPrefs = getLoggingPreferences();
+        // TODO: set option for firefox logging?
+
+        setSelenoidOptions(opts);
+
+        return opts;
+    }
+
+    private static ChromeDriverService getChromeService() {
+        if (DRIVER_CONFIG.getChromeLocalLoggingEnabled()) {
+            var logFile = new File(DRIVER_CONFIG.getChromeLocalLogPath());
+            return new ChromeDriverService.Builder()
+                    .withLogOutput(System.out)
+                    .withLogFile(logFile)
+                    .withReadableTimestamp(true)
+                    .build();
+        }
+        return new ChromeDriverService.Builder()
+                .withLogOutput(System.out)
+                .withReadableTimestamp(true)
+                .build();
+    }
+
+    private static GeckoDriverService getGeckoService() {
+        if (DRIVER_CONFIG.getFirefoxLocalLoggingEnabled()) {
+            var logFile = new File(DRIVER_CONFIG.getFirefoxLocalLogPath());
+            return new GeckoDriverService.Builder()
+                    .withLogFile(logFile)
+                    .build();
+        }
+        return new GeckoDriverService.Builder()
+                .withLogOutput(System.out)
+                .build();
+    }
+
+    private static LoggingPreferences getLoggingPreferences() {
+        var logPrefs = new LoggingPreferences();
         logPrefs.enable(LogType.DRIVER, Level.ALL);
         logPrefs.enable(LogType.BROWSER, Level.ALL);
         logPrefs.enable(LogType.PERFORMANCE, Level.ALL);
+        return logPrefs;
     }
 
     private static void setSelenoidOptions(AbstractDriverOptions<?> opts) {
-        if (envConfig.getSelenoidEnabled()) {
+        if (ENV_CONFIG.getSelenoidEnabled()) {
             opts.setCapability("selenoid:options", new HashMap<String, Object>() {
                 {
-                    put("enableVideo", envConfig.getSelenoidVideoEnabled());
-                    put("enableVNC", envConfig.getSelenoidVncEnabled());
+                    put("enableVideo", ENV_CONFIG.getSelenoidVideoEnabled());
+                    put("enableVNC", ENV_CONFIG.getSelenoidVncEnabled());
                 }
             });
         }
