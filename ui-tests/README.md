@@ -79,7 +79,34 @@ configuration as well.
 
 ![img.png](src/test/resources/high_level_abstract_code_architecture.png)
 
-#TODO: put project structure here...
+```
+├───ui-tests
+│   └───src
+│       ├───main
+│       │   ├───java
+│       │   │   └───org
+│       │   │       └───springsandbox
+│       │   │           ├───config
+│       │   │           │   └───test_data
+│       │   │           │       └───customer
+│       │   │           ├───domain
+│       │   │           ├───enums
+│       │   │           ├───essence
+│       │   │           ├───factories
+│       │   │           ├───pages
+│       │   │           └───utils
+│       │   └───resources
+│       └───test
+│           ├───java
+│           │   ├───extensions
+│           │   ├───generators
+│           │   ├───helpers
+│           │   ├───matchers
+│           │   ├───tests
+│           │   └───utils
+│           └───resources
+│               └───data
+```
 
 __Driver layer__
 
