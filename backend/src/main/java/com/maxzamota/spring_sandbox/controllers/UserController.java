@@ -47,7 +47,8 @@ public class UserController implements EntityController<Integer, UserEntity, Use
     @Override
     @GetMapping({"/all", "/list"})
     public ResponseEntity<PagedModel<EntityModel<UserEntity>>> getAll(
-            @PageableDefault Pageable pageable
+            @PageableDefault(page = 0, size = 100, sort = "id")
+            Pageable pageable
     ) {
         Page<UserEntity> users = userService.findAll(pageable);
         HttpHeaders headers = new HttpHeaders();

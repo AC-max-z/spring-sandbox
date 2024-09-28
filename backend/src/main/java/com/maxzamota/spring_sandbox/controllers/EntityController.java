@@ -13,7 +13,8 @@ import org.springframework.web.bind.annotation.RestController;
 public interface EntityController<T, E, V> {
 
     ResponseEntity<PagedModel<EntityModel<E>>> getAll(
-            @PageableDefault Pageable pageable
+            @PageableDefault(page = 0, size = 100, sort = "id")
+            Pageable pageable
     );
 
     ResponseEntity<EntityModel<V>> get(@PathVariable("id") T id);

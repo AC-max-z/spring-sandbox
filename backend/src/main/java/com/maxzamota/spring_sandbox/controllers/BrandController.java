@@ -46,7 +46,8 @@ public class BrandController implements EntityController<Integer, BrandEntity, B
     @PreAuthorize("hasRole('ROLE_user') || hasRole('ROLE_admin')")
     @GetMapping({"/all", "/list"})
     public ResponseEntity<PagedModel<EntityModel<BrandEntity>>> getAll(
-            @PageableDefault Pageable pageable
+            @PageableDefault(page = 0, size = 100, sort = "id")
+            Pageable pageable
     ) {
         Page<BrandEntity> brands = brandService.getAll(pageable);
         HttpHeaders headers = new HttpHeaders();

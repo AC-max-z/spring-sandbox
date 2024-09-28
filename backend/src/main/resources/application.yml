@@ -21,6 +21,11 @@ spring:
 #    user:
 #      name: max
 #      password: asdg34rbnlok
+  data:
+    web:
+      pageable:
+        max-page-size: 500
+        default-page-size: 50
   mvc:
     dispatch-trace-request: true
   datasource:

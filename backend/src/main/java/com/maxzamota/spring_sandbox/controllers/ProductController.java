@@ -52,7 +52,8 @@ public class ProductController implements EntityController<Integer, ProductEntit
     @PreAuthorize("hasRole('ROLE_admin') || hasRole('ROLE_user')")
     @GetMapping({"/all", "/list"})
     public ResponseEntity<PagedModel<EntityModel<ProductEntity>>> getAll(
-            @PageableDefault Pageable pageable
+            @PageableDefault(page = 0, size = 100, sort = "id")
+            Pageable pageable
     ) {
         Page<ProductEntity> products = productService.getAll(pageable);
         HttpHeaders headers = new HttpHeaders();

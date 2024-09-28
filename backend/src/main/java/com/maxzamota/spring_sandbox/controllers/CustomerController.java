@@ -44,7 +44,8 @@ public class CustomerController implements EntityController<Integer, CustomerEnt
     @Override
     @GetMapping({"/all", "list"})
     public ResponseEntity<PagedModel<EntityModel<CustomerEntity>>> getAll(
-            @PageableDefault Pageable pageable
+            @PageableDefault(page = 0, size = 100, sort = "id")
+            Pageable pageable
     ) {
         Page<CustomerEntity> customers = customerService.getAll(pageable);
         HttpHeaders headers = new HttpHeaders();
