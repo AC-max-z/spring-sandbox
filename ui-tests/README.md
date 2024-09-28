@@ -35,6 +35,8 @@ waitTimeoutMillis: 10000
 implicitWaitMillis: 500
 # WebDriver fluent wait polling interval in ms
 pollingIntervalMillis: 50
+# WebDriver page load timeout in ms
+pageLoadTimeoutMillis: 10000
 chromeLocalLoggingEnabled: true
 chromeLocalLogPath: src/test/resources/logs
 firefoxLocalLoggingEnabled: true
