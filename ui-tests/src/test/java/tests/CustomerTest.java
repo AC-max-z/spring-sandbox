@@ -22,7 +22,7 @@ import static utils.TestStep.step;
 public class CustomerTest extends BaseTest {
     private static final CustomerGenerator GENERATOR = new CustomerGenerator();
 
-    @ParameterizedTest(name = "{displayName} ({argumentsWithNames})")
+    @ParameterizedTest(name = "{displayName} (driver type: {0})")
     @MethodSource("provideDriverTypesAndCustomers")
     @DisplayName("Should display new customer after creating one")
     @Description("This test creates new customer, checks if it is present on page, then deletes it")
@@ -50,7 +50,7 @@ public class CustomerTest extends BaseTest {
         CustomerHelper.deleteCustomer(indexPage, customer, createdCustomerCard, logger);
     }
 
-    @ParameterizedTest(name = "{displayName} ({argumentsWithNames})")
+    @ParameterizedTest(name = "{displayName} (driver type: {0})")
     @MethodSource("provideCustomerTestDataFromYml")
     @DisplayName("Should display updated customer data after editing one")
     @Description("This test creates new customer, then edits it, checks if customer was updated and then deletes it")
