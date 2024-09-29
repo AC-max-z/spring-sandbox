@@ -47,7 +47,7 @@ public class CustomerTest extends BaseTest {
         var createdCustomerCard = CustomerHelper
                 .verifyPageContainsCustomer(indexPage, customer, logger);
         // Cleanup
-        CustomerHelper.deleteCustomer(indexPage, customer, createdCustomerCard, logger);
+        CustomerHelper.deleteCustomer(indexPage, customer, logger);
     }
 
     @ParameterizedTest(name = "{displayName} (driver type: {0})")
@@ -77,7 +77,7 @@ public class CustomerTest extends BaseTest {
         var updatedCustomerCard = CustomerHelper
                 .verifyPageContainsCustomer(indexPage, updatedCustomer, logger);
         // Cleanup
-        CustomerHelper.deleteCustomer(indexPage, updatedCustomer, updatedCustomerCard, logger);
+        CustomerHelper.deleteCustomer(indexPage, updatedCustomer, logger);
     }
 
     private static Stream<Arguments> provideDriverTypesAndCustomers() {

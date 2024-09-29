@@ -106,10 +106,10 @@ public class CustomerHelper {
     public static void deleteCustomer(
             IndexPage indexPage,
             Customer customer,
-            WebElement customerCard,
             Logger logger
     ) {
         logger.info("Deleting customer with email: {}", customer.getEmail());
+        var customerCard = indexPage.getCustomerCardWithEmail(customer.getEmail());
         indexPage.clickDeleteCustomer(customerCard);
         indexPage.confirmDeleteCustomer();
         assertThat(indexPage.getCustomerCardWithEmail(customer.getEmail())).isNull();
