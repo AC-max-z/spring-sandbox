@@ -10,6 +10,7 @@ sup
 - [Test layer overview](#test-layer)
 - [P.S.](#ps)
 - [TL;DR](#tldr)
+- [What's next](#whats-next)
 # WHAT THE FUCK IS EVEN THAT? :interrobang:
 
 You may say. And the answer is... :neckbeard:
@@ -207,3 +208,25 @@ Data-driven :rocket:, cross-browser :rocket:, concurrent/parallel :rocket:, "sca
 * [x] test helpers and matchers.
 
 Don't. Made this for job interview purposes with a certain level of absurdity in mind.
+
+# WHAT'S NEXT?
+
+- Fractal Testing Patterns: a system where tests mimic fractals. For every test case, sub-tests are generated recursively, with parameters that change dynamically based on the previous test results. This way, test suite can expand and morph like a fractal, leading to unexpected behaviors.
+
+- AI-Powered Test Case Generation: implement an AI that observes application in real-time and generates test cases based on user behavior patterns. We need to train a model to recognize common paths and generate unexpected edge cases to test those flows.
+
+- Chaos Engineering for Tests: integration of chaos engineering principles by deliberately injecting faults into application during test runs. For example, we could randomly take down backend services or simulate network latency and see how tests respond.
+
+- Holographic UI Testing: a way to visualize UI tests in a holographic or augmented reality space. This could help understand complex UI interactions in a new dimension—literally!
+
+- Quantum Testing: dive into the absurd and create a testing environment that simulates quantum mechanics principles. For example, a test could have multiple states until it's observed (i.e., executed), leading to unpredictable outcomes.
+
+- Self-Modifying Tests: tests that can change their own logic based on certain conditions or previous outcomes. This could lead to some truly bizarre test scenarios where the tests adapt in real-time.
+
+- Gamify Testing Process: a game-like environment where passing tests earn points and unlock new challenges. With some absurd challenges like “only test this UI element while blindfolded” or “execute a test on a random day of the week for no reason.”
+
+- A/B Testing Gone Wild: extreme A/B testing scenarios where features are rapidly toggled on and off, and observe the impacts on test outcomes.
+
+- Meme-Driven Development: inject memes into framework — every test requires a corresponding meme, and the results could be judged by the community based on their comedic value.
+
+- Narrative Integration: a storyline around tests where every test case has a backstory. As tests pass or fail, they advance the narrative, turning testing framework into an epic saga of UI interactions.
