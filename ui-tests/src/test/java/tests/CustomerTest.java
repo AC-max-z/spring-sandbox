@@ -70,8 +70,7 @@ public class CustomerTest extends BaseTest {
         var indexPage = new IndexPage(driver);
         CustomerHelper.createNewCustomer(driver, indexPage, customer, logger);
         // Assert
-        var createdCustomerCard = CustomerHelper
-                .verifyPageContainsCustomer(indexPage, customer, logger);
+        CustomerHelper.verifyPageContainsCustomer(indexPage, customer, logger);
         // Cleanup
         CustomerHelper.deleteCustomer(indexPage, customer, logger);
     }
@@ -100,8 +99,7 @@ public class CustomerTest extends BaseTest {
         CustomerHelper.verifyPageContainsCustomer(indexPage, initialCustomer, logger);
         CustomerHelper.editCustomer(driver, indexPage, initialCustomer, updatedCustomer, logger);
         // Assert
-        var updatedCustomerCard = CustomerHelper
-                .verifyPageContainsCustomer(indexPage, updatedCustomer, logger);
+        CustomerHelper.verifyPageContainsCustomer(indexPage, updatedCustomer, logger);
         // Cleanup
         CustomerHelper.deleteCustomer(indexPage, updatedCustomer, logger);
     }
