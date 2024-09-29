@@ -162,14 +162,14 @@ Tests are located in `src/test/java/tests` package.
 test tags, fields and hooks that are common among all tests.
 More specifically it contains:
 * Thread safe `ThreadLocal<?>` variables for your `WebDriver` and `Logger` objects,
-* `ScreenshotExtension` test extension that attaches screenshot to Allure results for your failed test,
+* `ScreenshotExtension` test extension that attaches screenshot to [Allure](https://allurereport.org/) results for your failed test,
 * `setupDriver(DriverType driverType)` method that calls `WebDriverFactory` to instantiate `WebDriver` object of provided `DriverType`, puts it into `ThreadLocal<WebDriver>` variable and sets this driver instance for JUnit test extensions,
 * `@BeforeEach` hook that instantiates logger object,
-* `@AfterEach` hook that attaches WebDriver logs to your Allure results and quits the `WebDriver`.
+* `@AfterEach` hook that attaches WebDriver logs to your [Allure](https://allurereport.org/) results and quits the `WebDriver`.
 
 Other test classes inherit from it and can and should be written in a parameterized way. That way you can provide driver types, test domain objects and other data you need via data provider methods, CSVs, YAMLs or otherwise.
 
-`utils` package contains `Faker` provider singleton class, test data provider class to read data for your tests from YAML files and `TestStep` utility class with decorator methods that mark Allure steps and log this step at the same time.
+`utils` package contains `Faker` provider singleton class, test data provider class to read data for your tests from YAML files and `TestStep` utility class with decorator methods that mark [Allure](https://allurereport.org/) steps and log this step at the same time.
 
 `matchers` contains re-usable custom matchers for your tests.
 
@@ -193,7 +193,7 @@ Anyway, you do you, you surely know better... And don't let the bastards get to 
 Data-driven :rocket:, cross-browser :rocket:, concurrent/parallel :rocket:, "scalable" :frog: UI tests project skeleton sample with:
 * [x] raw Selenium,
 * [x] parameterized JUnit tests,
-* [x] Allure reporting,
+* [x] [Allure](https://allurereport.org/) reporting,
 * [x] driver and tests layers responsibility separation,
 * [x] POM,
 * [x] `WebDriver` factory,
@@ -201,7 +201,7 @@ Data-driven :rocket:, cross-browser :rocket:, concurrent/parallel :rocket:, "sca
 * [x] auto-fluent waits and `PageFactory` re-init,
 * [x] tag based tests launch configuration,
 * [x] failed test retries,
-* [x] Allure TestOPS friendly test markup (that is actually generated automatically with import via integration IDE plugin btw),
+* [x] [Allure TestOPS](https://qameta.io/) friendly test markup (that is actually generated automatically with import via integration IDE plugin btw),
 * [x] Allure screenshots attachments,
 * [x] Allure `WebDriver` logs attachments,
 * [x] YML test data feed,
