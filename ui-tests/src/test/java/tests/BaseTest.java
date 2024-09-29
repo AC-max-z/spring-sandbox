@@ -56,9 +56,7 @@ public abstract class BaseTest {
     }
 
     protected WebDriver setupDriver(DriverType driverType) {
-        DRIVER_THREAD_LOCAL.set(WebDriverFactory.getDriver(driverType));
-        ScreenshotExtension.setDriver(DRIVER_THREAD_LOCAL.get());
-        return DRIVER_THREAD_LOCAL.get();
+        return setupDriver(driverType, "latest");
     }
 
     protected WebDriver setupDriver(DriverType driverType, String browserVersion) {
