@@ -3,16 +3,13 @@ package tests;
 import generators.CustomerGenerator;
 import helpers.CustomerHelper;
 import io.qameta.allure.*;
-import matchers.CustomerMatchers;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springsandbox.domain.Customer;
 import org.springsandbox.enums.DriverType;
-import org.springsandbox.pages.CreateCustomerForm;
 import org.springsandbox.pages.IndexPage;
-import org.springsandbox.pages.UpdateCustomerForm;
 import utils.TestDataProvider;
 
 import java.util.*;
@@ -26,7 +23,7 @@ import static utils.TestStep.step;
 public class CustomerTest extends BaseTest {
     private static final CustomerGenerator GENERATOR = new CustomerGenerator();
 
-    @ParameterizedTest(name = "{displayName} (driver: {0})")
+    @ParameterizedTest(name = "{displayName} ({argumentsWithNames})")
     @MethodSource("provideDriverTypesAndCustomers")
     @DisplayName("Should display new customer after creating one")
     @Description("This test creates new customer, checks if it is present on page, then deletes it")
@@ -46,20 +43,10 @@ public class CustomerTest extends BaseTest {
         var driver = step("Create driver instance", logger, () -> setupDriver(driverType));
         // Act
         var indexPage = new IndexPage(driver);
-        step("Go to index page", logger, indexPage::goTo);
-        step("Click create customer button", logger, indexPage::clickCreateCustomerButton);
-        step("Fill in create customer form", logger, () -> {
-            var createCustomerForm = new CreateCustomerForm(driver);
-            CustomerHelper.createCustomer(createCustomerForm, customer);
-        });
+        CustomerHelper.createNewCustomer(driver, indexPage, customer, logger);
         // Assert
-        var createdCustomerCard = step("Find created customer card on index page",
-                logger, () -> indexPage.getCustomerCardWithEmail(customer.getEmail()));
-        step("Check that new customer card is displayed on index page",
-                logger, () -> assertThat(createdCustomerCard).isNotNull());
-        // TODO: add success toast isDisplayed check
-        step("Check that data on that card is the same as generated", logger, () ->
-                CustomerMatchers.formContainsCustomer(indexPage, createdCustomerCard, customer));
+        var createdCustomerCard = CustomerHelper
+                .verifyPageContainsCustomer(indexPage, customer, logger);
         // Cleanup
         step("Delete created customer", logger, () -> {
             indexPage.clickDeleteCustomer(createdCustomerCard);
@@ -68,7 +55,7 @@ public class CustomerTest extends BaseTest {
         });
     }
 
-    @ParameterizedTest(name = "{displayName} (driver: {0})")
+    @ParameterizedTest(name = "{displayName} ({argumentsWithNames})")
     @MethodSource("provideCustomerTestDataFromYml")
     @DisplayName("Should display updated customer data after editing one")
     @Description("This test creates new customer, then edits it, checks if customer was updated and then deletes it")
@@ -88,26 +75,12 @@ public class CustomerTest extends BaseTest {
         var driver = step("Create driver instance", logger, () -> setupDriver(driverType));
         // Act
         var indexPage = new IndexPage(driver);
-        step("Go to index page", logger, indexPage::goTo);
-        step("Click create customer button", logger, indexPage::clickCreateCustomerButton);
-        step("Fill in create customer form with initial data", logger, () -> {
-            var createCustomerForm = new CreateCustomerForm(driver);
-            CustomerHelper.createCustomer(createCustomerForm, initialCustomer);
-        });
-        var createdCustomerCard = step("Find created customer card on index page", logger,
-                () -> indexPage.getCustomerCardWithEmail(initialCustomer.getEmail()));
-        step("Click edit customer button", logger, () -> indexPage.clickEditCustomer(createdCustomerCard));
-        step("Edit customer with updated data", logger, () -> {
-            var updateCustomerForm = new UpdateCustomerForm(driver);
-            CustomerHelper.editCustomer(updateCustomerForm, updatedCustomer);
-        });
+        CustomerHelper.createNewCustomer(driver, indexPage, initialCustomer, logger);
+        CustomerHelper.verifyPageContainsCustomer(indexPage, initialCustomer, logger);
+        CustomerHelper.editCustomer(driver, indexPage, initialCustomer, updatedCustomer, logger);
         // Assert
-        var updatedCustomerCard = step("Find updated customer card",
-                logger, () -> indexPage.getCustomerCardWithEmail(updatedCustomer.getEmail()));
-        assertThat(updatedCustomerCard).isNotNull();
-        // TODO: add success toast isDisplayed check
-        step("Check that data on that card is as generated", logger, () ->
-                CustomerMatchers.formContainsCustomer(indexPage, updatedCustomerCard, updatedCustomer));
+        var updatedCustomerCard = CustomerHelper
+                .verifyPageContainsCustomer(indexPage, updatedCustomer, logger);
         // Cleanup
         step("Delete customer", logger, () -> {
             indexPage.clickDeleteCustomer(updatedCustomerCard);

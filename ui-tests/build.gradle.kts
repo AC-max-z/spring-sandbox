@@ -6,6 +6,12 @@ plugins {
 group = "org.springsandbox"
 version = "1.0-SNAPSHOT"
 
+val aspectJVersion = "1.9.21"
+val agent: Configuration by configurations.creating {
+    isCanBeConsumed = true
+    isCanBeResolved = true
+}
+
 repositories {
     mavenCentral()
 }
@@ -33,6 +39,7 @@ dependencies {
     // allure
     testImplementation(platform("io.qameta.allure:allure-bom:2.24.0"))
     testImplementation("io.qameta.allure:allure-junit5")
+    agent("org.aspectj:aspectjweaver:${aspectJVersion}")
     // lombok
     compileOnly("org.projectlombok:lombok:1.18.+")
     // jackson
@@ -44,6 +51,9 @@ dependencies {
 
 tasks {
     withType<Test> {
+        jvmArgs = listOf(
+            "-javaagent:${agent.singleFile}"
+        )
         testLogging {
             showExceptions = true
             exceptionFormat = org.gradle.api.tasks.testing.logging.TestExceptionFormat.FULL
