@@ -36,7 +36,7 @@ public class AuthProvider implements AuthenticationProvider {
         if (!users.isEmpty()) {
             if (encoder.matches(password, users.getFirst().getPassword())) {
                 List<GrantedAuthority> authorities = new ArrayList<>();
-                authorities.add(new SimpleGrantedAuthority(users.getFirst().getRole()));
+                authorities.add(new SimpleGrantedAuthority(users.getFirst().getRole().toString()));
                 return new UsernamePasswordAuthenticationToken(username, password, authorities);
             }
             throw new BadCredentialsException("Invalid password");

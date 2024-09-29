@@ -23,7 +23,7 @@ public class CustomUserDetailsService implements UserDetailsService {
                 .map(userEntity -> User.builder()
                         .username(userEntity.getEmail())
                         .password(userEntity.getPassword())
-                        .roles(userEntity.getRole())
+                        .roles(userEntity.getRole().toString())
                         .build()
                 )
                 .orElseThrow(() -> new UsernameNotFoundException(

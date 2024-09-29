@@ -43,7 +43,7 @@ public class BrandController implements EntityController<Integer, BrandEntity, B
     }
 
     @Override
-    @PreAuthorize("hasRole('ROLE_user') || hasRole('ROLE_admin')")
+    @PreAuthorize("hasRole('ROLE_USER') || hasRole('ROLE_ADMIN') || hasRole('ROLE_SUPER_ADMIN')")
     @GetMapping({"/all", "/list"})
     public ResponseEntity<PagedModel<EntityModel<BrandEntity>>> getAll(
             @PageableDefault(page = 0, size = 100, sort = "id")
@@ -64,7 +64,7 @@ public class BrandController implements EntityController<Integer, BrandEntity, B
     }
 
     @Override
-    @PreAuthorize("hasRole('ROLE_user') || hasRole('ROLE_admin')")
+    @PreAuthorize("hasRole('ROLE_USER') || hasRole('ROLE_ADMIN') || hasRole('ROLE_SUPER_ADMIN')")
     @GetMapping("/{id}")
     public ResponseEntity<EntityModel<BrandDto>> get(@PathVariable("id") Integer id) {
         BrandEntity brand = this.brandService.getBrandByIdOrThrow(id);
@@ -73,7 +73,7 @@ public class BrandController implements EntityController<Integer, BrandEntity, B
     }
 
     @Override
-    @PreAuthorize("hasRole('ROLE_admin')")
+    @PreAuthorize("hasRole('ROLE_ADMIN') || hasRole('ROLE_SUPER_ADMIN')")
     @PostMapping
     public ResponseEntity<EntityModel<BrandDto>> post(@RequestBody BrandDto brandDto) {
         BrandEntity brand = this.mapper.fromDto(brandDto);
@@ -90,7 +90,7 @@ public class BrandController implements EntityController<Integer, BrandEntity, B
     }
 
     @Override
-    @PreAuthorize("hasRole('ROLE_admin')")
+    @PreAuthorize("hasRole('ROLE_ADMIN') || hasRole('ROLE_SUPER_ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteById(@PathVariable Integer id) {
         this.brandService.deleteById(id);
@@ -100,7 +100,7 @@ public class BrandController implements EntityController<Integer, BrandEntity, B
     }
 
     @Override
-    @PreAuthorize("hasRole('ROLE_admin')")
+    @PreAuthorize("hasRole('ROLE_ADMIN') || hasRole('ROLE_SUPER_ADMIN')")
     @PutMapping("/{id}")
     public ResponseEntity<EntityModel<BrandDto>> update(
             @PathVariable Integer id,

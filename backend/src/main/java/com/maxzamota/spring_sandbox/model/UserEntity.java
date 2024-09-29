@@ -1,8 +1,10 @@
 package com.maxzamota.spring_sandbox.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.maxzamota.spring_sandbox.enums.UserRole;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.ColumnTransformer;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.SQLRestriction;
 
@@ -45,8 +47,10 @@ public class UserEntity {
 
     @Column(nullable = false, name = "role")
     @ToString.Include
+    @Enumerated(EnumType.STRING)
+    @ColumnTransformer(write = "?::user_role")
     @NonNull
-    private String role;
+    private UserRole role;
 
     @Column(nullable = false, name = "is_active")
     @JsonIgnore
@@ -56,7 +60,7 @@ public class UserEntity {
     public UserEntity(
             @NonNull String email,
             @NonNull String password,
-            @NonNull String role,
+            @NonNull UserRole role,
             @NonNull Boolean isActive
     ) {
         this.email = email;

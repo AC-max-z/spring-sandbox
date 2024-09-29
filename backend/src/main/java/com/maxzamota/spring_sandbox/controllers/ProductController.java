@@ -49,7 +49,7 @@ public class ProductController implements EntityController<Integer, ProductEntit
     }
 
     @Override
-    @PreAuthorize("hasRole('ROLE_admin') || hasRole('ROLE_user')")
+    @PreAuthorize("hasRole('ROLE_ADMIN') || hasRole('ROLE_USER') || hasRole('ROLE_SUPER_ADMIN')")
     @GetMapping({"/all", "/list"})
     public ResponseEntity<PagedModel<EntityModel<ProductEntity>>> getAll(
             @PageableDefault(page = 0, size = 100, sort = "id")
@@ -70,7 +70,7 @@ public class ProductController implements EntityController<Integer, ProductEntit
     }
 
     @Override
-    @PreAuthorize("hasRole('ROLE_admin') || hasRole('ROLE_user')")
+    @PreAuthorize("hasRole('ROLE_ADMIN') || hasRole('ROLE_USER') || hasRole('ROLE_SUPER_ADMIN')")
     @GetMapping("/{id}")
     public ResponseEntity<EntityModel<ProductDto>> get(@PathVariable Integer id) {
         ProductEntity product = this.productService.getById(id);
@@ -80,7 +80,7 @@ public class ProductController implements EntityController<Integer, ProductEntit
     }
 
     @Override
-    @PreAuthorize("hasRole('ROLE_admin')")
+    @PreAuthorize("hasRole('ROLE_ADMIN') || hasRole('ROLE_SUPER_ADMIN')")
     @PostMapping
     public ResponseEntity<EntityModel<ProductDto>> post(@RequestBody ProductDto productDto) {
         ProductEntity product = this.mapper.fromDto(productDto);
@@ -109,7 +109,7 @@ public class ProductController implements EntityController<Integer, ProductEntit
     }
 
     @Override
-    @PreAuthorize("hasRole('ROLE_admin')")
+    @PreAuthorize("hasRole('ROLE_ADMIN') || hasRole('ROLE_SUPER_ADMIN')")
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteById(@PathVariable Integer id) {
         this.productService.deleteById(id);
@@ -117,7 +117,7 @@ public class ProductController implements EntityController<Integer, ProductEntit
     }
 
     @Override
-    @PreAuthorize("hasRole('ROLE_admin')")
+    @PreAuthorize("hasRole('ROLE_ADMIN') || hasRole('ROLE_SUPER_ADMIN')")
     @PutMapping("/{id}")
     public ResponseEntity<EntityModel<ProductDto>> update(
             @PathVariable Integer id,

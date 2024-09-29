@@ -1,5 +1,6 @@
 package com.maxzamota.spring_sandbox.dto;
 
+import com.maxzamota.spring_sandbox.enums.UserRole;
 import lombok.*;
 
 @AllArgsConstructor
@@ -13,6 +14,6 @@ public class UserDto {
     @NonNull
     private String password;
     @NonNull
-    private String role;
+    private UserRole role;
     private Boolean isActive;
 }
