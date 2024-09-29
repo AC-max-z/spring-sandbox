@@ -18,14 +18,17 @@ group = "com.maxzamota"
 version = "0.0.1-SNAPSHOT"
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_21
+    sourceCompatibility = JavaVersion.VERSION_22
 }
 
 application {
     mainClass = "com.maxzamota.spring_sandbox.SpringBootExampleApplication"
-    applicationDefaultJvmArgs = listOf("-XX:+UseZGC")
+    applicationDefaultJvmArgs = listOf("-XX:+UseZGC", "-Xmx2g")
 }
 
+tasks.getByName<org.springframework.boot.gradle.tasks.run.BootRun>("bootRun") {
+    jvmArgs = listOf("-XX:+UseZGC", "-Xmx2g")
+}
 
 repositories {
     mavenCentral()
