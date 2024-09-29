@@ -43,16 +43,14 @@ public class IndexPage extends BasePage {
     }
 
     public String getCustomerNameFromCard(WebElement customerCard) {
-        getVisibleElement(customerCard);
-        return customerCard
+        return getVisibleElement(customerCard)
                 .findElement(By.xpath(".//h2"))
                 .getText();
     }
 
     public Integer getCustomerAgeFromCard(WebElement customerCard) {
-        getVisibleElement(customerCard);
         return Integer
-                .parseInt(customerCard
+                .parseInt(getVisibleElement(customerCard)
                         .findElement(By.xpath(".//p/span"))
                         .getText()
                         .split(" ")[1]
@@ -60,8 +58,7 @@ public class IndexPage extends BasePage {
     }
 
     public String getCustomerGenderFromCard(WebElement customerCard) {
-        getVisibleElement(customerCard);
-        return customerCard
+        return getVisibleElement(customerCard)
                 .findElement(By.xpath(".//span[contains(@class, 'chakra-badge')]"))
                 .getText();
     }
