@@ -32,12 +32,13 @@ public class IndexPage extends BasePage {
         return getVisibleElements(customerCards);
     }
 
-    public WebElement getCustomerCardWithEmail(String email) {
+    public WebElement findCustomerCardWithEmail(String email) {
         return getCustomerCards().stream()
                 .filter(webEl -> webEl
                         .findElement(By.xpath(".//p[contains(text(), '@')]"))
                         .getText()
-                        .equals(email))
+                        .equals(email)
+                )
                 .findFirst()
                 .orElse(null);
     }
@@ -67,11 +68,11 @@ public class IndexPage extends BasePage {
         return getVisibleElement(createCustomerButton);
     }
 
-    public void clickCreateCustomerButton() {
+    public void createCustomer() {
         waitAndClickElement(createCustomerButton);
     }
 
-    public void clickDeleteCustomer(WebElement customerCard) {
+    public void deleteCustomer(WebElement customerCard) {
         var deleteButton = customerCard.findElement(By.xpath(".//button[text()='Delete']"));
         // TODO: this is done with duct tape because success toast in displayed on top of delete button
         //  and prevents from clicking it until it disappears
@@ -84,7 +85,7 @@ public class IndexPage extends BasePage {
         });
     }
 
-    public void clickEditCustomer(WebElement customerCard) {
+    public void editCustomer(WebElement customerCard) {
         var editButton = customerCard.findElement(By.xpath(".//button[text()='Edit']"));
         Unreliables.retryUntilSuccess(10, TimeUnit.SECONDS, () -> {
             waitAndClickElement(editButton);

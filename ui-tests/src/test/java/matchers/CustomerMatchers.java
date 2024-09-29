@@ -8,7 +8,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class CustomerMatchers {
 
-    public static void formContainsCustomer(
+    public static void verifyCustomerCardContainsCustomerData(
             IndexPage indexPage,
             WebElement customerCard,
             Customer customer

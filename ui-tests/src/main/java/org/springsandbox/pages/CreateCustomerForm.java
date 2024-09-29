@@ -53,28 +53,28 @@ public class CreateCustomerForm extends BasePage {
         return getVisibleElements(genderSelectOptions);
     }
 
-    public void enterValueToNameInput(String value) {
+    public void enterName(String value) {
         waitAndEnterValueToInput(value, nameInput);
     }
 
-    public void enterValueToEmailInput(String value) {
+    public void enterEmail(String value) {
         waitAndEnterValueToInput(value, emailInput);
     }
 
-    public void enterValueToAgeInput(String value) {
+    public void enterAge(String value) {
         waitAndEnterValueToInput(value, ageInput);
     }
 
-    public void selectValueInGenderSelect(String value) {
+    public void selectGender(String value) {
         waitAndSelectValueInSelect(value, genderSelect);
     }
 
-    public void selectRandomValueInGenderSelect() {
+    public void selectRandomGender() {
         int optionsSize = getGenderSelectOptions().size();
         getGenderSelect().selectByIndex(new Random().nextInt(optionsSize));
     }
 
-    public void clickSubmitCustomerButton() {
+    public void submit() {
         waitAndClickElement(submitCustomerButton);
     }
 }
