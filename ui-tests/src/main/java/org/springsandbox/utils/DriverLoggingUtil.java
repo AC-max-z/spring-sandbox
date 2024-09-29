@@ -47,7 +47,7 @@ public class DriverLoggingUtil {
         // return list of Strings with LogEntries' contents
         return logEntries
                 .stream()
-                .map(logEntry -> getStringContentOfLogEntry(logEntry) + "\n")
+                .map(logEntry -> "\n" + getStringContentOfLogEntry(logEntry))
                 .toList();
     }
 
