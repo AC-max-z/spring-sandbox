@@ -10,6 +10,10 @@ repositories {
     mavenCentral()
 }
 
+java {
+    sourceCompatibility = JavaVersion.VERSION_21
+}
+
 dependencies {
     // junit
     testImplementation(platform("org.junit:junit-bom:5.9.1"))
