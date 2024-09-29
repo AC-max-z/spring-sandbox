@@ -1,7 +1,6 @@
 package utils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springsandbox.config.test_data.customer.CustomerTestDataYaml;
 import org.springsandbox.utils.ObjectMapperProvider;

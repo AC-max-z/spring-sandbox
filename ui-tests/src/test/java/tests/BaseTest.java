@@ -33,7 +33,7 @@ public abstract class BaseTest {
     }
 
     @AfterEach
-    void tearDown(TestInfo testInfo) {
+    void tearDown() {
         if (Objects.nonNull(DRIVER_THREAD_LOCAL.get())) {
             try {
                 Allure.step("Collect driver logs");
