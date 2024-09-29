@@ -66,10 +66,12 @@ public class CustomerTest extends BaseTest {
         // Arrange
         var logger = LOGGER_THREAD_LOCAL.get();
         var driver = step("Create driver instance", logger, () -> setupDriver(driverType));
-        var indexPage = new IndexPage(driver);
+        var indexPage = step("Init index page", logger, () -> new IndexPage(driver));
         // Act
+        step("Go to index page", logger, indexPage::goTo);
         CustomerHelper.createNewCustomer(driver, indexPage, customer, logger);
         // Assert
+        // TODO: add success toast isDisplayed check
         CustomerHelper.verifyPageContainsCustomerCard(indexPage, customer, logger);
         // Cleanup
         CustomerHelper.deleteCustomer(indexPage, customer, logger);
@@ -93,12 +95,15 @@ public class CustomerTest extends BaseTest {
         // Arrange
         var logger = LOGGER_THREAD_LOCAL.get();
         var driver = step("Create driver instance", logger, () -> setupDriver(driverType));
-        var indexPage = new IndexPage(driver);
+        var indexPage = step("Init index page", logger, () -> new IndexPage(driver));
         // Act
+        step("Go to index page", logger, indexPage::goTo);
         CustomerHelper.createNewCustomer(driver, indexPage, initialCustomer, logger);
+        // TODO: add success toast isDisplayed check
         CustomerHelper.verifyPageContainsCustomerCard(indexPage, initialCustomer, logger);
         CustomerHelper.editCustomer(driver, indexPage, initialCustomer, updatedCustomer, logger);
         // Assert
+        // TODO: add success toast isDisplayed check
         CustomerHelper.verifyPageContainsCustomerCard(indexPage, updatedCustomer, logger);
         // Cleanup
         CustomerHelper.deleteCustomer(indexPage, updatedCustomer, logger);

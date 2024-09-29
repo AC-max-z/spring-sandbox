@@ -60,7 +60,6 @@ public class CustomerHelper {
             Customer customer,
             Logger logger
     ) {
-        step("Go to index page", logger, indexPage::goTo);
         step("Click create customer button", logger, indexPage::createCustomer);
         step("Fill in create customer form", logger, () -> {
             var createCustomerForm = new CreateCustomerForm(driver);
@@ -78,7 +77,6 @@ public class CustomerHelper {
                 logger, () -> indexPage.findCustomerCardWithEmail(customer.getEmail()));
         step("Check that customer card is displayed on index page",
                 logger, () -> assertThat(customerCard).isNotNull());
-        // TODO: add success toast isDisplayed check
         step("Check that data on that card is the same as expected", logger, () ->
                 CustomerMatchers.verifyCustomerCardContainsCustomerData(indexPage, customerCard, customer));
     }
