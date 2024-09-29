@@ -126,7 +126,7 @@ configuration as well.
 │               └───data
 ```
 
-### Driver layer
+## Driver layer
 
 `src/main/java/org.springsandbox/utils` package contains utility classes:
 * Singleton class which instantiates and provides `ObjectMapper` object. It is used for reading YAML configuration files and mapping them into respective config classes;
@@ -154,7 +154,7 @@ So that you don't need to worry about any of it when implementing other Page cla
 
 `src/main/java/org.springsandbox/config` contains config classes and test data provider classes to which sir `ObjectMapper` maps your YAML configuration files.
 
-### Test layer
+## Test layer
 
 Tests are located in `src/test/java/tests` package.
 
@@ -181,7 +181,7 @@ And finally `extensions` for your JUnit test extension classes if you need those
 
 That's about it. Thanks. Bye. Have a nice life/everything else.
 
-### P.S.
+## P.S.
 Never actually use this shit. Better stick with your Playwright or whatever. 
 Or, better yet, find a better job/career/the thing you do with your limited time in this universe in this timespan you are entrapped in.
 Anyway, you do you, you surely know better... And don't let the bastards get to you. Or do. If you feel like. 
@@ -189,7 +189,7 @@ Anyway, you do you, you surely know better... And don't let the bastards get to 
 :frog::frog::frog::frog:
 :rocket::rocket::rocket::rocket:
 
-### TLDR:
+## TLDR:
 Data-driven :rocket:, cross-browser :rocket:, concurrent/parallel :rocket:, "scalable" :frog: UI tests project skeleton sample with:
 * [x] raw Selenium,
 * [x] parameterized JUnit tests,
