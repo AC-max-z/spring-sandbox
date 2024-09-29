@@ -13,9 +13,7 @@ import org.springsandbox.factories.WebDriverFactory;
 import org.springsandbox.utils.DriverLoggingUtil;
 import extensions.ScreenshotExtension;
 
-import java.net.MalformedURLException;
-import java.net.URISyntaxException;
-import java.time.LocalDate;
+import java.time.Instant;
 import java.util.Objects;
 
 @Execution(ExecutionMode.CONCURRENT)
@@ -37,23 +35,27 @@ public abstract class BaseTest {
     @AfterEach
     void tearDown(TestInfo testInfo) {
         if (Objects.nonNull(DRIVER_THREAD_LOCAL.get())) {
-            Allure.step("Collect driver logs");
-            Allure.addAttachment(
-                    "driver_logs_" + LocalDate.ofEpochDay(System.currentTimeMillis()),
-                    "text",
-                    String.valueOf(DriverLoggingUtil.outputAndGetLogsAsStrings(
-                            LOGGER_THREAD_LOCAL.get(),
-                            DRIVER_THREAD_LOCAL.get().manage().logs())
-                    ),
-                    ".log"
-            );
-            Allure.step("Close driver");
-            DRIVER_THREAD_LOCAL.get().quit();
+            try {
+                Allure.step("Collect driver logs");
+                Allure.addAttachment(
+                        "driver_logs_" + Instant.ofEpochMilli(System.currentTimeMillis()),
+                        "text",
+                        String.valueOf(DriverLoggingUtil.outputAndGetLogsAsStrings(
+                                LOGGER_THREAD_LOCAL.get(),
+                                DRIVER_THREAD_LOCAL.get().manage().logs())
+                        ),
+                        ".log"
+                );
+            } finally {
+                Allure.step("Close driver");
+                DRIVER_THREAD_LOCAL.get().quit();
+                DRIVER_THREAD_LOCAL.remove();
+                LOGGER_THREAD_LOCAL.remove();
+            }
         }
     }
 
-    protected WebDriver setupDriver(DriverType driverType)
-            throws MalformedURLException, URISyntaxException {
+    protected WebDriver setupDriver(DriverType driverType) {
         DRIVER_THREAD_LOCAL.set(WebDriverFactory.getDriver(driverType));
         ScreenshotExtension.setDriver(DRIVER_THREAD_LOCAL.get());
         return DRIVER_THREAD_LOCAL.get();

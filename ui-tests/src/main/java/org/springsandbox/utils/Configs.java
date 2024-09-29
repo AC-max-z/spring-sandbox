@@ -37,10 +37,7 @@ public class Configs {
             envConfig = YAML_MAPPER.readValue(new File(envConfigFilePath), EnvConfig.class);
             driverConfig = YAML_MAPPER.readValue(new File(driverConfigFilePath), DriverConfig.class);
         } catch (IOException e) {
-            var logger = LoggerFactory.getLogger(Configs.class.getSimpleName());
-            logger.error(e.getMessage());
-            logger.error(Arrays.toString(e.getStackTrace()));
-            System.exit(1);
+            handleConfigReadError(e);
         }
     }
 
@@ -59,12 +56,15 @@ public class Configs {
                 }
             }
         } catch (FileNotFoundException e) {
-            var logger = LoggerFactory.getLogger(Configs.class.getSimpleName());
-            logger.error("Oopsie-woopsie, file not found at: {}", APP_PROPERTIES_FILE_PATH);
-            logger.error(e.getMessage());
-            logger.error(Arrays.toString(e.getStackTrace()));
-            System.exit(1);
+            handleConfigReadError(e);
         }
+    }
+
+    private static void handleConfigReadError(Throwable e) {
+        var logger = LoggerFactory.getLogger(Configs.class.getSimpleName());
+        logger.error(e.getMessage());
+        logger.error(Arrays.toString(e.getStackTrace()));
+        System.exit(1);
     }
 
     public static Map<String, String> getAppProperties() {

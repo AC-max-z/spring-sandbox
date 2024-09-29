@@ -8,7 +8,7 @@ import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
 
 import java.io.ByteArrayInputStream;
-import java.time.LocalDate;
+import java.time.Instant;
 import java.util.Objects;
 
 public class ScreenshotExtension implements AfterTestExecutionCallback {
@@ -22,13 +22,17 @@ public class ScreenshotExtension implements AfterTestExecutionCallback {
     public void afterTestExecution(ExtensionContext ctx) {
         if (ctx.getExecutionException().isPresent() &&
                 Objects.nonNull(DRIVER_THREAD_LOCAL.get())) {
-            Allure.addAttachment(
-                    "scr_" + LocalDate.ofEpochDay(System.currentTimeMillis()),
-                    "picture",
-                    new ByteArrayInputStream(((TakesScreenshot) DRIVER_THREAD_LOCAL.get())
-                            .getScreenshotAs(OutputType.BYTES)),
-                    ".png"
-            );
+            try {
+                Allure.addAttachment(
+                        "scr_" + Instant.ofEpochMilli(System.currentTimeMillis()),
+                        "picture",
+                        new ByteArrayInputStream(((TakesScreenshot) DRIVER_THREAD_LOCAL.get())
+                                .getScreenshotAs(OutputType.BYTES)),
+                        ".png"
+                );
+            } finally {
+                DRIVER_THREAD_LOCAL.remove();
+            }
         }
     }
 }

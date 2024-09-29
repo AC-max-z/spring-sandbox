@@ -5,7 +5,7 @@ import org.openqa.selenium.logging.LogType;
 import org.openqa.selenium.logging.Logs;
 import org.slf4j.Logger;
 
-import java.time.LocalDate;
+import java.time.Instant;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
@@ -47,12 +47,17 @@ public class DriverLoggingUtil {
         // return list of Strings with LogEntries' contents
         return logEntries
                 .stream()
-                .map(logEntry ->
-                        LocalDate.ofEpochDay(logEntry.getTimestamp()) + ":"
-                                + "[" + logEntry.getLevel().getName() + "]"
-                                + logEntry.getMessage() + "\n"
-                )
+                .map(logEntry -> getStringContentOfLogEntry(logEntry) + "\n")
                 .toList();
+    }
+
+    private static String getStringContentOfLogEntry(LogEntry logEntry) {
+        return String.format(
+                "%s: [%s] %s",
+                Instant.ofEpochMilli(logEntry.getTimestamp()),
+                logEntry.getLevel().getName(),
+                logEntry.getMessage()
+        );
     }
 
     /**
@@ -83,31 +88,20 @@ public class DriverLoggingUtil {
     public static void outputLogEntries(Logger logger, List<LogEntry> logEntries) {
         // Log them
         logEntries.forEach(logEntry -> {
-            switch (logEntry.getLevel().getName()) {
-                case "INFO":
-                    logger.info(
-                            "{}:[{}]{}",
-                            LocalDate.ofEpochDay(logEntry.getTimestamp()),
-                            logEntry.getLevel().getName(),
-                            logEntry.getMessage()
-                    );
-                    break;
-                case "WARNING", "SEVERE":
-                    logger.warn(
-                            "{}:[{}]{}",
-                            LocalDate.ofEpochDay(logEntry.getTimestamp()),
-                            logEntry.getLevel().getName(),
-                            logEntry.getMessage()
-                    );
-                    break;
-                default:
-                    logger.debug(
-                            "{}:[{}]{}",
-                            LocalDate.ofEpochDay(logEntry.getTimestamp()),
-                            logEntry.getLevel().getName(),
-                            logEntry.getMessage()
-                    );
-                    break;
+            try {
+                switch (logEntry.getLevel().getName()) {
+                    case "INFO":
+                        logger.info(getStringContentOfLogEntry(logEntry));
+                        break;
+                    case "WARNING", "SEVERE":
+                        logger.warn(getStringContentOfLogEntry(logEntry));
+                        break;
+                    default:
+                        logger.debug(getStringContentOfLogEntry(logEntry));
+                        break;
+                }
+            } catch (Exception e) {
+                logger.error("Failed to log LogEntry: {}", e.getMessage());
             }
         });
     }
