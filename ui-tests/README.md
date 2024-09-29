@@ -191,11 +191,11 @@ Anyway, you do you, you surely know better... And don't let the bastards get to 
 
 ## TLDR:
 Data-driven :rocket:, cross-browser :rocket:, concurrent/parallel :rocket:, "scalable" :frog: UI tests project skeleton sample with:
-* [x] raw Selenium,
-* [x] parameterized JUnit tests,
+* [x] raw [Selenium](https://www.selenium.dev/),
+* [x] parameterized [JUnit](https://junit.org/junit5/) tests,
 * [x] [Allure](https://allurereport.org/) reporting,
 * [x] driver and tests layers responsibility separation,
-* [x] POM,
+* [x] [POM](https://www.selenium.dev/documentation/test_practices/encouraged/page_object_models/),
 * [x] `WebDriver` factory,
 * [x] [Selenoid](https://aerokube.com/selenoid/latest/) grid ready,
 * [x] auto-fluent waits and `PageFactory` re-init,
