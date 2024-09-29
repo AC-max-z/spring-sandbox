@@ -101,4 +101,17 @@ public class CustomerHelper {
             editCustomer(updateCustomerForm, updatedCustomer);
         });
     }
+
+    @Step("Delete customer")
+    public static void deleteCustomer(
+            IndexPage indexPage,
+            Customer customer,
+            WebElement customerCard,
+            Logger logger
+    ) {
+        logger.info("Deleting customer with email: {}", customer.getEmail());
+        indexPage.clickDeleteCustomer(customerCard);
+        indexPage.confirmDeleteCustomer();
+        assertThat(indexPage.getCustomerCardWithEmail(customer.getEmail())).isNull();
+    }
 }

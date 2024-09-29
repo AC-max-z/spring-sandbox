@@ -15,7 +15,6 @@ import utils.TestDataProvider;
 import java.util.*;
 import java.util.stream.Stream;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static utils.TestStep.step;
 
 @Epic("Customer UI tests")
@@ -48,11 +47,7 @@ public class CustomerTest extends BaseTest {
         var createdCustomerCard = CustomerHelper
                 .verifyPageContainsCustomer(indexPage, customer, logger);
         // Cleanup
-        step("Delete created customer", logger, () -> {
-            indexPage.clickDeleteCustomer(createdCustomerCard);
-            indexPage.confirmDeleteCustomer();
-            assertThat(indexPage.getCustomerCardWithEmail(customer.getEmail())).isNull();
-        });
+        CustomerHelper.deleteCustomer(indexPage, customer, createdCustomerCard, logger);
     }
 
     @ParameterizedTest(name = "{displayName} ({argumentsWithNames})")
@@ -82,11 +77,7 @@ public class CustomerTest extends BaseTest {
         var updatedCustomerCard = CustomerHelper
                 .verifyPageContainsCustomer(indexPage, updatedCustomer, logger);
         // Cleanup
-        step("Delete customer", logger, () -> {
-            indexPage.clickDeleteCustomer(updatedCustomerCard);
-            indexPage.confirmDeleteCustomer();
-            assertThat(indexPage.getCustomerCardWithEmail(updatedCustomer.getEmail())).isNull();
-        });
+        CustomerHelper.deleteCustomer(indexPage, updatedCustomer, updatedCustomerCard, logger);
     }
 
     private static Stream<Arguments> provideDriverTypesAndCustomers() {
