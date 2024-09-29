@@ -13,9 +13,11 @@ sup
 - [What's next](#whats-next)
 # WHAT THE FUCK IS EVEN THAT? :interrobang:
 
-You may say. And the answer is... :neckbeard:
+You may say. And the answer is... 
+# :neckbeard:
 
-Configurable UI tests with raw ==Selenium== and ==Junit==. With "auto-waits" and stuff. :cool:
+Configurable UI tests with raw ==Selenium== and ==Junit==. With "auto-waits" and stuff. 
+# :cool:
 
 | Configuration           | Default file location                                      | Custom file path program arg |
 |-------------------------|------------------------------------------------------------|------------------------------|
