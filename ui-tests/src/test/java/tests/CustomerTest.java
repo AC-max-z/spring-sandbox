@@ -17,7 +17,12 @@ import java.util.stream.Stream;
 
 import static utils.TestStep.step;
 
-@Epic("Customer UI tests")
+@Epics({
+        @Epic("Customer UI tests"),
+        @Epic("UI tests"),
+        @Epic("Awesome epic"),
+        @Epic("E2E tests")
+})
 @Tag("customer")
 public class CustomerTest extends BaseTest {
     private static final CustomerGenerator GENERATOR = new CustomerGenerator();
@@ -31,6 +36,27 @@ public class CustomerTest extends BaseTest {
             @Tag("regression"),
             @Tag("acceptance")
     })
+    @Features({
+            @Feature("Awesome feature"),
+            @Feature("Another awesome feature")
+    })
+    @Stories({
+            @Story("Create customer"),
+            @Story("Delete customer")
+    })
+    @Links({
+            @Link(name = "Customer API", url = "https://"),
+            @Link(name = "Customer UI", url = "https://")
+    })
+    @Issues({
+            @Issue("JIRA-123"),
+            @Issue("JIRA-124")
+    })
+    @TmsLinks({
+            @TmsLink("TMS-123"),
+            @TmsLink("TMS-124")
+    })
+    @Owner("John Doe")
     @Severity(SeverityLevel.BLOCKER)
     public void shouldDisplayNewCustomerAfterCreate(
             DriverType driverType,
