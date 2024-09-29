@@ -1,10 +1,20 @@
 sup
+- [What the actual fuck](#what-the-fuck-is-even-that-interrobang)
+- [Environment configuration](#env-config-example)
+- [Driver configuration](#driver-config-example)
+- [Feed data to parameterized tests through YAML](#customer-test-data-example)
+- [How does it work](#how-does-it-work)
+- [High level diagram overview of project code](#high-level-overview)
+- [Project structure](#project-structure)
+- [Driver layer overview](#driver-layer)
+- [Test layer overview](#test-layer)
+- [P.S.](#ps)
+- [TL;DR](#tldr)
+# WHAT THE FUCK IS EVEN THAT? :interrobang:
 
-**WHAT THE FUCK IS EVEN THAT?**
+You may say. And the answer is... :neckbeard:
 
-You may say. And the answer is...
-
-Configurable UI tests with raw Selenium and Junit. With "auto-waits" and stuff.
+Configurable UI tests with raw ==Selenium== and ==Junit==. With "auto-waits" and stuff. :cool:
 
 | Configuration           | Default file location                                      | Custom file path program arg |
 |-------------------------|------------------------------------------------------------|------------------------------|
@@ -12,7 +22,7 @@ Configurable UI tests with raw Selenium and Junit. With "auto-waits" and stuff.
 | Driver configuration    | `src/main/resources/driver.yml`                            | `driverConfigFilePath`       |
 | Customer test data feed | `src/test/resources/data/customer-tests-data-provider.yml` | `customerTestDataFilePath`   |
 
-Env config example:
+### Env config example:
 ```yaml
 # URL of application under test
 appUrl: https://2girls1cup.com/
@@ -26,7 +36,7 @@ selenoidVncEnabled: true
 selenoidVideoEnabled: false
 ```
 
-Driver config example:
+### Driver config example:
 
 ```yaml
 # WebDriver fluent wait timeout in ms
@@ -42,7 +52,7 @@ chromeLocalLogPath: src/test/resources/logs
 firefoxLocalLoggingEnabled: true
 firefoxLocalLogPath: src/test/resources/logs
 ```
-Customer test data example:
+### Customer test data example:
 ```yaml
 # Set of test data goes here
 data:
@@ -75,12 +85,15 @@ data:
 Number of fork threads for tests is currently specified in `build.gradle.kts` but probably should be moved to
 configuration as well.
 
-**HOW DOES IT WORK**
+## HOW DOES IT WORK
 
 #TODO: use different tool(s) to make better diagrams
 
+### High level overview
+
 ![img.png](src/test/resources/high_level_abstract_code_architecture.png)
 
+### Project structure
 ```
 ├───ui-tests
 │   └───src
@@ -110,7 +123,7 @@ configuration as well.
 │               └───data
 ```
 
-__Driver layer__
+### Driver layer
 
 `src/main/java/org.springsandbox/utils` package contains utility classes:
 * Singleton class which instantiates and provides `ObjectMapper` object. It is used for reading YAML configuration files and mapping them into respective config classes;
@@ -138,7 +151,7 @@ So that you don't need to worry about any of it when implementing other Page cla
 
 `src/main/java/org.springsandbox/config` contains config classes and test data provider classes to which sir `ObjectMapper` maps your YAML configuration files.
 
-__Test layer__
+### Test layer
 
 Tests are located in `src/test/java/tests` package.
 
@@ -165,27 +178,32 @@ And finally `extensions` for your JUnit test extension classes if you need those
 
 That's about it. Thanks. Bye. Have a nice life/everything else.
 
-*P.S*. Never actually use this shit. Better stick with your Playwright or whatever. 
+### P.S.
+Never actually use this shit. Better stick with your Playwright or whatever. 
 Or, better yet, find a better job/career/the thing you do with your limited time in this universe in this timespan you are entrapped in.
-Anyway, you do you, you surely know better...
+Anyway, you do you, you surely know better... And don't let the bastards get to you. Or do. If you feel like. 
 
-*TLDR*: Data-driven, cross-browser, concurrent/parallel, "scalable" UI tests project skeleton sample with:
-* raw Selenium,
-* parameterized JUnit tests,
-* Allure reporting,
-* driver and tests layers responsibility separation,
-* POM,
-* `WebDriver` factory,
-* Selenoid grid ready,
-* auto-fluent waits and `PageFactory` re-init,
-* tag based tests launch configuration,
-* failed test retries,
-* Allure TestOPS friendly test markup (that is actually generated automatically with import via integration IDE plugin btw),
-* Allure screenshots attachments,
-* Allure `WebDriver` logs attachments,
-* YML test data feed,
-* YML environment and `WebDriver` configuration,
-* domain object generators,
-* test helpers and matchers.
+:frog::frog::frog::frog:
+:rocket::rocket::rocket::rocket:
+
+### TLDR:
+Data-driven :rocket:, cross-browser :rocket:, concurrent/parallel :rocket:, "scalable" :frog: UI tests project skeleton sample with:
+* [x] raw Selenium,
+* [x] parameterized JUnit tests,
+* [x] Allure reporting,
+* [x] driver and tests layers responsibility separation,
+* [x] POM,
+* [x] `WebDriver` factory,
+* [x] [Selenoid](https://aerokube.com/selenoid/latest/) grid ready,
+* [x] auto-fluent waits and `PageFactory` re-init,
+* [x] tag based tests launch configuration,
+* [x] failed test retries,
+* [x] Allure TestOPS friendly test markup (that is actually generated automatically with import via integration IDE plugin btw),
+* [x] Allure screenshots attachments,
+* [x] Allure `WebDriver` logs attachments,
+* [x] YML test data feed,
+* [x] YML environment and `WebDriver` configuration,
+* [x] domain object generators,
+* [x] test helpers and matchers.
 
 Don't. Made this for job interview purposes with a certain level of absurdity in mind.
