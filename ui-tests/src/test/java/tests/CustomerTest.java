@@ -66,8 +66,8 @@ public class CustomerTest extends BaseTest {
         // Arrange
         var logger = LOGGER_THREAD_LOCAL.get();
         var driver = step("Create driver instance", logger, () -> setupDriver(driverType));
-        // Act
         var indexPage = new IndexPage(driver);
+        // Act
         CustomerHelper.createNewCustomer(driver, indexPage, customer, logger);
         // Assert
         CustomerHelper.verifyPageContainsCustomerCard(indexPage, customer, logger);
@@ -93,8 +93,8 @@ public class CustomerTest extends BaseTest {
         // Arrange
         var logger = LOGGER_THREAD_LOCAL.get();
         var driver = step("Create driver instance", logger, () -> setupDriver(driverType));
-        // Act
         var indexPage = new IndexPage(driver);
+        // Act
         CustomerHelper.createNewCustomer(driver, indexPage, initialCustomer, logger);
         CustomerHelper.verifyPageContainsCustomerCard(indexPage, initialCustomer, logger);
         CustomerHelper.editCustomer(driver, indexPage, initialCustomer, updatedCustomer, logger);

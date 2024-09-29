@@ -74,12 +74,12 @@ public class CustomerHelper {
             Customer customer,
             Logger logger
     ) throws Exception {
-        var customerCard = step("Find created customer card on index page",
+        var customerCard = step("Find customer card on index page",
                 logger, () -> indexPage.findCustomerCardWithEmail(customer.getEmail()));
-        step("Check that new customer card is displayed on index page",
+        step("Check that customer card is displayed on index page",
                 logger, () -> assertThat(customerCard).isNotNull());
         // TODO: add success toast isDisplayed check
-        step("Check that data on that card is the same as generated", logger, () ->
+        step("Check that data on that card is the same as expected", logger, () ->
                 CustomerMatchers.verifyCustomerCardContainsCustomerData(indexPage, customerCard, customer));
     }
 
@@ -91,10 +91,10 @@ public class CustomerHelper {
             Customer updatedCustomer,
             Logger logger
     ) throws Exception {
-        var customerCard = step("Find created customer card on index page",
+        var customerCard = step("Find existing customer card on index page",
                 logger, () -> indexPage.findCustomerCardWithEmail(initialCustomer.getEmail()));
         step("Click edit customer button", logger, () -> indexPage.editCustomer(customerCard));
-        step("Edit customer with updated data", logger, () -> {
+        step("Edit customer with new data", logger, () -> {
             var updateCustomerForm = new UpdateCustomerForm(driver);
             editCustomer(updateCustomerForm, updatedCustomer);
         });
