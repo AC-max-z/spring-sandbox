@@ -4,8 +4,9 @@ sup
 - [Driver configuration](#driver-config-example)
 - [Feed data to parameterized tests through YAML](#customer-test-data-example)
 - [How does it work](#how-does-it-work)
-- [High level diagram overview of project code](#high-level-overview)
 - [Project structure](#project-structure)
+- [High level diagram overview of project code](#high-level-overview)
+- [Class diagram](#class-diagram)
 - [Driver layer overview](#driver-layer)
 - [Test layer overview](#test-layer)
 - [P.S.](#ps)
@@ -92,29 +93,6 @@ configuration as well.
 
 #TODO: use different tool(s) to make better diagrams
 
-### High level overview
-
-![img.png](src/test/resources/high_level_abstract_code_architecture.png)
-
-![class-diagram.png](src%2Ftest%2Fresources%2Fclass-diagram.png)
-
-It is divided into driver and test layers.
-
-Driver layer has:
-- configuration classes, data to which is fed from external configs.
-- WebDriver Factory class.
-- Domain classes.
-- Utility classes for WebDriver Waiting and Logging logic.
-- Page Object Model classes with Page classes inheritting from BasePage class, which contains core webpage interaction logic.
-
-Test layer has:
-- Junit abstract web test.
-- Junit tests inheriting from abstract test.
-- Test helpers.
-- Test matchers.
-- Test extensions.
-- Test utilities.
-- Test data feeders.
 ### Project structure
 ```
 ├───ui-tests
@@ -144,6 +122,33 @@ Test layer has:
 │           └───resources
 │               └───data
 ```
+
+
+It is divided into driver and test layers.
+
+Driver layer has:
+- configuration classes, data to which is fed from external configs.
+- WebDriver Factory class.
+- Domain classes.
+- Utility classes for WebDriver Waiting and Logging logic.
+- Page Object Model classes with Page classes inheritting from BasePage class, which contains core webpage interaction logic.
+
+Test layer has:
+- Junit abstract web test.
+- Junit tests inheriting from abstract test.
+- Test helpers.
+- Test matchers.
+- Test extensions.
+- Test utilities.
+- Test data feeders.
+
+### High level overview
+
+![img.png](src/test/resources/high_level_abstract_code_architecture.png)
+
+### Class diagram
+
+![class-diagram.png](src%2Ftest%2Fresources%2Fclass-diagram.png)
 
 ## Driver layer
 
