@@ -96,6 +96,25 @@ configuration as well.
 
 ![img.png](src/test/resources/high_level_abstract_code_architecture.png)
 
+![class-diagram.png](src%2Ftest%2Fresources%2Fclass-diagram.png)
+
+It is divided into driver and test layers.
+
+Driver layer has:
+- configuration classes, data to which is fed from external configs.
+- WebDriver Factory class.
+- Domain classes.
+- Utility classes for WebDriver Waiting and Logging logic.
+- Page Object Model classes with Page classes inheritting from BasePage class, which contains core webpage interaction logic.
+
+Test layer has:
+- Junit abstract web test.
+- Junit tests inheriting from abstract test.
+- Test helpers.
+- Test matchers.
+- Test extensions.
+- Test utilities.
+- Test data feeders.
 ### Project structure
 ```
 ├───ui-tests
