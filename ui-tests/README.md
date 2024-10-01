@@ -258,4 +258,5 @@ Don't. Made this for job interview purposes with a certain level of absurdity in
 - **Narrative Integration:** a storyline around tests where every test case has a backstory. As tests pass or fail, they advance the narrative, turning testing framework into an epic saga of UI interactions.
 
 - **Tests for tests:** tests that will test your tests.
-![img.png](src/test/resources/xzibit.png)
+
+![xzibit.png](src/test/resources/xzibit.png)
