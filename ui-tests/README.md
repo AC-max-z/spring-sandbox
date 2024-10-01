@@ -256,3 +256,6 @@ Don't. Made this for job interview purposes with a certain level of absurdity in
 - **Meme-Driven Development:** inject memes into framework — every test requires a corresponding meme, and the results could be judged by the community based on their comedic value.
 
 - **Narrative Integration:** a storyline around tests where every test case has a backstory. As tests pass or fail, they advance the narrative, turning testing framework into an epic saga of UI interactions.
+
+- **Tests for tests:** tests that will test your tests.
+![img.png](src/test/resources/img.png)
