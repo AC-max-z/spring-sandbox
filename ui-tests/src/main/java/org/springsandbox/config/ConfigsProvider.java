@@ -1,16 +1,15 @@
-package org.springsandbox.utils;
+package org.springsandbox.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.LoggerFactory;
-import org.springsandbox.config.DriverConfig;
-import org.springsandbox.config.EnvConfig;
+import org.springsandbox.utils.ObjectMapperProvider;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.*;
 
-public class Configs {
+public class ConfigsProvider {
     private static final ObjectMapper YAML_MAPPER = ObjectMapperProvider.getInstance();
     private static final String DEFAULT_ENV_CONFIG_FILE_PATH = "src/main/resources/environment.yml";
     private static final String DEFAULT_DRIVER_CONFIG_FILE_PATH = "src/main/resources/driver.yml";
@@ -61,7 +60,7 @@ public class Configs {
     }
 
     private static void handleConfigReadError(Throwable e) {
-        var logger = LoggerFactory.getLogger(Configs.class.getSimpleName());
+        var logger = LoggerFactory.getLogger(ConfigsProvider.class.getSimpleName());
         logger.error(e.getMessage());
         logger.error(Arrays.toString(e.getStackTrace()));
         System.exit(1);

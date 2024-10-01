@@ -8,6 +8,7 @@ import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.FluentWait;
 import org.openqa.selenium.support.ui.Wait;
+import org.springsandbox.config.ConfigsProvider;
 import org.springsandbox.config.DriverConfig;
 import org.springsandbox.enums.WaitCondition;
 
@@ -21,7 +22,7 @@ import java.util.NoSuchElementException;
 public class DriverWaitConfiguration {
     private final WebDriver DRIVER;
     private final Wait<WebDriver> WAIT;
-    private final DriverConfig DRIVER_CONFIG = Configs.getDriverConfig();
+    private final DriverConfig DRIVER_CONFIG = ConfigsProvider.getDriverConfig();
     private final Integer IMPLICIT_WAIT_MS = DRIVER_CONFIG.getImplicitWaitMillis();
 
     public DriverWaitConfiguration(WebDriver driver) {

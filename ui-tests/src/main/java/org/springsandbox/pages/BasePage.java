@@ -8,7 +8,7 @@ import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.Select;
 import org.springsandbox.config.EnvConfig;
 import org.springsandbox.enums.WaitCondition;
-import org.springsandbox.utils.Configs;
+import org.springsandbox.config.ConfigsProvider;
 import org.springsandbox.utils.DriverWaitConfiguration;
 
 import java.util.List;
@@ -20,7 +20,7 @@ import java.util.List;
  */
 public abstract class BasePage {
     protected final WebDriver DRIVER;
-    private final EnvConfig ENV_CONFIG = Configs.getEnvConfig();
+    private final EnvConfig ENV_CONFIG = ConfigsProvider.getEnvConfig();
     protected final String BASE_URL = ENV_CONFIG.getAppUrl();
     protected final DriverWaitConfiguration DRIVER_WAIT_CONFIG;
 

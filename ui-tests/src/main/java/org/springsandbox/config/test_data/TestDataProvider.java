@@ -1,4 +1,4 @@
-package utils;
+package org.springsandbox.config.test_data;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.LoggerFactory;

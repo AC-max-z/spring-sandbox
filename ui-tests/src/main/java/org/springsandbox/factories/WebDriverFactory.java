@@ -17,7 +17,7 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 import org.springsandbox.config.DriverConfig;
 import org.springsandbox.config.EnvConfig;
 import org.springsandbox.enums.DriverType;
-import org.springsandbox.utils.Configs;
+import org.springsandbox.config.ConfigsProvider;
 
 import java.io.File;
 import java.net.MalformedURLException;
@@ -31,8 +31,8 @@ import java.util.Map;
 import java.util.logging.Level;
 
 public class WebDriverFactory {
-    private static final DriverConfig DRIVER_CONFIG = Configs.getDriverConfig();
-    private static final EnvConfig ENV_CONFIG = Configs.getEnvConfig();
+    private static final DriverConfig DRIVER_CONFIG = ConfigsProvider.getDriverConfig();
+    private static final EnvConfig ENV_CONFIG = ConfigsProvider.getEnvConfig();
     private static final URL GRID_URL;
 
     static {

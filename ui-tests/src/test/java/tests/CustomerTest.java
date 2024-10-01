@@ -10,7 +10,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.springsandbox.domain.Customer;
 import org.springsandbox.enums.DriverType;
 import org.springsandbox.pages.IndexPage;
-import utils.TestDataProvider;
+import org.springsandbox.config.test_data.TestDataProvider;
 
 import java.util.*;
 import java.util.stream.Stream;
