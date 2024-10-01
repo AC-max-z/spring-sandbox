@@ -76,7 +76,7 @@ public class WebDriverFactory {
                 yield new RemoteWebDriver(GRID_URL, opts);
             }
 
-            case CHROME_REMOTE_HEADLESS -> {
+            case DriverType.CHROME_REMOTE_HEADLESS -> {
                 var opts = getChromeOptions();
                 opts.setBrowserVersion(browserVersion);
                 opts.addArguments("--headless", "--no-sandbox", "--disable-dev-shm-usage");
@@ -98,6 +98,7 @@ public class WebDriverFactory {
     private static ChromeOptions getChromeOptions() {
         var opts = new ChromeOptions();
         setGenericDriverOptions(opts);
+        setSelenoidOptions(opts);
 
         var logPrefs = getLoggingPreferences();
         opts.setCapability("goog:loggingPrefs", logPrefs);
@@ -108,18 +109,15 @@ public class WebDriverFactory {
         perfLogPrefs.put("traceCategories", "devtools.network");
         opts.setExperimentalOption("perfLoggingPrefs", perfLogPrefs);
 
-        setSelenoidOptions(opts);
-
         return opts;
     }
 
     private static FirefoxOptions getFirefoxOptions() {
         var opts = new FirefoxOptions();
         setGenericDriverOptions(opts);
+        setSelenoidOptions(opts);
 
         opts.setLogLevel(FirefoxDriverLogLevel.TRACE);
-
-        setSelenoidOptions(opts);
 
         return opts;
     }
