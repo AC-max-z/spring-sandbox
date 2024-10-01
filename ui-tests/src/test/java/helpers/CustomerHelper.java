@@ -103,11 +103,13 @@ public class CustomerHelper {
             IndexPage indexPage,
             Customer customer,
             Logger logger
-    ) {
+    ) throws Exception {
         logger.info("Deleting customer with email: {}", customer.getEmail());
-        var customerCard = indexPage.findCustomerCardWithEmail(customer.getEmail());
-        indexPage.deleteCustomer(customerCard);
-        indexPage.confirmDeleteCustomer();
-        assertThat(indexPage.findCustomerCardWithEmail(customer.getEmail())).isNull();
+        var customerCard = step("Find customer card on index page", logger,
+                () -> indexPage.findCustomerCardWithEmail(customer.getEmail()));
+        step("Click delete button", logger, () -> indexPage.deleteCustomer(customerCard));
+        step("Confirm customer delete action", logger, indexPage::confirmDeleteCustomer);
+        step("Make sure there is no customer card left on index page", logger,
+                () -> assertThat(indexPage.findCustomerCardWithEmail(customer.getEmail())).isNull());
     }
 }
