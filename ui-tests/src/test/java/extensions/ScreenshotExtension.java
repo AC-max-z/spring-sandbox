@@ -20,16 +20,17 @@ public class ScreenshotExtension implements AfterTestExecutionCallback {
 
     @Override
     public void afterTestExecution(ExtensionContext ctx) {
-        if (ctx.getExecutionException().isPresent() &&
-                Objects.nonNull(DRIVER_THREAD_LOCAL.get())) {
+        if (Objects.nonNull(DRIVER_THREAD_LOCAL.get())) {
             try {
-                Allure.addAttachment(
-                        "scr_" + Instant.ofEpochMilli(System.currentTimeMillis()),
-                        "picture",
-                        new ByteArrayInputStream(((TakesScreenshot) DRIVER_THREAD_LOCAL.get())
-                                .getScreenshotAs(OutputType.BYTES)),
-                        ".png"
-                );
+                if (ctx.getExecutionException().isPresent()) {
+                    Allure.addAttachment(
+                            "scr_" + Instant.ofEpochMilli(System.currentTimeMillis()),
+                            "picture",
+                            new ByteArrayInputStream(((TakesScreenshot) DRIVER_THREAD_LOCAL.get())
+                                    .getScreenshotAs(OutputType.BYTES)),
+                            ".png"
+                    );
+                }
             } finally {
                 DRIVER_THREAD_LOCAL.remove();
             }
