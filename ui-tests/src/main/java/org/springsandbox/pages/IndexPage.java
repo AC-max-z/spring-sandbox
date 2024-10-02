@@ -33,7 +33,8 @@ public class IndexPage extends BasePage {
     }
 
     public WebElement findCustomerCardWithEmail(String email) {
-        return getCustomerCards().stream()
+        return getCustomerCards()
+                .stream()
                 .filter(webEl -> webEl
                         .findElement(By.xpath(".//p[contains(text(), '@')]"))
                         .getText()
@@ -51,10 +52,11 @@ public class IndexPage extends BasePage {
 
     public Integer getCustomerAgeFromCard(WebElement customerCard) {
         return Integer
-                .parseInt(getVisibleElement(customerCard)
-                        .findElement(By.xpath(".//p/span"))
-                        .getText()
-                        .split(" ")[1]
+                .parseInt(
+                        getVisibleElement(customerCard)
+                                .findElement(By.xpath(".//p/span"))
+                                .getText()
+                                .split(" ")[1]
                 );
     }
 

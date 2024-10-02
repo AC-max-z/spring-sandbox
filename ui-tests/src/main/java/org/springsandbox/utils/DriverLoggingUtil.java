@@ -20,7 +20,7 @@ public class DriverLoggingUtil {
      * - Logger instance,
      * - Selenium Logs object, collected by WebDriver instance.
      * ...
-     * Then it collects LogEntries of DRIVER, BROWSER and PERFORMANCE types from Logs object
+     * First, it collects LogEntries of DRIVER, BROWSER and PERFORMANCE types from Logs object
      * to a list, sorted by LogEntry timestamp.
      * It then outputs collected LogEntries' contents using provided Logger.
      * Finally, it returns list of String representations of LogEntries' contents.
