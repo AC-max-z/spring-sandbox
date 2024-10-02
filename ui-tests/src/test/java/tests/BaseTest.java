@@ -55,9 +55,9 @@ public abstract class BaseTest {
                 Allure.step("Close driver");
                 DRIVER_THREAD_LOCAL.get().quit();
                 DRIVER_THREAD_LOCAL.remove();
-                LOGGER_THREAD_LOCAL.remove();
             }
         }
+        LOGGER_THREAD_LOCAL.remove();
     }
 
     protected WebDriver setupDriver(DriverType driverType) {
