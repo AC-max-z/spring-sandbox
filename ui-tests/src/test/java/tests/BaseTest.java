@@ -1,5 +1,6 @@
 package tests;
 
+import extensions.ExceptionLoggerExtension;
 import io.qameta.allure.Allure;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -17,7 +18,10 @@ import java.time.Instant;
 import java.util.Objects;
 
 @Execution(ExecutionMode.CONCURRENT)
-@ExtendWith({ScreenshotExtension.class})
+@ExtendWith({
+        ScreenshotExtension.class,
+        ExceptionLoggerExtension.class
+})
 @Tags({
         @Tag("UI"),
         @Tag("E2E")
@@ -30,6 +34,7 @@ public abstract class BaseTest {
     void setUp(TestInfo testInfo) {
         LOGGER_THREAD_LOCAL.set(LoggerFactory.getLogger(
                 testInfo.getTestClass().get().getName()));
+        ExceptionLoggerExtension.setLogger(LOGGER_THREAD_LOCAL.get());
     }
 
     @AfterEach

@@ -16,9 +16,7 @@ import java.time.Duration;
 import java.util.List;
 import java.util.NoSuchElementException;
 
-/**
- * Encapsulates WebDriver's waiting logic configuration
- */
+/* Encapsulates WebDriver's waiting logic configuration */
 public class DriverWaitConfiguration {
     private final WebDriver DRIVER;
     private final Wait<WebDriver> WAIT;
@@ -40,7 +38,7 @@ public class DriverWaitConfiguration {
     @FindBy(xpath = "//span[contains(text(), 'Loading')]")
     private WebElement loadingSpinner;
 
-    /**
+    /*
      * Waits for page to finish loading by checking document.readystate=complete
      * and waiting until all load spinners/skeletons on spa pages are invisible
      */

@@ -11,6 +11,7 @@ import java.io.ByteArrayInputStream;
 import java.time.Instant;
 import java.util.Objects;
 
+/* Attaches screenshot to report if exception is thrown after test execution */
 public class ScreenshotExtension implements AfterTestExecutionCallback {
     private static final ThreadLocal<WebDriver> DRIVER_THREAD_LOCAL = new ThreadLocal<>();
 

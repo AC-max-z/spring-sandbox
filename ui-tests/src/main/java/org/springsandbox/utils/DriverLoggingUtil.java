@@ -11,9 +11,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Stream;
 
-/**
- * Utility class for handling WebDriver logging
- */
+/* Utility class for handling WebDriver logging */
 public class DriverLoggingUtil {
 
     /**
