@@ -87,6 +87,24 @@ tasks {
         }
     }
 
+    register("regression-scope-ui-tests", Test::class.java) {
+        useJUnitPlatform {
+            includeTags("E2E", "UI", "regression")
+        }
+    }
+
+    register("acceptance-scope-ui-tests", Test::class.java) {
+        useJUnitPlatform {
+            includeTags("E2E", "UI", "acceptance")
+        }
+    }
+
+    register("smoke-scope-ui-tests", Test::class.java) {
+        useJUnitPlatform {
+            includeTags("E2E", "UI", "smoke")
+        }
+    }
+
     register<Delete>("deleteAllureStuff") {
         delete("${projectDir.path}/build/allure-results")
         delete("${projectDir.path}/build/reports")
