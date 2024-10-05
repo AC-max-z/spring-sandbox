@@ -3,7 +3,6 @@ package generators;
 import org.springsandbox.domain.Customer;
 import utils.FakerProvider;
 
-import java.util.List;
 import java.util.Random;
 
 public class CustomerGenerator implements ObjectGenerator<Customer> {

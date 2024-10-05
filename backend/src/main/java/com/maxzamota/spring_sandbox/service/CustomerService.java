@@ -64,7 +64,7 @@ public class CustomerService {
         if (customerEntity.equals(
                 this.customerRepository
                         .findById(customerEntity.getId())
-                        .orElseGet(() -> null))
+                        .orElse(null))
         ) {
             return customerEntity;
         }

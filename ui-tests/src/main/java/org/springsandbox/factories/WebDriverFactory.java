@@ -52,33 +52,28 @@ public class WebDriverFactory {
 
             case DriverType.CHROME -> {
                 var service = getChromeService();
-                var opts = getChromeOptions();
-                opts.setBrowserVersion(browserVersion);
+                var opts = getChromeOptions(browserVersion);
                 yield new ChromeDriver(service, opts);
             }
 
             case DriverType.FIREFOX -> {
                 var geckoService = getGeckoService();
-                var opts = getFirefoxOptions();
-                opts.setBrowserVersion(browserVersion);
+                var opts = getFirefoxOptions(browserVersion);
                 yield new FirefoxDriver(geckoService, opts);
             }
 
             case DriverType.FIREFOX_REMOTE -> {
-                var opts = getFirefoxOptions();
-                opts.setBrowserVersion(browserVersion);
+                var opts = getFirefoxOptions(browserVersion);
                 yield new RemoteWebDriver(GRID_URL, opts);
             }
 
             case DriverType.CHROME_REMOTE -> {
-                var opts = getChromeOptions();
-                opts.setBrowserVersion(browserVersion);
+                var opts = getChromeOptions(browserVersion);
                 yield new RemoteWebDriver(GRID_URL, opts);
             }
 
             case DriverType.CHROME_REMOTE_HEADLESS -> {
-                var opts = getChromeOptions();
-                opts.setBrowserVersion(browserVersion);
+                var opts = getChromeOptions(browserVersion);
                 opts.addArguments("--headless", "--no-sandbox", "--disable-dev-shm-usage");
                 var capabilities = new DesiredCapabilities();
                 capabilities.setCapability(ChromeOptions.CAPABILITY, opts);
@@ -86,8 +81,7 @@ public class WebDriverFactory {
             }
 
             case DriverType.FIREFOX_REMOTE_HEADLESS -> {
-                var opts = getFirefoxOptions();
-                opts.setBrowserVersion(browserVersion);
+                var opts = getFirefoxOptions(browserVersion);
                 opts.addArguments("-headless");
                 yield new RemoteWebDriver(GRID_URL, opts);
             }
@@ -95,9 +89,9 @@ public class WebDriverFactory {
         };
     }
 
-    private static ChromeOptions getChromeOptions() {
+    private static ChromeOptions getChromeOptions(String browserVersion) {
         var opts = new ChromeOptions();
-        setGenericDriverOptions(opts);
+        setGenericDriverOptions(opts, browserVersion);
         setSelenoidOptions(opts);
 
         var logPrefs = getLoggingPreferences();
@@ -112,9 +106,9 @@ public class WebDriverFactory {
         return opts;
     }
 
-    private static FirefoxOptions getFirefoxOptions() {
+    private static FirefoxOptions getFirefoxOptions(String browserVersion) {
         var opts = new FirefoxOptions();
-        setGenericDriverOptions(opts);
+        setGenericDriverOptions(opts, browserVersion);
         setSelenoidOptions(opts);
 
         opts.setLogLevel(FirefoxDriverLogLevel.TRACE);
@@ -122,12 +116,13 @@ public class WebDriverFactory {
         return opts;
     }
 
-    private static void setGenericDriverOptions(AbstractDriverOptions<?> opts) {
+    private static void setGenericDriverOptions(AbstractDriverOptions<?> opts, String browserVersion) {
         opts.setEnableDownloads(true);
         opts.setPageLoadStrategy(PageLoadStrategy.NORMAL);
         opts.setPageLoadTimeout(Duration.ofMillis(DRIVER_CONFIG.getPageLoadTimeoutMillis()));
         opts.setAcceptInsecureCerts(false);
         opts.setImplicitWaitTimeout(Duration.ofMillis(DRIVER_CONFIG.getImplicitWaitMillis()));
+        opts.setBrowserVersion(browserVersion);
     }
 
     private static ChromeDriverService getChromeService() {
