@@ -31,11 +31,11 @@ public class WebDriverFactory {
     private static final DriverConfig DRIVER_CONFIG = ConfigsProvider.getDriverConfig();
     private static final EnvConfig ENV_CONFIG = ConfigsProvider.getEnvConfig();
     @Getter
-    private static final URL GRID_URL;
+    private static final URL HUB_URL;
 
     static {
         try {
-            GRID_URL = new URI(ENV_CONFIG.getGridUrl()).toURL();
+            HUB_URL = new URI(ENV_CONFIG.getHubUrl()).toURL();
         } catch (MalformedURLException | URISyntaxException e) {
             throw new RuntimeException(e);
         }

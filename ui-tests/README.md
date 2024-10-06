@@ -30,8 +30,8 @@ Configurable UI tests with raw ==Selenium== and ==Junit==. With "auto-waits" and
 ```yaml
 # URL of application under test
 appUrl: https://2girls1cup.com/
-# URL of Selenium Grid to connect to (for Remote Drivers)
-gridUrl: http://my.grid.url/wd/hub
+# URL of Selenium Grid Hub to connect to (for Remote Drivers)
+hubUrl: http://my.grid.url/wd/hub
 # true if Selenoid Grid is to be used
 selenoidEnabled: true
 # Selenoid Grid option (enables VNC connections to remote driver sessions)

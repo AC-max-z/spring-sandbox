@@ -35,7 +35,7 @@ public enum DriverType {
         @Override
         public WebDriver createDriver(String browserVersion) {
             ChromeOptions options = WebDriverFactory.getChromeOptions(browserVersion);
-            return new RemoteWebDriver(WebDriverFactory.getGRID_URL(), options);
+            return new RemoteWebDriver(WebDriverFactory.getHUB_URL(), options);
         }
     },
 
@@ -43,7 +43,7 @@ public enum DriverType {
         @Override
         public WebDriver createDriver(String browserVersion) {
             FirefoxOptions options = WebDriverFactory.getFirefoxOptions(browserVersion);
-            return new RemoteWebDriver(WebDriverFactory.getGRID_URL(), options);
+            return new RemoteWebDriver(WebDriverFactory.getHUB_URL(), options);
         }
     },
 
@@ -54,7 +54,7 @@ public enum DriverType {
             options.addArguments("--headless", "--no-sandbox", "--disable-dev-shm-usage");
             DesiredCapabilities capabilities = new DesiredCapabilities();
             capabilities.setCapability(ChromeOptions.CAPABILITY, options);
-            return new RemoteWebDriver(WebDriverFactory.getGRID_URL(), capabilities);
+            return new RemoteWebDriver(WebDriverFactory.getHUB_URL(), capabilities);
         }
     },
 
@@ -63,7 +63,7 @@ public enum DriverType {
         public WebDriver createDriver(String browserVersion) {
             FirefoxOptions options = WebDriverFactory.getFirefoxOptions(browserVersion);
             options.addArguments("-headless");
-            return new RemoteWebDriver(WebDriverFactory.getGRID_URL(), options);
+            return new RemoteWebDriver(WebDriverFactory.getHUB_URL(), options);
         }
     };
 

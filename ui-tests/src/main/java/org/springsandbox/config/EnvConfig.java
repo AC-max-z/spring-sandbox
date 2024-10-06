@@ -9,8 +9,8 @@ import lombok.*;
 @Setter
 @ToString
 public class EnvConfig {
-    @JsonProperty("gridUrl")
-    private String gridUrl;
+    @JsonProperty("hubUrl")
+    private String hubUrl;
     @JsonProperty("selenoidEnabled")
     private Boolean selenoidEnabled;
     @JsonProperty("selenoidVncEnabled")
