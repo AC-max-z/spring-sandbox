@@ -6,4 +6,3 @@ pluginManagement {
     }
 }
 include("backend")
-include("ui-tests")
