@@ -28,7 +28,7 @@ import static org.mockito.Mockito.*;
 })
 @Severity(SeverityLevel.BLOCKER)
 class CustomerEntityServiceTest {
-    private CustomerService serviceUnderTest;
+    private CustomerService customerService;
 
     AutoCloseable autoCloseable;
 
@@ -38,7 +38,8 @@ class CustomerEntityServiceTest {
     @BeforeEach
     void setUp() {
         autoCloseable = MockitoAnnotations.openMocks(this);
-        this.serviceUnderTest = new CustomerService(this.repository);
+        this.customerService = new CustomerService(this.repository);
+        Allure.suite("Customer service unit tests");
     }
 
     @AfterEach
@@ -161,12 +162,10 @@ class CustomerEntityServiceTest {
     @Tags({
             @Tag("positive")
     })
-    @AllureId("CUSTSERV-003")
-    @TmsLink("CUSTSERV-003")
-    @Issue("CUSTSERV-003")
+    @AllureId("TBD")
+    @TmsLink("TBD")
+    @Issue("TBD")
     void shouldCallFindById() {
-        Allure.suite("Customer service unit tests");
-
         // Arrange
         step("Generate new customer");
         int id = 69;
@@ -178,7 +177,7 @@ class CustomerEntityServiceTest {
         step("Call getCustomerById() service layer method");
         CustomerEntity actual = null;
         try {
-            actual = this.serviceUnderTest.getById(id);
+            actual = this.customerService.getById(id);
         } catch (ResourceNotFoundException ignored) {
         }
 
@@ -195,12 +194,10 @@ class CustomerEntityServiceTest {
     @Tags({
             @Tag("negative")
     })
-    @AllureId("CUSTSERV-004")
-    @TmsLink("CUSTSERV-004")
-    @Issue("CUSTSERV-004")
+    @AllureId("TBD")
+    @TmsLink("TBD")
+    @Issue("TBD")
     void shouldThrowNotFoundException() {
-        Allure.suite("Customer service unit tests");
-
         // Arrange
         step("Setup repository mock");
         var id = 4444;
@@ -210,7 +207,7 @@ class CustomerEntityServiceTest {
 
         // Assert
         step("Verify that mock is called and exception is thrown by it");
-        assertThatThrownBy(() -> this.serviceUnderTest.getById(id))
+        assertThatThrownBy(() -> this.customerService.getById(id))
                 .isInstanceOf(ResourceNotFoundException.class)
                 .hasMessage("Customer with id={%s} not found!".formatted(id));
         verify(this.repository).findById(id);
@@ -221,19 +218,17 @@ class CustomerEntityServiceTest {
     @Tags({
             @Tag("positive")
     })
-    @AllureId("CUSTSERV-005")
-    @TmsLink("CUSTSERV-005")
-    @Issue("CUSTSERV-005")
+    @AllureId("TBD")
+    @TmsLink("TBD")
+    @Issue("TBD")
     void shouldCallSave() {
-        Allure.suite("Customer service unit tests");
-
         // Arrange
         step("Generate new customer object");
         var customer = new CustomerGenerator().generate();
 
         // Act
         step("Call service layer save() method");
-        this.serviceUnderTest.save(customer);
+        this.customerService.save(customer);
 
         // Assert
         step("Verify mock is called");
@@ -246,12 +241,10 @@ class CustomerEntityServiceTest {
     @Tags({
             @Tag("negative")
     })
-    @AllureId("CUSTSERV-006")
-    @TmsLink("CUSTSERV-006")
-    @Issue("CUSTSERV-006")
+    @AllureId("TBD")
+    @TmsLink("TBD")
+    @Issue("TBD")
     void shouldThrowDuplicateExceptionOnSave() {
-        Allure.suite("Customer service unit tests");
-
         // Arrange
         step("Generate new customer object");
         var customer = new CustomerGenerator().generate();
@@ -262,7 +255,7 @@ class CustomerEntityServiceTest {
 
         // Assert
         step("Verify that mock is called and exception is thrown by it after invoking service layer save() method");
-        assertThatThrownBy(() -> this.serviceUnderTest.save(customer))
+        assertThatThrownBy(() -> this.customerService.save(customer))
                 .isInstanceOf(DuplicateResourceException.class)
                 .hasMessage("Customer with email={%s} already exists!".formatted(customer.getEmail()));
         verify(this.repository, never()).save(any());
@@ -273,18 +266,16 @@ class CustomerEntityServiceTest {
     @Tags({
             @Tag("positive")
     })
-    @AllureId("CUSTSERV-007")
-    @TmsLink("CUSTSERV-007")
-    @Issue("CUSTSERV-007")
+    @AllureId("TBD")
+    @TmsLink("TBD")
+    @Issue("TBD")
     void shouldCallDeleteById() {
-        Allure.suite("Customer service unit tests");
-
         // Arrange
         int id = 420;
 
         // Act
         step("Call deleteById service layer method");
-        this.serviceUnderTest.deleteById(id);
+        this.customerService.deleteById(id);
 
         // Assert
         step("Verify mock is called");
@@ -297,12 +288,10 @@ class CustomerEntityServiceTest {
     @Tags({
             @Tag("positive")
     })
-    @AllureId("CUSTSERV-008")
-    @TmsLink("CUSTSERV-008")
-    @Issue("CUSTSERV-008")
+    @AllureId("TBD")
+    @TmsLink("TBD")
+    @Issue("TBD")
     void shouldCallSaveWhenUpdate() {
-        Allure.suite("Customer service unit tests");
-
         // Arrange
         step("Generate new customer object");
         var id = 42;
@@ -317,7 +306,7 @@ class CustomerEntityServiceTest {
         step("Call updateById() service layer method");
         CustomerEntity updatedCustomerEntity = null;
         try {
-            updatedCustomerEntity = this.serviceUnderTest.update(customer);
+            updatedCustomerEntity = this.customerService.update(customer);
         } catch (ResourceNotFoundException ignored) {
         }
 
@@ -341,12 +330,10 @@ class CustomerEntityServiceTest {
     @Tags({
             @Tag("negative")
     })
-    @AllureId("CUSTSERV-009")
-    @TmsLink("CUSTSERV-009")
-    @Issue("CUSTSERV-009")
+    @AllureId("TBD")
+    @TmsLink("TBD")
+    @Issue("TBD")
     void shouldThrowNotFoundExceptionWhenUpdateNonExistent() {
-        Allure.suite("Customer service unit tests");
-
         // Arrange
         step("Generate new customer object");
         var id = 42;
@@ -358,7 +345,7 @@ class CustomerEntityServiceTest {
 
         // Assert
         step("Verify exception is thrown after calling updateById() service layer method");
-        assertThatThrownBy(() -> this.serviceUnderTest.update(customer))
+        assertThatThrownBy(() -> this.customerService.update(customer))
                 .isInstanceOf(ResourceNotFoundException.class)
                 .hasMessage("Customer with id={%s} not found!".formatted(customer.getId()));
         step("Verify repository mock save() method is never invoked");
@@ -370,18 +357,18 @@ class CustomerEntityServiceTest {
     @Tags({
             @Tag("negative")
     })
-    @AllureId("CUSTSERV-010")
-    @TmsLink("CUSTSERV-010")
-    @Issue("CUSTSERV-010")
+    @AllureId("TBD")
+    @TmsLink("TBD")
+    @Issue("TBD")
     void shouldThrowDuplicateExceptionWhenUpdateWithNonUniqueEmail() {
-        Allure.suite("Customer service unit tests");
-
         // Arrange
         step("Generate 2 new customer objects");
         var id = 42;
         var id2 = 69;
-        var updatedCustomer = new CustomerGenerator().withId(id).generate();
-        var anotherExistingCustomer = new CustomerGenerator()
+        var generator = new CustomerGenerator();
+        var updatedCustomer = generator.withId(id).generate();
+        var anotherExistingCustomer = generator
+                .buildNew()
                 .withId(id2)
                 .withEmail(updatedCustomer.getEmail())
                 .generate();
@@ -394,7 +381,7 @@ class CustomerEntityServiceTest {
 
         // Assert
         step("Verify that exception is thrown after calling service layer updateById() method");
-        assertThatThrownBy(() -> this.serviceUnderTest.update(updatedCustomer))
+        assertThatThrownBy(() -> this.customerService.update(updatedCustomer))
                 .isInstanceOf(DuplicateResourceException.class)
                 .hasMessage("Customer with email={%s} already exists!"
                         .formatted(updatedCustomer.getEmail())

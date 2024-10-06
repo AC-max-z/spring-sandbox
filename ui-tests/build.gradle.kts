@@ -107,6 +107,6 @@ tasks {
 
     register<Delete>("deleteAllureStuff") {
         delete("${projectDir.path}/build/allure-results")
-        delete("${projectDir.path}/build/reports")
+        delete("${projectDir.path}/build/allure-report")
     }
 }

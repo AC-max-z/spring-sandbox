@@ -147,6 +147,11 @@ tasks {
             includeTags("jpa")
         }
     }
+
+    register<Delete>("deleteAllureStuff") {
+        delete("${projectDir.path}/build/allure-results")
+        delete("${projectDir.path}/build/allure-report")
+    }
 }
 
 jib {

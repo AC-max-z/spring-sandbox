@@ -3,103 +3,88 @@ package com.maxzamota.spring_sandbox.util.generators;
 import com.github.javafaker.Faker;
 import com.maxzamota.spring_sandbox.model.BrandEntity;
 import com.maxzamota.spring_sandbox.model.ProductEntity;
+import com.maxzamota.spring_sandbox.util.FakerProvider;
 
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 
-public class ProductGenerator {
-
-    private final ProductEntity product;
-    private final List<ProductEntity> products = new ArrayList<>();
+public class ProductGenerator implements ObjectGenerator<ProductEntity> {
+    private final ProductEntity.ProductBuilder BUILDER = new ProductEntity.ProductBuilder();
 
     public ProductGenerator() {
-        var faker = new Faker();
-        var name = faker.beer().name();
-        var description = faker.lorem().sentence(100);
-        var price = ThreadLocalRandom.current().nextDouble(10.00, Double.MAX_VALUE);
-        var issueDate = new Timestamp(
-                faker
-                        .date()
-                        .past(10000, TimeUnit.DAYS)
-                        .getTime()
-        );
-        var brand = new BrandGenerator().generate();
-        var availableAmt = ThreadLocalRandom.current().nextInt(0, 9999);
-        var discount = ThreadLocalRandom.current().nextInt(0, 99);
-        this.product = new ProductEntity(
-                name,
-                description,
-                price,
-                issueDate,
-                brand,
-                availableAmt,
-                discount
-        );
+        buildNew();
     }
 
-    public ProductGenerator withId(Integer id) {
-        this.product.setId(id);
+    public ProductGenerator buildNew() {
+        Faker FAKER = FakerProvider.getInstance();
+        BUILDER.setId(null);
+        BUILDER.setName(FAKER.company().name());
+        BUILDER.setDescription(FAKER.lorem().characters(42));
+        BUILDER.setPrice(420.69);
+        BUILDER.setIssueDate(new Timestamp(
+                FAKER.date().past(40 * 365, TimeUnit.DAYS).getTime()
+        ));
+        BUILDER.setBrand(new BrandGenerator().generate());
+        BUILDER.setAvailableAmount(42);
+        BUILDER.setDiscount(15);
+        BUILDER.setDateAdded(new Timestamp(System.currentTimeMillis()));
+        BUILDER.setDeleted(false);
+        return this;
+    }
+
+    public ProductGenerator withId(int id) {
+        BUILDER.setId(id);
         return this;
     }
 
     public ProductGenerator withName(String name) {
-        this.product.setName(name);
+        BUILDER.setName(name);
         return this;
     }
 
     public ProductGenerator withDescription(String description) {
-        this.product.setDescription(description);
+        BUILDER.setDescription(description);
         return this;
     }
 
-    public ProductGenerator withPrice(Double price) {
-        this.product.setPrice(price);
+    public ProductGenerator withPrice(double price) {
+        BUILDER.setPrice(price);
         return this;
     }
 
-    public ProductGenerator withIssueDate(Timestamp date) {
-        this.product.setIssueDate(date);
+    public ProductGenerator withIssueDate(Timestamp issueDate) {
+        BUILDER.setIssueDate(issueDate);
         return this;
     }
 
     public ProductGenerator withBrand(BrandEntity brand) {
-        this.product.setBrand(brand);
+        BUILDER.setBrand(brand);
         return this;
     }
 
-    public ProductGenerator withAmount(Integer amount) {
-        this.product.setAvailableAmount(amount);
+    public ProductGenerator withAvailableAmount(int amount) {
+        BUILDER.setAvailableAmount(amount);
         return this;
     }
 
-    public ProductGenerator withDiscount(Integer discount) {
-        this.product.setDiscount(discount);
+    public ProductGenerator withDiscount(int discount) {
+        BUILDER.setDiscount(discount);
         return this;
     }
 
+    public ProductGenerator withDateAdded(Timestamp dateAdded) {
+        BUILDER.setDateAdded(dateAdded);
+        return this;
+    }
+
+    public ProductGenerator withIsDeleted(boolean isDeleted) {
+        BUILDER.setDeleted(isDeleted);
+        return this;
+    }
+
+    @Override
     public ProductEntity generate() {
-        return this.product;
+        return BUILDER.build();
     }
 
-    public Collection<ProductEntity> buildList(int size) {
-        var faker = new Faker();
-        for (int i = 0; i < size; i++) {
-            this.products.add(
-                    new ProductEntity(
-                            faker.beer().name(),
-                            faker.lorem().sentence(100),
-                            ThreadLocalRandom.current().nextDouble(10.00, Double.MAX_VALUE),
-                            new Timestamp(faker.date().past(10000, TimeUnit.DAYS).getTime()),
-                            new BrandGenerator().generate(),
-                            ThreadLocalRandom.current().nextInt(0, 9999),
-                            ThreadLocalRandom.current().nextInt(0, 99)
-                    )
-            );
-        }
-        return this.products;
-    }
 }

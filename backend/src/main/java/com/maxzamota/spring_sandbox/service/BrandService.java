@@ -33,7 +33,7 @@ public class BrandService {
 
     private String getUsername() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        return Objects.nonNull(authentication.getName()) ? authentication.getName() : "anonymous";
+        return Objects.nonNull(authentication) ? authentication.getName() : "anonymous";
     }
 
     public BrandEntity getBrandByIdOrThrow(Integer id) {

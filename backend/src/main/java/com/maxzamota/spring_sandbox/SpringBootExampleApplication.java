@@ -13,7 +13,7 @@ import java.lang.management.GarbageCollectorMXBean;
 import java.lang.management.ManagementFactory;
 
 @SpringBootApplication
-@EnableConfigurationProperties(RsaConfigurationProperties.class)
+//@EnableConfigurationProperties(RsaConfigurationProperties.class)
 @EnableAspectJAutoProxy
 @Slf4j
 public class SpringBootExampleApplication {

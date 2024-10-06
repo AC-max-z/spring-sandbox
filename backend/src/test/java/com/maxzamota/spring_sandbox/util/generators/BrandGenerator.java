@@ -2,89 +2,72 @@ package com.maxzamota.spring_sandbox.util.generators;
 
 import com.github.javafaker.Faker;
 import com.maxzamota.spring_sandbox.model.BrandEntity;
+import com.maxzamota.spring_sandbox.util.FakerProvider;
 
 import java.sql.Timestamp;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
 
-public class BrandGenerator {
-    private final BrandEntity brand;
-    private final List<BrandEntity> brands = new ArrayList<>();
+public class BrandGenerator implements ObjectGenerator<BrandEntity> {
+    private static final Faker FAKER = FakerProvider.getInstance();
+    private static final BrandEntity.BrandBuilder BUILDER = new BrandEntity.BrandBuilder();
 
     public BrandGenerator() {
-        Faker faker = new Faker();
-        String name = faker.company().name();
-        Timestamp foundationDate = new Timestamp(
-                faker.date().past(10000, TimeUnit.DAYS).getTime());
-        String countryOfOrigin = faker.address().country();
-        String description = faker.chuckNorris().fact();
-        String history = faker.lorem().sentence(42);
-//        Timestamp dateAdded = new Timestamp(System.currentTimeMillis());
-        this.brand = new BrandEntity(
-                name,
-                foundationDate,
-                countryOfOrigin,
-                description,
-                history,
-                false
-        );
+        buildNew();
     }
 
-    public BrandGenerator withId(Integer id) {
-        this.brand.setId(id);
+    public BrandGenerator buildNew() {
+        BUILDER.setId(null);
+        BUILDER.setName(FAKER.company().name());
+        BUILDER.setDescription(FAKER.lorem().characters(42));
+        BUILDER.setHistory(FAKER.lorem().characters(69));
+        BUILDER.setCountryOfOrigin(FAKER.address().country());
+        BUILDER.setDateAdded(new Timestamp(System.currentTimeMillis()));
+        BUILDER.setFoundationDate(new Timestamp(System.currentTimeMillis()));
+        BUILDER.setDeleted(false);
+        return this;
+    }
+
+    public BrandGenerator withId(int id) {
+        BUILDER.setId(id);
         return this;
     }
 
     public BrandGenerator withName(String name) {
-        this.brand.setName(name);
-        return this;
-    }
-
-    public BrandGenerator withFoundationDate(Timestamp date) {
-        this.brand.setFoundationDate(date);
+        BUILDER.setName(name);
         return this;
     }
 
     public BrandGenerator withDescription(String description) {
-        this.brand.setDescription(description);
-        return this;
-    }
-
-    public BrandGenerator withCountry(String country) {
-        this.brand.setCountryOfOrigin(country);
+        BUILDER.setDescription(description);
         return this;
     }
 
     public BrandGenerator withHistory(String history) {
-        this.brand.setHistory(history);
+        BUILDER.setHistory(history);
         return this;
     }
 
     public BrandGenerator withDateAdded(Timestamp dateAdded) {
-        this.brand.setDateAdded(dateAdded);
+        BUILDER.setDateAdded(dateAdded);
         return this;
     }
 
-    public BrandEntity generate() {
-        return this.brand;
+    public BrandGenerator withFoundationDate(Timestamp foundationDate) {
+        BUILDER.setFoundationDate(foundationDate);
+        return this;
     }
 
-    public Collection<BrandEntity> buildList(int size) {
-        Faker faker = new Faker();
-        for (int i = 0; i < size; i++) {
-            brands.add(
-                    new BrandEntity(
-                            faker.company().name(),
-                            new Timestamp(faker.date().past(10000, TimeUnit.DAYS).getTime()),
-                            faker.address().country(),
-                            faker.gameOfThrones().quote(),
-                            faker.lorem().sentence(42),
-                            false
-                    )
-            );
-        }
-        return brands;
+    public BrandGenerator withCountryOfOrigin(String country) {
+        BUILDER.setCountryOfOrigin(country);
+        return this;
+    }
+
+    public BrandGenerator withIsDeleted(boolean isDeleted) {
+        BUILDER.setDeleted(isDeleted);
+        return this;
+    }
+
+    @Override
+    public BrandEntity generate() {
+        return BUILDER.build();
     }
 }

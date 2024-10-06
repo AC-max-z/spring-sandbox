@@ -1,8 +1,9 @@
 package com.maxzamota.spring_sandbox.unit.repository;
 
 import com.github.javafaker.Faker;
+import com.maxzamota.spring_sandbox.unit.AbstractTestcontainersTest;
+import com.maxzamota.spring_sandbox.util.FakerProvider;
 import com.maxzamota.spring_sandbox.util.generators.CustomerGenerator;
-import com.maxzamota.spring_sandbox.unit.repository.jdbc.AbstractTestcontainersTest;
 import com.maxzamota.spring_sandbox.repository.CustomerRepository;
 import io.qameta.allure.*;
 import org.junit.jupiter.api.*;
@@ -27,11 +28,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 class CustomerEntityRepositoryTest extends AbstractTestcontainersTest {
 
     @Autowired
-    private CustomerRepository classUnderTest;
-    private final Faker faker = new Faker();
+    private CustomerRepository customerRepository;
+    private static final Faker FAKER = FakerProvider.getInstance();
+    private static final ThreadLocal<CustomerGenerator> GENERATOR = new ThreadLocal<>();
 
     @BeforeEach
     void setUp() {
+        GENERATOR.set(new CustomerGenerator());
+        Allure.suite("JPA unit tests");
     }
 
     @Test
@@ -40,15 +44,14 @@ class CustomerEntityRepositoryTest extends AbstractTestcontainersTest {
     @Tags({
             @Tag("positive")
     })
-    @AllureId("JPA-001")
-    @TmsLink("JPA-001")
-    @Issue("JPA-001")
+    @AllureId("TBD")
+    @TmsLink("TBD")
+    @Issue("TBD")
     void existsCustomerByEmail() {
-        Allure.suite("JPA unit tests");
         // Arrange
-        var customer = this.classUnderTest.save(new CustomerGenerator().generate());
+        var customer = this.customerRepository.save(GENERATOR.get().buildNew().generate());
         // Act
-        var customerExists = this.classUnderTest.existsByEmail(customer.getEmail());
+        var customerExists = this.customerRepository.existsByEmail(customer.getEmail());
         // Assert
         assertThat(customerExists).isTrue();
     }
@@ -59,15 +62,14 @@ class CustomerEntityRepositoryTest extends AbstractTestcontainersTest {
     @Tags({
             @Tag("negative")
     })
-    @AllureId("JPA-002")
-    @TmsLink("JPA-002")
-    @Issue("JPA-002")
+    @AllureId("TBD")
+    @TmsLink("TBD")
+    @Issue("TBD")
     void doesNotExistCustomerByEmail() {
-        Allure.suite("JPA unit tests");
         // Arrange
-        var email = this.faker.internet().safeEmailAddress();
+        var email = FAKER.internet().safeEmailAddress();
         // Act
-        var customerExists = this.classUnderTest.existsByEmail(email);
+        var customerExists = this.customerRepository.existsByEmail(email);
         // Assert
         assertThat(customerExists).isFalse();
     }
@@ -78,15 +80,14 @@ class CustomerEntityRepositoryTest extends AbstractTestcontainersTest {
     @Tags({
             @Tag("positive")
     })
-    @AllureId("JPA-003")
-    @TmsLink("JPA-003")
-    @Issue("JPA-003")
+    @AllureId("TBD")
+    @TmsLink("TBD")
+    @Issue("TBD")
     void existsCustomerById() {
-        Allure.suite("JPA unit tests");
         // Arrange
-        var customer = this.classUnderTest.save(new CustomerGenerator().generate());
+        var customer = this.customerRepository.save(GENERATOR.get().buildNew().generate());
         // Act
-        var customerExists = this.classUnderTest.existsById(customer.getId());
+        var customerExists = this.customerRepository.existsById(customer.getId());
         // Assert
         assertThat(customerExists).isTrue();
     }
@@ -97,15 +98,14 @@ class CustomerEntityRepositoryTest extends AbstractTestcontainersTest {
     @Tags({
             @Tag("negative")
     })
-    @AllureId("JPA-004")
-    @TmsLink("JPA-004")
-    @Issue("JPA-004")
+    @AllureId("TBD")
+    @TmsLink("TBD")
+    @Issue("TBD")
     void doesNotExistCustomerById() {
-        Allure.suite("JPA unit tests");
         // Arrange
         Integer id = -1;
         // Act
-        var customerExists = this.classUnderTest.existsById(id);
+        var customerExists = this.customerRepository.existsById(id);
         // Assert
         assertThat(customerExists).isFalse();
     }
@@ -116,15 +116,14 @@ class CustomerEntityRepositoryTest extends AbstractTestcontainersTest {
     @Tags({
             @Tag("positive")
     })
-    @AllureId("JPA-005")
-    @TmsLink("JPA-005")
-    @Issue("JPA-005")
+    @AllureId("TBD")
+    @TmsLink("TBD")
+    @Issue("TBD")
     void findCustomersByEmail() {
-        Allure.suite("JPA unit tests");
         // Arrange
-        var customer = this.classUnderTest.save(new CustomerGenerator().generate());
+        var customer = this.customerRepository.save(GENERATOR.get().buildNew().generate());
         // Act
-        var customers = this.classUnderTest.findAllByEmail(customer.getEmail());
+        var customers = this.customerRepository.findAllByEmail(customer.getEmail());
         // Assert
         assertThat(customers)
                 .isNotEmpty()
@@ -139,15 +138,14 @@ class CustomerEntityRepositoryTest extends AbstractTestcontainersTest {
     @Tags({
             @Tag("negative")
     })
-    @AllureId("JPA-006")
-    @TmsLink("JPA-006")
-    @Issue("JPA-006")
+    @AllureId("TBD")
+    @TmsLink("TBD")
+    @Issue("TBD")
     void findCustomersByEmailNegative() {
-        Allure.suite("JPA unit tests");
         // Arrange
-        var email = this.faker.internet().safeEmailAddress();
+        var email = FAKER.internet().safeEmailAddress();
         // Act
-        var customers = this.classUnderTest.findAllByEmail(email);
+        var customers = this.customerRepository.findAllByEmail(email);
         // Assert
         assertThat(customers).isEmpty();
     }

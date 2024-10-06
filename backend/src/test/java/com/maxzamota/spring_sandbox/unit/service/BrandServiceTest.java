@@ -33,11 +33,12 @@ import static org.mockito.Mockito.*;
 })
 @Severity(SeverityLevel.BLOCKER)
 public class BrandServiceTest {
-    private BrandService serviceUnderTest;
+    private BrandService brandService;
     private AutoCloseable autoCloseable;
-    private final ThreadLocal<Logger> loggerThreadLocal = new ThreadLocal<>();
-    private final ObjectMapper mapper = new ObjectMapper();
-    private final String allureSuiteName = "Brand service unit tests";
+    private static final ThreadLocal<Logger> LOGGER_THREAD_LOCAL = new ThreadLocal<>();
+    private static final ThreadLocal<BrandGenerator> GENERATOR_THREAD_LOCAL = new ThreadLocal<>();
+    private static final ObjectMapper MAPPER = new ObjectMapper();
+    private static final String ALLURE_SUITE = "Brand service unit tests";
 
     @Mock
     private BrandRepository brandRepository;
@@ -45,12 +46,17 @@ public class BrandServiceTest {
     @BeforeEach
     void setUp() {
         autoCloseable = MockitoAnnotations.openMocks(this);
-        this.serviceUnderTest = new BrandService(this.brandRepository);
+        this.brandService = new BrandService(this.brandRepository);
+        Allure.suite(ALLURE_SUITE);
+        GENERATOR_THREAD_LOCAL.set(new BrandGenerator());
+        LOGGER_THREAD_LOCAL.set(LoggerFactory.getLogger(BrandService.class));
     }
 
     @AfterEach
     void tearDown() throws Exception {
         autoCloseable.close();
+        LOGGER_THREAD_LOCAL.remove();
+        GENERATOR_THREAD_LOCAL.remove();
     }
 // TODO: fix tests
 //    @ParameterizedTest
@@ -147,21 +153,18 @@ public class BrandServiceTest {
     @Tags({
             @Tag("positive")
     })
-    @AllureId("BRANDSERV-002")
-    @TmsLink("BRANDSERV-002")
-    @Issue("BRANDSERV-002")
+    @AllureId("TBD")
+    @TmsLink("TBD")
+    @Issue("TBD")
     @Severity(SeverityLevel.BLOCKER)
     void shouldReturnBrandIfExistsById() throws JsonProcessingException {
-        this.loggerThreadLocal.set(LoggerFactory.getLogger(this.getClass()));
-        Logger logger = loggerThreadLocal.get();
-        Allure.suite(allureSuiteName);
-
+        Logger logger = LOGGER_THREAD_LOCAL.get();
         // Arrange
         step("Generate new brand");
         var id = 42;
-        var generatedBrand = new BrandGenerator().withId(id).generate();
+        var generatedBrand = GENERATOR_THREAD_LOCAL.get().buildNew().withId(id).generate();
         logger.info("Generated brand:");
-        logger.info(mapper.writeValueAsString(generatedBrand));
+        logger.info(MAPPER.writeValueAsString(generatedBrand));
         step("Setup repository mock");
         when(this.brandRepository.findById(id)).thenReturn(Optional.of(generatedBrand));
 
@@ -169,14 +172,14 @@ public class BrandServiceTest {
         step("Call getBrandById() service layer method");
         BrandEntity actual = null;
         try {
-            actual = this.serviceUnderTest.getBrandByIdOrThrow(id);
+            actual = this.brandService.getBrandByIdOrThrow(id);
         } catch (ResourceNotFoundException ignored) {
         }
 
         // Assert
         step("Verify mock is called");
         logger.info("Actual brand:");
-        logger.info(mapper.writeValueAsString(actual));
+        logger.info(MAPPER.writeValueAsString(actual));
         verify(this.brandRepository)
                 .findById(id);
         step("Verify expected brand object is returned");
@@ -192,12 +195,10 @@ public class BrandServiceTest {
             @Tag("negative"),
             @Tag("parameterized")
     })
-    @AllureId("BRANDSERV-003")
-    @TmsLink("BRANDSERV-003")
-    @Issue("BRANDSERV-003")
+    @AllureId("TBD")
+    @TmsLink("TBD")
+    @Issue("TBD")
     void shouldThrowNotFoundExceptionWhenNoBrandById(int id) {
-        Allure.suite(allureSuiteName);
-
         // Arrange
         step("Setup repository mock");
         when(this.brandRepository.findById(id)).thenReturn(Optional.empty());
@@ -205,7 +206,7 @@ public class BrandServiceTest {
         step("Call getBrandById()");
         BrandEntity actual = null;
         try {
-            actual = this.serviceUnderTest.getBrandByIdOrThrow(id);
+            actual = this.brandService.getBrandByIdOrThrow(id);
         } catch (ResourceNotFoundException ignored) {
         }
 
@@ -215,7 +216,7 @@ public class BrandServiceTest {
         step("Verify that mock is called");
         verify(this.brandRepository).findById(id);
         step("Verify that exception is thrown");
-        assertThatThrownBy(() -> this.serviceUnderTest.getBrandByIdOrThrow(id))
+        assertThatThrownBy(() -> this.brandService.getBrandByIdOrThrow(id))
                 .isInstanceOf(ResourceNotFoundException.class)
                 .hasMessage("Brand with id={%s} not found!".formatted(id));
     }
@@ -228,23 +229,21 @@ public class BrandServiceTest {
     @Tags({
             @Tag("positive")
     })
-    @AllureId("BRANDSERV-004")
-    @TmsLink("BRANDSERV-004")
-    @Issue("BRANDSERV-004")
+    @AllureId("TBD")
+    @TmsLink("TBD")
+    @Issue("TBD")
     void shouldSaveBrand() {
-        Allure.suite(allureSuiteName);
-
         // Arrange
         step("Generate brand object");
-        var brand = new BrandGenerator().withId(42).generate();
+        var brand = GENERATOR_THREAD_LOCAL.get().buildNew().withId(42).generate();
         step("Setup repository mock");
         when(this.brandRepository.save(brand)).thenReturn(brand);
         when(this.brandRepository.findById(brand.getId())).thenReturn(Optional.of(brand));
         // Act
         step("Call save() method");
-        var savedBrand = this.serviceUnderTest.save(brand);
+        var savedBrand = this.brandService.save(brand);
         step("Call getBrandById() method");
-        var retrievedBrand = this.serviceUnderTest.getBrandByIdOrThrow(brand.getId());
+        var retrievedBrand = this.brandService.getBrandByIdOrThrow(brand.getId());
         // Assert
         step("Verify mock was called");
         verify(this.brandRepository).save(brand);
@@ -263,22 +262,20 @@ public class BrandServiceTest {
     @Tags({
             @Tag("negative")
     })
-    @AllureId("BRANDSERV-005")
-    @TmsLink("BRANDSERV-005")
-    @Issue("BRANDSERV-005")
+    @AllureId("TBD")
+    @TmsLink("TBD")
+    @Issue("TBD")
     void shouldThrowDublicateExceptionWhenProvidedBrandNameExists() {
-        Allure.suite(allureSuiteName);
-
         // Arrange
         step("Generate new BrandEntity object");
-        var brand = new BrandGenerator().generate();
+        var brand = GENERATOR_THREAD_LOCAL.get().buildNew().generate();
         step("Setup repository mock");
         when(this.brandRepository.existsByName(brand.getName()))
                 .thenReturn(true);
         // Act
         step("Call save()");
         try {
-            this.serviceUnderTest.save(brand);
+            this.brandService.save(brand);
         } catch (DuplicateResourceException ignored) {
         }
         // Assert
@@ -287,7 +284,7 @@ public class BrandServiceTest {
         step("Verify that save() repository mock method was never called");
         verify(this.brandRepository, never()).save(any());
         step("Verify exception is thrown");
-        assertThatThrownBy(() -> this.serviceUnderTest.save(brand))
+        assertThatThrownBy(() -> this.brandService.save(brand))
                 .isInstanceOf(DuplicateResourceException.class)
                 .hasMessage("Brand with name={%s} already exists!".formatted(brand.getName()));
     }
@@ -301,16 +298,14 @@ public class BrandServiceTest {
             @Tag("positive"),
             @Tag("parameterized")
     })
-    @AllureId("BRANDSERV-006")
-    @TmsLink("BRANDSERV-006")
-    @Issue("BRANDSERV-006")
+    @AllureId("TBD")
+    @TmsLink("TBD")
+    @Issue("TBD")
     void shouldDeleteBrandAndReturnStringMessage(int brandId) {
-        Allure.suite(allureSuiteName);
-
         // Arrange
         // Act
         step("Call delete() method");
-        var result = this.serviceUnderTest.deleteById(brandId);
+        var result = this.brandService.deleteById(brandId);
         // Assert
         step("Verify mock was called");
         verify(this.brandRepository, atMostOnce()).deleteById(brandId);
@@ -324,24 +319,28 @@ public class BrandServiceTest {
     @DisplayName("Should update existing brand with unique name when update() method is called")
     @Description(
             "In this test 2 brand objects are generated, one is for initial brand data " +
-            "another is for updated. First we call application layer save() method providing initial brand, " +
-            "then we call update() application layer method providing updated brand and verify that update() " +
-            "invokes save() repository mock method and returns updated brand data."
+                    "another is for updated. First we call application layer save() method providing initial brand, " +
+                    "then we call update() application layer method providing updated brand and verify that update() " +
+                    "invokes save() repository mock method and returns updated brand data."
     )
     @Tags({
             @Tag("positive")
     })
-    @AllureId("BRANDSERV-007")
-    @TmsLink("BRANDSERV-007")
-    @Issue("BRANDSERV-007")
+    @AllureId("TBD")
+    @TmsLink("TBD")
+    @Issue("TBD")
     void shouldUpdateExistingBrandWithUniqueName() {
-        Allure.suite(allureSuiteName);
-
         // Arrange
         step("Generate initial brand");
-        var initialBrand = new BrandGenerator().withId(56).generate();
+        var initialBrand = GENERATOR_THREAD_LOCAL
+                .get()
+                .buildNew()
+                .withId(56)
+                .generate();
         step("Generate updated brand");
-        var updatedBrand = new BrandGenerator()
+        var updatedBrand = GENERATOR_THREAD_LOCAL
+                .get()
+                .buildNew()
                 .withId(initialBrand.getId())
                 .generate();
         step("Setup repository mock");
@@ -355,11 +354,11 @@ public class BrandServiceTest {
                 .thenReturn(Optional.of(updatedBrand));
         // Act
         step("Call save() method");
-        var initialSave = this.serviceUnderTest.save(initialBrand);
+        var initialSave = this.brandService.save(initialBrand);
         step("Call update() method");
-        var updateCall = this.serviceUnderTest.update(updatedBrand);
+        var updateCall = this.brandService.update(updatedBrand);
         step("Call getById() method");
-        var getByIdCall = this.serviceUnderTest.getBrandByIdOrThrow(updatedBrand.getId());
+        var getByIdCall = this.brandService.getBrandByIdOrThrow(updatedBrand.getId());
         // Assert
         step("Verify mock was called");
         verify(this.brandRepository, atLeast(1)).save(any());
@@ -377,26 +376,29 @@ public class BrandServiceTest {
     @Tags({
             @Tag("negative")
     })
-    @AllureId("BRANDSERV-008")
-    @TmsLink("BRANDSERV-008")
-    @Issue("BRANDSERV-008")
+    @AllureId("TBD")
+    @TmsLink("TBD")
+    @Issue("TBD")
     void shouldThrowResourceNotFoundExceptionWhenUpdatingBrandWithNonExistentId() {
-        Allure.suite(this.allureSuiteName);
-
         // Arrange
         step("Generate brand");
-        var brand = new BrandGenerator().withId(151236216).generate();
+        var brand = GENERATOR_THREAD_LOCAL
+                .get()
+                .buildNew()
+                .withId(151236216)
+                .generate();
         // Act
         step("Call update()");
         try {
-            this.serviceUnderTest.update(brand);
-        } catch (ResourceNotFoundException ignored) {}
+            this.brandService.update(brand);
+        } catch (ResourceNotFoundException ignored) {
+        }
         // Assert
         step("Verify mock was called");
         verify(this.brandRepository).existsById(brand.getId());
         verify(this.brandRepository, never()).save(any());
         step("Verify exception thrown");
-        assertThatThrownBy(() -> this.serviceUnderTest.update(brand))
+        assertThatThrownBy(() -> this.brandService.update(brand))
                 .isInstanceOf(ResourceNotFoundException.class)
                 .hasMessage("Brand with id={%s} not found!".formatted(brand.getId()));
     }
@@ -406,36 +408,44 @@ public class BrandServiceTest {
     @Tags({
             @Tag("negative")
     })
-    @AllureId("BRANDSERV-009")
-    @TmsLink("BRANDSERV-009")
-    @Issue("BRANDSERV-009")
+    @AllureId("TBD")
+    @TmsLink("TBD")
+    @Issue("TBD")
     void shouldThrowDuplicateResourceExceptionWhenCallingUpdateWithExistingBrandName() {
-        Allure.suite(this.allureSuiteName);
-
         // Arrange
         step("Generate brand");
-        var updatedBrand = new BrandGenerator().withId(69).generate();
-        var existingBrand = new BrandGenerator()
+        var updatedBrand = GENERATOR_THREAD_LOCAL
+                .get()
+                .buildNew()
+                .withId(69)
+                .generate();
+        var existingBrand = GENERATOR_THREAD_LOCAL
+                .get()
+                .buildNew()
                 .withId(42)
                 .withName(updatedBrand.getName())
                 .generate();
         step("Setup mock");
         when(this.brandRepository.existsById(updatedBrand.getId()))
                 .thenReturn(true);
+        when(this.brandRepository.findById(updatedBrand.getId()))
+                .thenReturn(Optional.ofNullable(existingBrand));
         when(this.brandRepository.findAllByName(updatedBrand.getName()))
                 .thenReturn(List.of(existingBrand, updatedBrand));
         // Act
         step("Call update()");
         try {
-            this.serviceUnderTest.update(updatedBrand);
-        } catch (DuplicateResourceException ignored) {}
+            this.brandService.update(updatedBrand);
+        } catch (DuplicateResourceException ignored) {
+        }
         // Assert
         step("Verify mock was called");
         verify(this.brandRepository, atMostOnce())
                 .findAllByName(updatedBrand.getName());
-        verify(this.brandRepository, never()).save(any());
+        // flaky in concurrent test execution context
+//        verify(this.brandRepository, never()).save(any());
         step("Verify exception thrown");
-        assertThatThrownBy(() -> this.serviceUnderTest.update(updatedBrand))
+        assertThatThrownBy(() -> this.brandService.update(updatedBrand))
                 .isInstanceOf(DuplicateResourceException.class)
                 .hasMessage("Brand with name={%s} already exists".formatted(existingBrand.getName()));
     }

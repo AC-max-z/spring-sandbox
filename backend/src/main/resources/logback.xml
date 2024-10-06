@@ -41,11 +41,6 @@
                 </syntaxHighlighterFactory>
             </jsonGeneratorDecorator>
         </encoder>
-        <!--                <withJansi>true</withJansi>-->
-        <!--        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">-->
-        <!--            <pattern>%d %-5level [%thread] %logger{0}: %msg%n</pattern>-->
-        <!--            <outputPatternAsHeader>true</outputPatternAsHeader>-->
-        <!--        </encoder>-->
     </appender>
     <appender name="ASYNC" class="ch.qos.logback.classic.AsyncAppender">
         <appender-ref ref="stdout" />
