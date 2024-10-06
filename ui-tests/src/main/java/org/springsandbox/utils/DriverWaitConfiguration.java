@@ -62,16 +62,7 @@ public class DriverWaitConfiguration {
      */
     public void waitForElement(WaitCondition condition, WebElement element) {
         waitForPageLoading();
-        temporarilyDisableImplicitWait(() -> {
-            switch (condition) {
-                case VISIBLE -> WAIT
-                        .until(ExpectedConditions.visibilityOf(element));
-                case CLICKABLE -> WAIT
-                        .until(ExpectedConditions.elementToBeClickable(element));
-                case INVISIBLE -> WAIT
-                        .until(ExpectedConditions.invisibilityOf(element));
-            }
-        });
+        temporarilyDisableImplicitWait(() -> condition.apply(WAIT, element));
     }
 
     /**
@@ -84,16 +75,7 @@ public class DriverWaitConfiguration {
      */
     public void waitForElements(WaitCondition condition, List<WebElement> elements) {
         waitForPageLoading();
-        temporarilyDisableImplicitWait(() -> {
-            switch (condition) {
-                case VISIBLE -> WAIT
-                        .until(ExpectedConditions.visibilityOfAllElements(elements));
-                case INVISIBLE -> WAIT
-                        .until(ExpectedConditions.invisibilityOfAllElements(elements));
-                default -> throw new IllegalArgumentException(
-                        "Unexpected wait condition value provided for list of elements: " + condition);
-            }
-        });
+        temporarilyDisableImplicitWait(() -> condition.apply(WAIT, elements));
     }
 
     /**

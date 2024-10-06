@@ -1,19 +1,16 @@
 package org.springsandbox.factories;
 
+import lombok.Getter;
 import org.openqa.selenium.PageLoadStrategy;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeDriverService;
 import org.openqa.selenium.chrome.ChromeOptions;
-import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.firefox.FirefoxDriverLogLevel;
 import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.firefox.GeckoDriverService;
 import org.openqa.selenium.logging.LogType;
 import org.openqa.selenium.logging.LoggingPreferences;
 import org.openqa.selenium.remote.AbstractDriverOptions;
-import org.openqa.selenium.remote.DesiredCapabilities;
-import org.openqa.selenium.remote.RemoteWebDriver;
 import org.springsandbox.config.DriverConfig;
 import org.springsandbox.config.EnvConfig;
 import org.springsandbox.enums.DriverType;
@@ -33,6 +30,7 @@ import java.util.logging.Level;
 public class WebDriverFactory {
     private static final DriverConfig DRIVER_CONFIG = ConfigsProvider.getDriverConfig();
     private static final EnvConfig ENV_CONFIG = ConfigsProvider.getEnvConfig();
+    @Getter
     private static final URL GRID_URL;
 
     static {
@@ -48,48 +46,10 @@ public class WebDriverFactory {
     }
 
     public static WebDriver getDriver(DriverType driverType, String browserVersion) {
-        return switch (driverType) {
-
-            case DriverType.CHROME -> {
-                var service = getChromeService();
-                var opts = getChromeOptions(browserVersion);
-                yield new ChromeDriver(service, opts);
-            }
-
-            case DriverType.FIREFOX -> {
-                var geckoService = getGeckoService();
-                var opts = getFirefoxOptions(browserVersion);
-                yield new FirefoxDriver(geckoService, opts);
-            }
-
-            case DriverType.FIREFOX_REMOTE -> {
-                var opts = getFirefoxOptions(browserVersion);
-                yield new RemoteWebDriver(GRID_URL, opts);
-            }
-
-            case DriverType.CHROME_REMOTE -> {
-                var opts = getChromeOptions(browserVersion);
-                yield new RemoteWebDriver(GRID_URL, opts);
-            }
-
-            case DriverType.CHROME_REMOTE_HEADLESS -> {
-                var opts = getChromeOptions(browserVersion);
-                opts.addArguments("--headless", "--no-sandbox", "--disable-dev-shm-usage");
-                var capabilities = new DesiredCapabilities();
-                capabilities.setCapability(ChromeOptions.CAPABILITY, opts);
-                yield new RemoteWebDriver(GRID_URL, capabilities);
-            }
-
-            case DriverType.FIREFOX_REMOTE_HEADLESS -> {
-                var opts = getFirefoxOptions(browserVersion);
-                opts.addArguments("-headless");
-                yield new RemoteWebDriver(GRID_URL, opts);
-            }
-
-        };
+        return driverType.createDriver(browserVersion);
     }
 
-    private static ChromeOptions getChromeOptions(String browserVersion) {
+    public static ChromeOptions getChromeOptions(String browserVersion) {
         var opts = new ChromeOptions();
         setGenericDriverOptions(opts, browserVersion);
         setSelenoidOptions(opts);
@@ -106,7 +66,7 @@ public class WebDriverFactory {
         return opts;
     }
 
-    private static FirefoxOptions getFirefoxOptions(String browserVersion) {
+    public static FirefoxOptions getFirefoxOptions(String browserVersion) {
         var opts = new FirefoxOptions();
         setGenericDriverOptions(opts, browserVersion);
         setSelenoidOptions(opts);
@@ -125,7 +85,7 @@ public class WebDriverFactory {
         opts.setBrowserVersion(browserVersion);
     }
 
-    private static ChromeDriverService getChromeService() {
+    public static ChromeDriverService getChromeService() {
         if (DRIVER_CONFIG.getChromeLocalLoggingEnabled()) {
             var logFile = new File(DRIVER_CONFIG.getChromeLocalLogPath() +
                     "/chrome_" + Instant.ofEpochMilli(System.currentTimeMillis()) + ".log");
@@ -141,7 +101,7 @@ public class WebDriverFactory {
                 .build();
     }
 
-    private static GeckoDriverService getGeckoService() {
+    public static GeckoDriverService getGeckoService() {
         if (DRIVER_CONFIG.getFirefoxLocalLoggingEnabled()) {
             var logFile = new File(DRIVER_CONFIG.getFirefoxLocalLogPath() +
                     "/firefox_" + Instant.ofEpochMilli(System.currentTimeMillis()) + ".log");
