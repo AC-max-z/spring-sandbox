@@ -21,10 +21,7 @@ import reactor.core.publisher.Mono;
 import reactor.netty.http.client.HttpClient;
 import reactor.netty.transport.logging.AdvancedByteBufFormat;
 
-import java.util.Base64;
-import java.util.Collection;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class IntegrationTestHelpers {
@@ -59,7 +56,8 @@ public class IntegrationTestHelpers {
             var generatedUser = new UserGenerator().generate();
             postUser(webClient, userMapper.toDto(generatedUser));
             authHeader = "Basic " + Base64.getEncoder()
-                    .encodeToString((generatedUser.getEmail() + ":" + generatedUser.getPassword()).getBytes());
+                    .encodeToString((generatedUser.getEmail() + ":" + generatedUser.getPassword())
+                            .getBytes());
         }
         return webClient;
     }
@@ -77,12 +75,13 @@ public class IntegrationTestHelpers {
                 .exchange()
                 .expectStatus()
                 .isCreated()
-                .expectBody(EntityModel.class);
+                .expectBody(new ParameterizedTypeReference<EntityModel<UserDto>>() {
+                });
     }
 
     @Step("Create new Customer")
     public static CustomerDto postCustomer(@NotNull WebTestClient webClient, CustomerDto customerDto) {
-        return (CustomerDto) Objects.requireNonNull(webClient
+        return Objects.requireNonNull(webClient
                         .post()
                         .uri(CUSTOMER_PUBLIC_API_URI)
                         .accept(MediaType.APPLICATION_JSON)
@@ -93,14 +92,15 @@ public class IntegrationTestHelpers {
                         .exchange()
                         .expectStatus()
                         .isCreated()
-                        .expectBody(EntityModel.class)
+                        .expectBody(new ParameterizedTypeReference<EntityModel<CustomerDto>>() {
+                        })
                         .returnResult()
                         .getResponseBody())
                 .getContent();
     }
 
     @Step("Get all customers")
-    public static Collection<CustomerEntity> getAllCustomers(@NotNull WebTestClient webClient) {
+    public static List<CustomerEntity> getAllCustomers(@NotNull WebTestClient webClient) {
         return Objects.requireNonNull(webClient
                         .get()
                         .uri(CUSTOMER_PUBLIC_API_URI + "/all")
@@ -113,29 +113,29 @@ public class IntegrationTestHelpers {
                         .expectBody(new ParameterizedTypeReference<PagedModel<EntityModel<CustomerEntity>>>() {
                         })
                         .returnResult()
-                        .getResponseBody())  // Now this will return a PagedModel<EntityModel<CustomerEntity>>
-                .getContent()  // Extract the content from the PagedModel
+                        .getResponseBody())
+                .getContent()
                 .stream()
-                .map(EntityModel::getContent)  // Extract CustomerEntity from each EntityModel
+                .map(EntityModel::getContent)
                 .collect(Collectors.toList());
     }
 
     @Step("Get customer by id")
     public static CustomerDto getCustomerById(WebTestClient webClient, Integer id) {
-        return (CustomerDto)
-                Objects.requireNonNull(webClient
-                                .get()
-                                .uri(CUSTOMER_PUBLIC_API_URI + "/{id}", id)
-                                .accept(MediaType.APPLICATION_JSON)
-                                .header("x-request-id", String.valueOf(UUID.randomUUID()))
-                                .header(HttpHeaders.AUTHORIZATION, authHeader)
-                                .exchange()
-                                .expectStatus()
-                                .isOk()
-                                .expectBody(EntityModel.class)
-                                .returnResult()
-                                .getResponseBody())
-                        .getContent();
+        return Objects.requireNonNull(webClient
+                        .get()
+                        .uri(CUSTOMER_PUBLIC_API_URI + "/{id}", id)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .header("x-request-id", String.valueOf(UUID.randomUUID()))
+                        .header(HttpHeaders.AUTHORIZATION, authHeader)
+                        .exchange()
+                        .expectStatus()
+                        .isOk()
+                        .expectBody(new ParameterizedTypeReference<EntityModel<CustomerDto>>() {
+                        })
+                        .returnResult()
+                        .getResponseBody())
+                .getContent();
     }
 
     @Step("Delete customer by id")
@@ -169,7 +169,7 @@ public class IntegrationTestHelpers {
 
     @Step("Update customer")
     public static CustomerDto putCustomer(WebTestClient webClient, CustomerDto customerDto) {
-        return (CustomerDto) Objects.requireNonNull(webClient
+        return Objects.requireNonNull(webClient
                         .put()
                         .uri(CUSTOMER_PUBLIC_API_URI + "/{id}", customerDto.getId())
                         .accept(MediaType.APPLICATION_JSON)
@@ -180,7 +180,8 @@ public class IntegrationTestHelpers {
                         .exchange()
                         .expectStatus()
                         .isCreated()
-                        .expectBody(EntityModel.class)
+                        .expectBody(new ParameterizedTypeReference<EntityModel<CustomerDto>>() {
+                        })
                         .returnResult()
                         .getResponseBody())
                 .getContent();
