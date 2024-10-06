@@ -1,14 +1,12 @@
 package com.maxzamota.spring_sandbox.integration;
 
-import com.maxzamota.spring_sandbox.dto.CustomerDto;
+import com.maxzamota.spring_sandbox.mappers.CustomerMapper;
 import com.maxzamota.spring_sandbox.util.generators.CustomerGenerator;
 import com.maxzamota.spring_sandbox.util.helpers.IntegrationTestHelpers;
-import com.maxzamota.spring_sandbox.model.CustomerEntity;
 import io.qameta.allure.*;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
-import org.modelmapper.ModelMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,13 +14,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
-import org.springframework.test.web.reactive.server.WebTestClient;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 
-import java.util.Collection;
-
-import static io.qameta.allure.Allure.step;
+import static com.maxzamota.spring_sandbox.util.TestStep.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -38,14 +33,14 @@ public class CustomerEntityIT {
     private int port;
 
     @Autowired
-    private ModelMapper mapper;
+    private CustomerMapper mapper;
 
     @Container
     private static final PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>(
             "postgres:15-alpine"
     );
 
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private final ThreadLocal<Logger> LOGGER_THREAD_LOCAL = new ThreadLocal<>();
 
     @DynamicPropertySource
     static void configureProperties(DynamicPropertyRegistry registry) {
@@ -68,194 +63,139 @@ public class CustomerEntityIT {
     void tearDown() {
     }
 
+    @BeforeEach
+    void setUp() {
+        Allure.suite("Customer management integration tests");
+        LOGGER_THREAD_LOCAL.set(LoggerFactory.getLogger(this.getClass()));
+    }
+
     @Test
     @DisplayName("Should be able to create a new customer and retrieve it using public customer API")
     @Description("This test checks that new customer can be created")
     @Issues(
-            @Issue("CUST-001")
+            @Issue("TBD")
     )
-    @AllureId("CUST-001")
-    @TmsLink("CUST-001")
+    @AllureId("TBD")
+    @TmsLink("TBD")
     @Tags({
             @Tag("positive")
     })
-    void createNewCustomerAndVerifyExists() {
-        Allure.suite("Customer management integration tests");
-
+    void createNewCustomerAndVerifyExists() throws Exception {
         // Arrange
-        var step0 = "Init Web Test Client";
-        logger.info(step0);
-        step(step0);
-        WebTestClient webClient = IntegrationTestHelpers.getWebTestClient(this.port);
-
-        var step1 = "Generate new Customer object";
-        logger.info(step1);
-        step(step1);
-        var customer = new CustomerGenerator().generate();
-        var customerDto = this.mapper.map(customer, CustomerDto.class);
-
+        var logger = LOGGER_THREAD_LOCAL.get();
+        var webClient = step("Init Web Test Client", logger,
+                () -> IntegrationTestHelpers.getWebTestClient(port));
+        var customer = step("Generate new Customer object", logger,
+                () -> new CustomerGenerator().generate());
+        var customerDto = this.mapper.toDto(customer);
         // Act
-        var step2 = "Create generated customer using public Customer API";
-        logger.info(step2);
-        step(step2);
-        CustomerEntity createdCustomerEntity = IntegrationTestHelpers.postCustomer(webClient, customerDto);
-
-        var step3 = "Get all customers using public Customer API";
-        logger.info(step3);
-        step(step3);
-        Collection<CustomerEntity> allCustomerEntities = IntegrationTestHelpers.getAllCustomers(webClient);
-
-        var step4 = "Get customer by id using public Customer API";
-        logger.info(step4);
-        step(step4);
-        CustomerEntity savedCustomerEntity = IntegrationTestHelpers
-                .getCustomerById(webClient, createdCustomerEntity.getId());
-
+        var createdCustomer = step("Create generated customer using public Customer API",
+                logger, () -> IntegrationTestHelpers.postCustomer(webClient, customerDto));
+        var allCustomers = step("Get all customers using public Customer API",
+                logger, () -> IntegrationTestHelpers.getAllCustomers(webClient));
+        var savedCustomer = step("Get customer by id using public Customer API",
+                logger,
+                () -> IntegrationTestHelpers.getCustomerById(webClient, createdCustomer.getId()));
         // Assert
-        var step5 = "Verify all customers list contains created customer";
-        logger.info(step5);
-        step(step5);
-        assertThat(allCustomerEntities)
-                .usingRecursiveFieldByFieldElementComparator()
-                .contains(createdCustomerEntity);
-
-        var step6 = "Verify customer is returned by id";
-        logger.info(step6);
-        step(step6);
-        assertThat(savedCustomerEntity)
-                .usingRecursiveComparison()
-                .isEqualTo(createdCustomerEntity);
+        step("Verify all customers list contains created customer", logger,
+                () -> assertThat(mapper.toDtoList(allCustomers.stream().toList()))
+                        .usingRecursiveFieldByFieldElementComparator()
+                        .contains(createdCustomer));
+        step("Verify customer is returned by id", logger,
+                () -> assertThat(savedCustomer)
+                        .usingRecursiveComparison()
+                        .isEqualTo(createdCustomer));
     }
 
     @Test
     @DisplayName("Should be able to delete existing customer using public API")
     @Description("This test checks that existing customer can be deleted")
     @Issues(
-            @Issue("CUST-002")
+            @Issue("TBD")
     )
-    @AllureId("CUST-002")
-    @TmsLink("CUST-002")
+    @AllureId("TBD")
+    @TmsLink("TBD")
     @Tags({
             @Tag("positive")
     })
-    void deleteCustomer() {
-        Allure.suite("Customer management integration tests");
-
+    void deleteCustomer() throws Exception {
         // Arrange
-        var step0 = "Init Web Test Client";
-        logger.info(step0);
-        step(step0);
-        WebTestClient webClient = IntegrationTestHelpers.getWebTestClient(this.port);
-
-        var step1 = "Generate new customer object";
-        logger.info(step1);
-        step(step1);
-        var customer = new CustomerGenerator().generate();
-        var customerDto = this.mapper.map(customer, CustomerDto.class);
-
+        var logger = LOGGER_THREAD_LOCAL.get();
+        var webClient = step("Init Web Test Client", logger,
+                () -> IntegrationTestHelpers.getWebTestClient(port));
+        var customer = step("Generate new customer object", logger,
+                () -> new CustomerGenerator().generate());
+        var customerDto = this.mapper.toDto(customer);
         // Act
-        var step2 = "Create new customer using public API";
-        logger.info(step2);
-        step(step2);
-        var createdCustomer = IntegrationTestHelpers.postCustomer(webClient, customerDto);
-
-        var step3 = "Retrieve created customer by ID using public API";
-        logger.info(step3);
-        step(step3);
-        var retrievedCustomer = IntegrationTestHelpers
-                .getCustomerById(webClient, createdCustomer.getId());
-
-        var step4 = "Delete created Customer";
-        logger.info(step4);
-        step(step4);
-        var deleteResult = IntegrationTestHelpers
-                .deleteCustomerById(webClient, createdCustomer.getId());
-
-        var step5 = "Retrieve deleted customer";
-        logger.info(step5);
-        step(step5);
-        var getDeletedCustomer = IntegrationTestHelpers
-                .getCustomerByIdNotFound(webClient, createdCustomer.getId());
-
+        var createdCustomer = step("Create new customer using public API", logger,
+                () -> IntegrationTestHelpers.postCustomer(webClient, customerDto));
+        var retrievedCustomer = step("Retrieve created customer by ID using public API",
+                logger,
+                () -> IntegrationTestHelpers.getCustomerById(webClient, createdCustomer.getId()));
+        step("Delete created Customer", logger,
+                () -> IntegrationTestHelpers
+                        .deleteCustomerById(webClient, createdCustomer.getId()));
+        var getDeletedCustomer = step("Retrieve deleted customer", logger,
+                () -> IntegrationTestHelpers
+                        .getCustomerByIdNotFound(webClient, createdCustomer.getId()));
         // Assert
-        var step6 = "Verify that retrieved customer before delete is as expected";
-        logger.info(step6);
-        step(step6);
-        assertThat(retrievedCustomer)
-                .usingRecursiveComparison()
-                .isEqualTo(createdCustomer);
-
-        var step7 = "Verify that get customer by id after delete returns not found";
-        logger.info(step7);
-        step(step7);
-        assertThat(getDeletedCustomer)
-                .hasFieldOrPropertyWithValue("status", 404)
-                .hasFieldOrPropertyWithValue("error", "Not Found")
-                .hasFieldOrPropertyWithValue(
-                        "message",
-                        "Customer with id={%s} not found!".formatted(createdCustomer.getId())
-                );
+        step("Verify that retrieved customer before delete is as expected", logger,
+                () -> assertThat(retrievedCustomer)
+                        .usingRecursiveComparison()
+                        .isEqualTo(createdCustomer));
+        step("Verify that get customer by id after delete returns not found", logger,
+                () -> assertThat(getDeletedCustomer)
+                        .hasFieldOrPropertyWithValue("httpStatus", "NOT_FOUND")
+                        .hasFieldOrPropertyWithValue(
+                                "debugMessage",
+                                "Customer with id={%s} not found!".formatted(createdCustomer.getId())
+                        ));
     }
 
     @Test
     @DisplayName("Should be able to update existing customer using public API")
     @Description("This test checks that existing customer can be updated")
     @Issues(
-            @Issue("CUST-003")
+            @Issue("TBD")
     )
-    @AllureId("CUST-003")
-    @TmsLink("CUST-003")
+    @AllureId("TBD")
+    @TmsLink("TBD")
     @Tags({
             @Tag("positive")
     })
-    void updateCustomer() {
-        Allure.suite("Customer management integration tests");
-
+    void updateCustomer() throws Exception {
         // Arrange
-        var step0 = "Init Web Test Client";
-        logger.info(step0);
-        step(step0);
-        WebTestClient webClient = IntegrationTestHelpers.getWebTestClient(this.port);
-
-        var step1 = "Generate new customer object";
-        logger.info(step1);
-        step(step1);
-        var initialCustomerObj = new CustomerGenerator().generate();
-        var customerDto = this.mapper.map(initialCustomerObj, CustomerDto.class);
-
+        var logger = LOGGER_THREAD_LOCAL.get();
+        var webClient = step("Init Web Test Client", logger,
+                () -> IntegrationTestHelpers.getWebTestClient(port));
+        var generator = new CustomerGenerator();
+        var initialCustomerObj = step("Generate new customer object", logger,
+                generator::generate);
+        var customerDto = this.mapper.toDto(initialCustomerObj);
         // Act
-        var step2 = "Create new customer using public API";
-        logger.info(step2);
-        step(step2);
-        var createdCustomer = IntegrationTestHelpers.postCustomer(webClient, customerDto);
-
-        var step3 = "Generate updated customer object";
-        logger.info(step3);
-        step(step3);
-        var updatedCustomerObj = new CustomerGenerator()
-                .withId(createdCustomer.getId())
-                .generate();
-
-        var step4 = "Update customer using public API";
-        logger.info(step4);
-        step(step4);
-        var updatedCustomer = IntegrationTestHelpers.putCustomer(webClient, updatedCustomerObj);
-
-        var step5 = "Get customer by id using public API";
-        logger.info(step5);
-        step(step5);
-        var retrievedCustomer = IntegrationTestHelpers
-                .getCustomerById(webClient, createdCustomer.getId());
-
+        var createdCustomer = step("Create new customer using public API", logger,
+                () -> IntegrationTestHelpers.postCustomer(webClient, customerDto));
+        var updatedCustomerObj = step("Generate updated customer object", logger,
+                () -> generator
+                        .buildNew()
+                        .withId(createdCustomer.getId())
+                        .generate());
+        var updatedCustomerDto = mapper.toDto(updatedCustomerObj);
+        var updatedCustomer = step("Update customer using public API", logger,
+                () -> IntegrationTestHelpers.putCustomer(webClient, updatedCustomerDto));
+        var retrievedCustomer = step("Get customer by id using public API", logger,
+                () -> IntegrationTestHelpers
+                        .getCustomerById(webClient, createdCustomer.getId()));
         // Assert
-        var step6 = "Verify updated customer is as expected";
-        logger.info(step6);
-        step(step6);
-        assertThat(updatedCustomer)
-                .usingRecursiveComparison()
-                .isEqualTo(updatedCustomerObj);
-        assertThat(retrievedCustomer)
-                .usingRecursiveComparison()
-                .isEqualTo(updatedCustomerObj);
+        step("Verify updated customer is as expected", logger,
+                () -> {
+                    assertThat(updatedCustomer)
+                            .usingRecursiveComparison()
+                            .isEqualTo(updatedCustomerDto);
+                    assertThat(retrievedCustomer)
+                            .usingRecursiveComparison()
+                            .isEqualTo(updatedCustomerDto);
+                });
+
     }
 }

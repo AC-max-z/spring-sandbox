@@ -1,7 +1,6 @@
 package com.maxzamota.spring_sandbox.controllers;
 
 import com.maxzamota.spring_sandbox.model.model_assemblers.CustomerModelAssembler;
-import com.maxzamota.spring_sandbox.dto.CustomerDto;
 import com.maxzamota.spring_sandbox.mappers.CustomerMapper;
 import com.maxzamota.spring_sandbox.model.CustomerEntity;
 import com.maxzamota.spring_sandbox.service.CustomerService;
@@ -22,7 +21,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/v1/customer")
 @Scope(value = ConfigurableBeanFactory.SCOPE_SINGLETON)
-public class CustomerController implements EntityController<Integer, CustomerEntity, CustomerDto> {
+public class CustomerController implements EntityController<Integer, CustomerEntity, com.maxzamota.spring_sandbox.dto.CustomerDto> {
     private final CustomerService customerService;
     private final CustomerMapper mapper;
     private final CustomerModelAssembler assembler;
@@ -63,22 +62,22 @@ public class CustomerController implements EntityController<Integer, CustomerEnt
 
     @Override
     @GetMapping("/{id}")
-    public ResponseEntity<EntityModel<CustomerDto>> get(@PathVariable("id") Integer id) {
+    public ResponseEntity<EntityModel<com.maxzamota.spring_sandbox.dto.CustomerDto>> get(@PathVariable("id") Integer id) {
         CustomerEntity customerEntity = this.customerService.getById(id);
-        CustomerDto dto = this.mapper.toDto(customerEntity);
-        EntityModel<CustomerDto> customerDtoEntityModel = assembler.toDtoModel(dto);
+        com.maxzamota.spring_sandbox.dto.CustomerDto dto = this.mapper.toDto(customerEntity);
+        EntityModel<com.maxzamota.spring_sandbox.dto.CustomerDto> customerDtoEntityModel = assembler.toDtoModel(dto);
         return ResponseEntity.ok(customerDtoEntityModel);
     }
 
     @Override
     @PostMapping
-    public ResponseEntity<EntityModel<CustomerDto>> post(@RequestBody CustomerDto customerDto) {
+    public ResponseEntity<EntityModel<com.maxzamota.spring_sandbox.dto.CustomerDto>> post(@RequestBody com.maxzamota.spring_sandbox.dto.CustomerDto customerDto) {
         CustomerEntity customer = this.mapper.fromDto(customerDto);
         customer.setId(null);
         customer = this.customerService.save(customer);
-        CustomerDto dto = this.mapper.toDto(customer);
+        com.maxzamota.spring_sandbox.dto.CustomerDto dto = this.mapper.toDto(customer);
 
-        EntityModel<CustomerDto> customerDtoModel = assembler.toDtoModel(dto);
+        EntityModel<com.maxzamota.spring_sandbox.dto.CustomerDto> customerDtoModel = assembler.toDtoModel(dto);
 
         return ResponseEntity
                 .created(customerDtoModel.getRequiredLink(IanaLinkRelations.SELF).toUri())
@@ -94,17 +93,17 @@ public class CustomerController implements EntityController<Integer, CustomerEnt
 
     @Override
     @PutMapping("/{id}")
-    public ResponseEntity<EntityModel<CustomerDto>> update(
+    public ResponseEntity<EntityModel<com.maxzamota.spring_sandbox.dto.CustomerDto>> update(
             @PathVariable Integer id,
-            @RequestBody CustomerDto customerDto
+            @RequestBody com.maxzamota.spring_sandbox.dto.CustomerDto customerDto
     ) {
         CustomerEntity customerEntity = this.mapper.fromDto(customerDto);
 
         customerEntity.setId(id);
         customerEntity = customerService.update(customerEntity);
-        CustomerDto dto = this.mapper.toDto(customerEntity);
+        com.maxzamota.spring_sandbox.dto.CustomerDto dto = this.mapper.toDto(customerEntity);
 
-        EntityModel<CustomerDto> customerDtoModel = assembler.toDtoModel(dto);
+        EntityModel<com.maxzamota.spring_sandbox.dto.CustomerDto> customerDtoModel = assembler.toDtoModel(dto);
 
         return ResponseEntity
                 .created(customerDtoModel.getRequiredLink(IanaLinkRelations.SELF).toUri())
