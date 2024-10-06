@@ -51,13 +51,12 @@ public class IndexPage extends BasePage {
     }
 
     public Integer getCustomerAgeFromCard(WebElement customerCard) {
-        return Integer
-                .parseInt(
-                        getVisibleElement(customerCard)
-                                .findElement(By.xpath(".//p/span"))
-                                .getText()
-                                .split(" ")[1]
-                );
+        return Integer.parseInt(
+                getVisibleElement(customerCard)
+                        .findElement(By.xpath(".//p/span"))
+                        .getText()
+                        .split(" ")[1]
+        );
     }
 
     public String getCustomerGenderFromCard(WebElement customerCard) {

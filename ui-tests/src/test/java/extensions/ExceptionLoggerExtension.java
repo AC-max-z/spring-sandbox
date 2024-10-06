@@ -16,7 +16,7 @@ public class ExceptionLoggerExtension implements AfterTestExecutionCallback {
     }
 
     @Override
-    public void afterTestExecution(ExtensionContext ctx) throws Exception {
+    public void afterTestExecution(ExtensionContext ctx) {
         if (ctx.getExecutionException().isPresent() &&
                 Objects.nonNull(LOGGER_THREAD_LOCAL.get())) {
             var logger = LOGGER_THREAD_LOCAL.get();

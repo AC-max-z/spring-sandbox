@@ -26,6 +26,8 @@ import static utils.TestStep.step;
 @Tag("customer")
 public class CustomerTest extends BaseTest {
     private static final CustomerGenerator GENERATOR = new CustomerGenerator();
+    private static final ThreadLocal<Customer> CUSTOMER_FOR_DELETION_THREAD_LOCAL = new ThreadLocal<>();
+    private static final ThreadLocal<IndexPage> INDEX_PAGE_THREAD_LOCAL = new ThreadLocal<>();
 
     @ParameterizedTest(name = "{displayName} (driver type: {0})")
     @MethodSource("provideDriverTypesAndCustomers")
@@ -67,14 +69,14 @@ public class CustomerTest extends BaseTest {
         var logger = LOGGER_THREAD_LOCAL.get();
         var driver = step("Create driver instance", logger, () -> setupDriver(driverType));
         var indexPage = step("Init index page", logger, () -> new IndexPage(driver));
+        CUSTOMER_FOR_DELETION_THREAD_LOCAL.set(customer);
+        INDEX_PAGE_THREAD_LOCAL.set(indexPage);
         // Act
         step("Go to index page", logger, indexPage::goTo);
         CustomerHelper.createNewCustomer(driver, indexPage, customer, logger);
         // Assert
         // TODO: add success toast isDisplayed check
-        CustomerHelper.verifyPageContainsCustomerCard(indexPage, customer, logger);
-        // Cleanup
-        CustomerHelper.deleteCustomer(indexPage, customer, logger);
+        CustomerHelper.verifyPageContainsCustomerCardSoftly(indexPage, customer, logger);
     }
 
     @ParameterizedTest(name = "{displayName} (driver type: {0})")
@@ -96,17 +98,41 @@ public class CustomerTest extends BaseTest {
         var logger = LOGGER_THREAD_LOCAL.get();
         var driver = step("Create driver instance", logger, () -> setupDriver(driverType));
         var indexPage = step("Init index page", logger, () -> new IndexPage(driver));
+        CUSTOMER_FOR_DELETION_THREAD_LOCAL.set(updatedCustomer);
+        INDEX_PAGE_THREAD_LOCAL.set(indexPage);
         // Act
         step("Go to index page", logger, indexPage::goTo);
         CustomerHelper.createNewCustomer(driver, indexPage, initialCustomer, logger);
         // TODO: add success toast isDisplayed check
-        CustomerHelper.verifyPageContainsCustomerCard(indexPage, initialCustomer, logger);
+        CustomerHelper.verifyPageContainsCustomerCardSoftly(indexPage, initialCustomer, logger);
         CustomerHelper.editCustomer(driver, indexPage, initialCustomer, updatedCustomer, logger);
         // Assert
         // TODO: add success toast isDisplayed check
-        CustomerHelper.verifyPageContainsCustomerCard(indexPage, updatedCustomer, logger);
-        // Cleanup
-        CustomerHelper.deleteCustomer(indexPage, updatedCustomer, logger);
+        CustomerHelper.verifyPageContainsCustomerCardSoftly(indexPage, updatedCustomer, logger);
+    }
+
+    @Override
+    @AfterEach
+    void tearDown() {
+        // Cleans up created customer after each test...(even if it fails early)
+        // (I know, that it makes little sense,
+        // just for demo purposes of how to handle cleanups)
+        if (Objects.nonNull(CUSTOMER_FOR_DELETION_THREAD_LOCAL.get())
+                && Objects.nonNull(INDEX_PAGE_THREAD_LOCAL.get())) {
+            try {
+                CustomerHelper.deleteCustomer(
+                        INDEX_PAGE_THREAD_LOCAL.get(),
+                        CUSTOMER_FOR_DELETION_THREAD_LOCAL.get(),
+                        LOGGER_THREAD_LOCAL.get()
+                );
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            } finally {
+                INDEX_PAGE_THREAD_LOCAL.remove();
+                CUSTOMER_FOR_DELETION_THREAD_LOCAL.remove();
+            }
+        }
+        super.tearDown();
     }
 
     private static Stream<Arguments> provideDriverTypesAndCustomers() {

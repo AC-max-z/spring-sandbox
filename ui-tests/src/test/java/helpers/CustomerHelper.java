@@ -12,6 +12,7 @@ import org.springsandbox.pages.UpdateCustomerForm;
 import java.util.Objects;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.SoftAssertions.assertSoftly;
 import static utils.TestStep.step;
 
 public class CustomerHelper {
@@ -79,6 +80,23 @@ public class CustomerHelper {
                 logger, () -> assertThat(customerCard).isNotNull());
         step("Check that data on that card is the same as expected", logger, () ->
                 CustomerMatchers.verifyCustomerCardContainsCustomerData(indexPage, customerCard, customer));
+    }
+
+    @Step("Verify page contains customer card softly")
+    public static void verifyPageContainsCustomerCardSoftly(
+            IndexPage indexPage,
+            Customer customer,
+            Logger logger
+    ) throws Exception {
+        var customerCard = step("Find customer card on index page",
+                logger, () -> indexPage.findCustomerCardWithEmail(customer.getEmail()));
+        step("Check that customer card is displayed on index page",
+                logger, () -> assertSoftly(softly ->
+                        softly.assertThat(customerCard).isNotNull())
+        );
+        step("Check that data on that card is the same as expected", logger, () ->
+                CustomerMatchers.verifyCustomerCardContainsCustomerDataSoftly(
+                        indexPage, customerCard, customer));
     }
 
     @Step("Edit customer")
