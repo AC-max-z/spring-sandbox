@@ -30,8 +30,6 @@ Maybe it will grow over time, maybe not.
 * Test Containers,
 * Mockito,
 * Allure reporter,
-* Selenium 4,
-* Selenoid Selenium Grid,
 * Docker,
 * AWS Elastic Beanstalk,
 * etc.
