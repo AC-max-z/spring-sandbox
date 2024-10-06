@@ -15,10 +15,14 @@ import org.springframework.hateoas.IanaLinkRelations;
 import org.springframework.hateoas.PagedModel;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Objects;
 
 @RestController
 @RequestMapping("/api/v1/user")
@@ -93,9 +97,15 @@ public class UserController implements EntityController<Integer, UserEntity, Use
     }
 
     @Override
-//    @PreAuthorize("#id != userService.getByEmail(authentication.principal.username).get().getId()")
+//    @PreAuthorize("#id == userService.getByEmail(authentication.principal.username).get().getId()")
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteById(@PathVariable Integer id) {
+        if (!id.equals(Objects.requireNonNull(
+                        userService.getByEmail(getUsername()).orElse(null))
+                .getId())
+        ) {
+            throw new AccessDeniedException("Access is denied");
+        }
         this.userService.deleteById(id);
         return ResponseEntity.noContent().build();
     }
@@ -107,6 +117,17 @@ public class UserController implements EntityController<Integer, UserEntity, Use
             @PathVariable Integer id,
             @RequestBody UserDto userDto
     ) {
+        if (!id.equals(Objects.requireNonNull(
+                        userService.getByEmail(getUsername()).orElse(null))
+                .getId())
+        ) {
+            throw new AccessDeniedException("Access is denied");
+        }
+        // TODO:
         return null;
+    }
+
+    private String getUsername() {
+        return SecurityContextHolder.getContext().getAuthentication().getName();
     }
 }

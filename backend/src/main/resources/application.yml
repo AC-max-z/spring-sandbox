@@ -5,6 +5,9 @@ server:
   http2:
     enabled: true
 
+springdoc:
+  show-actuator: true
+  show-login-endpoint: true
 cors:
   allowedOrigins: "*"
   allowedMethods: "*"

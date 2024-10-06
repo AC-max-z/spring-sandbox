@@ -32,8 +32,7 @@ public class ProductService {
     }
 
     private String getUsername() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        return authentication.getName();
+        return SecurityContextHolder.getContext().getAuthentication().getName();
     }
 
     public ProductEntity getById(Integer id) {
