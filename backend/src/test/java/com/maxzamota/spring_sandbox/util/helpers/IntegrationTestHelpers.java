@@ -28,37 +28,34 @@ public class IntegrationTestHelpers {
     private static final String APP_BASE_URI = "http://localhost";
     private static final String CUSTOMER_PUBLIC_API_URI = "/api/v1/customer";
     private static final String USER_PUBLIC_API_URI = "/api/v1/user";
-    private static WebTestClient webClient;
     @Setter
     private static String authHeader;
 
     public static WebTestClient getWebTestClient(Integer port) {
-        if (Objects.isNull(webClient)) {
-            webClient = WebTestClient
-                    .bindToServer()
-                    .baseUrl(Objects.nonNull(port) ? APP_BASE_URI + ":" + port : APP_BASE_URI)
-                    .clientConnector(
-                            new ReactorClientHttpConnector(
-                                    HttpClient
-                                            .create()
-                                            // This will enable info level logging to underlying HttpClient
-                                            // to see requests and responses data
-                                            .wiretap(
-                                                    "HTTP_CLIENT",
-                                                    LogLevel.INFO,
-                                                    AdvancedByteBufFormat.TEXTUAL
-                                            )
-                            )
-                    )
-                    .defaultHeader(HttpHeaders.USER_AGENT, "Spring Web Client")
-                    .build();
-            var userMapper = new UserMapper(new ModelMapper());
-            var generatedUser = new UserGenerator().generate();
-            postUser(webClient, userMapper.toDto(generatedUser));
-            authHeader = "Basic " + Base64.getEncoder()
-                    .encodeToString((generatedUser.getEmail() + ":" + generatedUser.getPassword())
-                            .getBytes());
-        }
+        var webClient = WebTestClient
+                .bindToServer()
+                .baseUrl(Objects.nonNull(port) ? APP_BASE_URI + ":" + port : APP_BASE_URI)
+                .clientConnector(
+                        new ReactorClientHttpConnector(
+                                HttpClient
+                                        .create()
+                                        // This will enable info level logging to underlying HttpClient
+                                        // to see requests and responses data
+                                        .wiretap(
+                                                "HTTP_CLIENT",
+                                                LogLevel.INFO,
+                                                AdvancedByteBufFormat.TEXTUAL
+                                        )
+                        )
+                )
+                .defaultHeader(HttpHeaders.USER_AGENT, "Spring Web Client")
+                .build();
+        var userMapper = new UserMapper(new ModelMapper());
+        var generatedUser = new UserGenerator().generate();
+        postUser(webClient, userMapper.toDto(generatedUser));
+        authHeader = "Basic " + Base64.getEncoder()
+                .encodeToString((generatedUser.getEmail() + ":" + generatedUser.getPassword())
+                        .getBytes());
         return webClient;
     }
 
