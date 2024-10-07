@@ -2,9 +2,12 @@ package com.maxzamota.spring_sandbox.util.generators;
 
 import com.github.javafaker.Faker;
 import com.maxzamota.spring_sandbox.enums.Gender;
+import com.maxzamota.spring_sandbox.model.BrandEntity;
 import com.maxzamota.spring_sandbox.model.CustomerEntity;
 import com.maxzamota.spring_sandbox.util.FakerProvider;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 public class CustomerGenerator implements ObjectGenerator<CustomerEntity> {
@@ -58,5 +61,17 @@ public class CustomerGenerator implements ObjectGenerator<CustomerEntity> {
     @Override
     public CustomerEntity generate() {
         return BUILDER.build();
+    }
+
+    @Override
+    public List<CustomerEntity> generateMany(int howMany) {
+        if (howMany <= 0) {
+            return List.of();
+        }
+        var list = new ArrayList<CustomerEntity>(howMany);
+        for (int i = 0; i < howMany; i++) {
+            list.add(this.buildNew().generate());
+        }
+        return list.stream().toList();
     }
 }

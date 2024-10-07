@@ -5,6 +5,8 @@ import com.maxzamota.spring_sandbox.model.BrandEntity;
 import com.maxzamota.spring_sandbox.util.FakerProvider;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
 
 public class BrandGenerator implements ObjectGenerator<BrandEntity> {
     private static final Faker FAKER = FakerProvider.getInstance();
@@ -69,5 +71,17 @@ public class BrandGenerator implements ObjectGenerator<BrandEntity> {
     @Override
     public BrandEntity generate() {
         return BUILDER.build();
+    }
+
+    @Override
+    public List<BrandEntity> generateMany(int howMany) {
+        if (howMany <= 0) {
+            return List.of();
+        }
+        var list = new ArrayList<BrandEntity>(howMany);
+        for (int i = 0; i < howMany; i++) {
+            list.add(this.buildNew().generate());
+        }
+        return list.stream().toList();
     }
 }

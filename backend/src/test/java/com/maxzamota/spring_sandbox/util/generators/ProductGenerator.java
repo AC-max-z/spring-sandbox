@@ -6,6 +6,8 @@ import com.maxzamota.spring_sandbox.model.ProductEntity;
 import com.maxzamota.spring_sandbox.util.FakerProvider;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 public class ProductGenerator implements ObjectGenerator<ProductEntity> {
@@ -85,6 +87,18 @@ public class ProductGenerator implements ObjectGenerator<ProductEntity> {
     @Override
     public ProductEntity generate() {
         return BUILDER.build();
+    }
+
+    @Override
+    public List<ProductEntity> generateMany(int howMany) {
+        if (howMany <= 0) {
+            return List.of();
+        }
+        var list = new ArrayList<ProductEntity>(howMany);
+        for (int i = 0; i < howMany; i++) {
+            list.add(this.buildNew().generate());
+        }
+        return list.stream().toList();
     }
 
 }
