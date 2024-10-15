@@ -7,7 +7,6 @@ import com.maxzamota.spring_sandbox.model.CustomerEntity;
 import com.maxzamota.spring_sandbox.util.generators.UserGenerator;
 import io.netty.handler.logging.LogLevel;
 import io.qameta.allure.Step;
-import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 import org.modelmapper.ModelMapper;
 import org.springframework.core.ParameterizedTypeReference;

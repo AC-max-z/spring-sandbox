@@ -2,7 +2,6 @@ package com.maxzamota.spring_sandbox.util.generators;
 
 import com.github.javafaker.Faker;
 import com.maxzamota.spring_sandbox.enums.Gender;
-import com.maxzamota.spring_sandbox.model.BrandEntity;
 import com.maxzamota.spring_sandbox.model.CustomerEntity;
 import com.maxzamota.spring_sandbox.util.FakerProvider;
 
