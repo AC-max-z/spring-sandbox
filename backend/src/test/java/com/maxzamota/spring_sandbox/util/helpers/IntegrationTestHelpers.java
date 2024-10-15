@@ -28,6 +28,7 @@ public class IntegrationTestHelpers {
     private static final String CUSTOMER_PUBLIC_API_URI = "/api/v1/customer";
     private static final String USER_PUBLIC_API_URI = "/api/v1/user";
     private static final ThreadLocal<String> AUTH_HEADER = new ThreadLocal<>();
+    private static final UserMapper MAPPER = new UserMapper(new ModelMapper());
 
     public static WebTestClient getWebTestClient(Integer port) {
         var webClient = WebTestClient
@@ -48,9 +49,8 @@ public class IntegrationTestHelpers {
                 )
                 .defaultHeader(HttpHeaders.USER_AGENT, "Spring Web Client")
                 .build();
-        var userMapper = new UserMapper(new ModelMapper());
         var generatedUser = new UserGenerator().generate();
-        postUser(webClient, userMapper.toDto(generatedUser));
+        postUser(webClient, MAPPER.toDto(generatedUser));
         AUTH_HEADER.set("Basic " + Base64.getEncoder()
                 .encodeToString((generatedUser.getEmail() + ":" + generatedUser.getPassword())
                         .getBytes()));
