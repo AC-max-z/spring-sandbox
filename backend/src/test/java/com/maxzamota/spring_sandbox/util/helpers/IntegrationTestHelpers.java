@@ -28,8 +28,7 @@ public class IntegrationTestHelpers {
     private static final String APP_BASE_URI = "http://localhost";
     private static final String CUSTOMER_PUBLIC_API_URI = "/api/v1/customer";
     private static final String USER_PUBLIC_API_URI = "/api/v1/user";
-    @Setter
-    private static String authHeader;
+    private static final ThreadLocal<String> AUTH_HEADER = new ThreadLocal<>();
 
     public static WebTestClient getWebTestClient(Integer port) {
         var webClient = WebTestClient
@@ -53,9 +52,9 @@ public class IntegrationTestHelpers {
         var userMapper = new UserMapper(new ModelMapper());
         var generatedUser = new UserGenerator().generate();
         postUser(webClient, userMapper.toDto(generatedUser));
-        authHeader = "Basic " + Base64.getEncoder()
+        AUTH_HEADER.set("Basic " + Base64.getEncoder()
                 .encodeToString((generatedUser.getEmail() + ":" + generatedUser.getPassword())
-                        .getBytes());
+                        .getBytes()));
         return webClient;
     }
 
@@ -67,7 +66,7 @@ public class IntegrationTestHelpers {
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .header("x-request-id", String.valueOf(UUID.randomUUID()))
-                .header(HttpHeaders.AUTHORIZATION, authHeader)
+                .header(HttpHeaders.AUTHORIZATION, AUTH_HEADER.get())
                 .body(Mono.just(userDto), UserDto.class)
                 .exchange()
                 .expectStatus()
@@ -84,7 +83,7 @@ public class IntegrationTestHelpers {
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
                         .header("x-request-id", String.valueOf(UUID.randomUUID()))
-                        .header(HttpHeaders.AUTHORIZATION, authHeader)
+                        .header(HttpHeaders.AUTHORIZATION, AUTH_HEADER.get())
                         .body(Mono.just(customerDto), CustomerDto.class)
                         .exchange()
                         .expectStatus()
@@ -103,7 +102,7 @@ public class IntegrationTestHelpers {
                         .uri(CUSTOMER_PUBLIC_API_URI + "/all")
                         .accept(MediaType.APPLICATION_JSON)
                         .header("x-request-id", String.valueOf(UUID.randomUUID()))
-                        .header(HttpHeaders.AUTHORIZATION, authHeader)
+                        .header(HttpHeaders.AUTHORIZATION, AUTH_HEADER.get())
                         .exchange()
                         .expectStatus()
                         .isOk()
@@ -124,7 +123,7 @@ public class IntegrationTestHelpers {
                         .uri(CUSTOMER_PUBLIC_API_URI + "/{id}", id)
                         .accept(MediaType.APPLICATION_JSON)
                         .header("x-request-id", String.valueOf(UUID.randomUUID()))
-                        .header(HttpHeaders.AUTHORIZATION, authHeader)
+                        .header(HttpHeaders.AUTHORIZATION, AUTH_HEADER.get())
                         .exchange()
                         .expectStatus()
                         .isOk()
@@ -142,7 +141,7 @@ public class IntegrationTestHelpers {
                 .uri(CUSTOMER_PUBLIC_API_URI + "/{id}", id)
                 .accept(MediaType.APPLICATION_JSON)
                 .header("x-request-id", String.valueOf(UUID.randomUUID()))
-                .header(HttpHeaders.AUTHORIZATION, authHeader)
+                .header(HttpHeaders.AUTHORIZATION, AUTH_HEADER.get())
                 .exchange()
                 .expectStatus()
                 .isNoContent();
@@ -155,7 +154,7 @@ public class IntegrationTestHelpers {
                 .uri(CUSTOMER_PUBLIC_API_URI + "/{id}", id)
                 .accept(MediaType.APPLICATION_JSON)
                 .header("x-request-id", String.valueOf(UUID.randomUUID()))
-                .header(HttpHeaders.AUTHORIZATION, authHeader)
+                .header(HttpHeaders.AUTHORIZATION, AUTH_HEADER.get())
                 .exchange()
                 .expectStatus()
                 .isNotFound()
@@ -172,7 +171,7 @@ public class IntegrationTestHelpers {
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
                         .header("x-request-id", String.valueOf(UUID.randomUUID()))
-                        .header(HttpHeaders.AUTHORIZATION, authHeader)
+                        .header(HttpHeaders.AUTHORIZATION, AUTH_HEADER.get())
                         .body(Mono.just(customerDto), CustomerEntity.class)
                         .exchange()
                         .expectStatus()
