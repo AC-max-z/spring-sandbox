@@ -99,6 +99,7 @@ public class ProductController implements EntityController<Integer, ProductEntit
             product.setBrand(brand);
         }
 
+        product.setDateAdded(new Timestamp(System.currentTimeMillis()));
         product = this.productService.save(product);
         ProductDto dto = this.mapper.toDto(product);
         EntityModel<ProductDto> productDtoModel = this.assembler.toDtoModel(dto);
