@@ -8,15 +8,14 @@ import com.maxzamota.spring_sandbox.model.ProductEntity;
 import com.maxzamota.spring_sandbox.service.BrandService;
 import com.maxzamota.spring_sandbox.service.ProductService;
 
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.IanaLinkRelations;
 import org.springframework.hateoas.PagedModel;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -26,63 +25,40 @@ import java.util.Objects;
 
 @RestController
 @RequestMapping("/api/v1/product")
-public class ProductController implements EntityController<Integer, ProductEntity, ProductDto> {
-    private final ProductService productService;
+public class ProductController extends EntityController<Integer, ProductEntity, ProductDto> {
     private final BrandService brandService;
-    private final ProductMapper mapper;
-    private final ProductModelAssembler assembler;
-    private final PagedResourcesAssembler<ProductEntity> pagedAssembler;
 
     @Autowired
     public ProductController(
-            ProductService productService,
-            BrandService brandService,
+            ProductService service,
             ProductMapper mapper,
             ProductModelAssembler assembler,
-            PagedResourcesAssembler<ProductEntity> pagedAssembler
+            ProductModelAssembler dtoAssembler,
+            PagedResourcesAssembler<ProductEntity> pagedResourcesAssembler,
+            BrandService brandService
     ) {
-        this.productService = productService;
+        super(service, mapper, assembler, dtoAssembler, pagedResourcesAssembler);
         this.brandService = brandService;
-        this.mapper = mapper;
-        this.assembler = assembler;
-        this.pagedAssembler = pagedAssembler;
     }
 
     @Override
     @PreAuthorize("hasRole('ROLE_ADMIN') || hasRole('ROLE_USER') || hasRole('ROLE_SUPER_ADMIN')")
-    @GetMapping({"/all", "/list"})
     public ResponseEntity<PagedModel<EntityModel<ProductEntity>>> getAll(
             @PageableDefault(page = 0, size = 100, sort = "id")
             Pageable pageable
     ) {
-        Page<ProductEntity> products = productService.getAll(pageable);
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("X-Page-Number", String.valueOf(products.getNumber()));
-        headers.add("X-Page-Size", String.valueOf(products.getSize()));
-        PagedModel<EntityModel<ProductEntity>> pagedModel = pagedAssembler.toModel(
-                products, assembler
-        );
-
-        return ResponseEntity
-                .ok()
-                .headers(headers)
-                .body(pagedModel);
+        return super.getAll(pageable);
     }
 
     @Override
     @PreAuthorize("hasRole('ROLE_ADMIN') || hasRole('ROLE_USER') || hasRole('ROLE_SUPER_ADMIN')")
-    @GetMapping("/{id}")
     public ResponseEntity<EntityModel<ProductDto>> get(@PathVariable Integer id) {
-        ProductEntity product = this.productService.getById(id);
-        ProductDto dto = this.mapper.toDto(product);
-        EntityModel<ProductDto> productDtoEntityModel = this.assembler.toDtoModel(dto);
-        return ResponseEntity.ok(productDtoEntityModel);
+        return super.get(id);
     }
 
     @Override
     @PreAuthorize("hasRole('ROLE_ADMIN') || hasRole('ROLE_SUPER_ADMIN')")
-    @PostMapping
-    public ResponseEntity<EntityModel<ProductDto>> post(@RequestBody ProductDto productDto) {
+    public ResponseEntity<EntityModel<ProductDto>> post(@Valid @RequestBody ProductDto productDto) {
         ProductEntity product = this.mapper.fromDto(productDto);
 
         // Check if dto contains info about brand
@@ -100,9 +76,9 @@ public class ProductController implements EntityController<Integer, ProductEntit
         }
 
         product.setDateAdded(new Timestamp(System.currentTimeMillis()));
-        product = this.productService.save(product);
+        product = this.service.save(product);
         ProductDto dto = this.mapper.toDto(product);
-        EntityModel<ProductDto> productDtoModel = this.assembler.toDtoModel(dto);
+        EntityModel<ProductDto> productDtoModel = this.dtoModelAssembler.toDtoModel(dto);
 
         return ResponseEntity
                 .created(productDtoModel.getRequiredLink(IanaLinkRelations.SELF).toUri())
@@ -111,18 +87,16 @@ public class ProductController implements EntityController<Integer, ProductEntit
 
     @Override
     @PreAuthorize("hasRole('ROLE_ADMIN') || hasRole('ROLE_SUPER_ADMIN')")
-    @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteById(@PathVariable Integer id) {
-        this.productService.deleteById(id);
-        return ResponseEntity.noContent().build();
+        return super.deleteById(id);
     }
 
     @Override
     @PreAuthorize("hasRole('ROLE_ADMIN') || hasRole('ROLE_SUPER_ADMIN')")
     @PutMapping("/{id}")
-    public ResponseEntity<EntityModel<ProductDto>> update(
+    public ResponseEntity<EntityModel<ProductDto>> put(
             @PathVariable Integer id,
-            @RequestBody ProductDto productDto
+            @Valid @RequestBody ProductDto productDto
     ) {
         ProductEntity product = this.mapper.fromDto(productDto);
 
@@ -141,9 +115,9 @@ public class ProductController implements EntityController<Integer, ProductEntit
         }
 
         product.setId(id);
-        product = productService.update(product);
+        product = service.update(product);
         ProductDto dto = this.mapper.toDto(product);
-        EntityModel<ProductDto> productDtoModel = this.assembler.toDtoModel(dto);
+        EntityModel<ProductDto> productDtoModel = this.dtoModelAssembler.toDtoModel(dto);
 
         return ResponseEntity
                 .created(productDtoModel.getRequiredLink(IanaLinkRelations.SELF).toUri())

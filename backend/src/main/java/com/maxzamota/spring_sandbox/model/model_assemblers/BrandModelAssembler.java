@@ -13,7 +13,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @Component
-public class BrandModelAssembler implements RepresentationModelAssembler<BrandEntity, EntityModel<BrandEntity>> {
+public class BrandModelAssembler implements RepresentationModelAssembler<BrandEntity, EntityModel<BrandEntity>>,DtoAssembler<BrandDto> {
     @Override
     public CollectionModel<EntityModel<BrandEntity>> toCollectionModel(Iterable<? extends BrandEntity> entities) {
         return RepresentationModelAssembler.super.toCollectionModel(entities);
@@ -28,6 +28,7 @@ public class BrandModelAssembler implements RepresentationModelAssembler<BrandEn
         );
     }
 
+    @Override
     public EntityModel<BrandDto> toDtoModel(BrandDto brandDto) {
         return EntityModel.of(
                 brandDto,

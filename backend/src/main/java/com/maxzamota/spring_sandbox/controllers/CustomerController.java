@@ -5,106 +5,45 @@ import com.maxzamota.spring_sandbox.model.model_assemblers.CustomerModelAssemble
 import com.maxzamota.spring_sandbox.mappers.CustomerMapper;
 import com.maxzamota.spring_sandbox.model.CustomerEntity;
 import com.maxzamota.spring_sandbox.service.CustomerService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.data.web.PagedResourcesAssembler;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.IanaLinkRelations;
-import org.springframework.hateoas.PagedModel;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/v1/customer")
 @Scope(value = ConfigurableBeanFactory.SCOPE_SINGLETON)
-public class CustomerController implements EntityController<Integer, CustomerEntity, CustomerDto> {
-    private final CustomerService customerService;
-    private final CustomerMapper mapper;
-    private final CustomerModelAssembler assembler;
-    private final PagedResourcesAssembler<CustomerEntity> pagedAssembler;
+public class CustomerController extends EntityController<Integer, CustomerEntity, CustomerDto> {
 
     @Autowired
     public CustomerController(
-            CustomerService customerService,
+            CustomerService service,
             CustomerMapper mapper,
             CustomerModelAssembler assembler,
-            PagedResourcesAssembler<CustomerEntity> pagedAssembler
+            CustomerModelAssembler dtoAssembler,
+            PagedResourcesAssembler<CustomerEntity> pagedResourcesAssembler
     ) {
-        this.customerService = customerService;
-        this.mapper = mapper;
-        this.assembler = assembler;
-        this.pagedAssembler = pagedAssembler;
-    }
-
-    @Override
-    @GetMapping({"/all", "list"})
-    public ResponseEntity<PagedModel<EntityModel<CustomerEntity>>> getAll(
-            @PageableDefault(page = 0, size = 100, sort = "id")
-            Pageable pageable
-    ) {
-        Page<CustomerEntity> customers = customerService.getAll(pageable);
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("X-Page-Number", String.valueOf(customers.getNumber()));
-        headers.add("X-Page-Size", String.valueOf(customers.getSize()));
-        PagedModel<EntityModel<CustomerEntity>> pagedModel = pagedAssembler.toModel(
-                customers, assembler
-        );
-
-        return ResponseEntity
-                .ok()
-                .headers(headers)
-                .body(pagedModel);
-    }
-
-    @Override
-    @GetMapping("/{id}")
-    public ResponseEntity<EntityModel<CustomerDto>> get(@PathVariable("id") Integer id) {
-        CustomerEntity customerEntity = this.customerService.getById(id);
-        CustomerDto dto = this.mapper.toDto(customerEntity);
-        EntityModel<CustomerDto> customerDtoEntityModel = assembler.toDtoModel(dto);
-        return ResponseEntity.ok(customerDtoEntityModel);
-    }
-
-    @Override
-    @PostMapping
-    public ResponseEntity<EntityModel<CustomerDto>> post(@RequestBody CustomerDto customerDto) {
-        CustomerEntity customer = this.mapper.fromDto(customerDto);
-        customer.setId(null);
-        customer = this.customerService.save(customer);
-        CustomerDto dto = this.mapper.toDto(customer);
-
-        EntityModel<CustomerDto> customerDtoModel = assembler.toDtoModel(dto);
-
-        return ResponseEntity
-                .created(customerDtoModel.getRequiredLink(IanaLinkRelations.SELF).toUri())
-                .body(customerDtoModel);
-    }
-
-    @Override
-    @DeleteMapping("/{id}")
-    public ResponseEntity<?> deleteById(@PathVariable("id") Integer id) {
-        this.customerService.deleteById(id);
-        return ResponseEntity.noContent().build();
+        super(service, mapper, assembler, dtoAssembler, pagedResourcesAssembler);
     }
 
     @Override
     @PutMapping("/{id}")
-    public ResponseEntity<EntityModel<CustomerDto>> update(
+    public ResponseEntity<EntityModel<CustomerDto>> put(
             @PathVariable Integer id,
-            @RequestBody CustomerDto customerDto
+            @Valid @RequestBody CustomerDto customerDto
     ) {
         CustomerEntity customerEntity = this.mapper.fromDto(customerDto);
 
         customerEntity.setId(id);
-        customerEntity = customerService.update(customerEntity);
+        customerEntity = service.update(customerEntity);
         CustomerDto dto = this.mapper.toDto(customerEntity);
 
-        EntityModel<CustomerDto> customerDtoModel = assembler.toDtoModel(dto);
+        EntityModel<CustomerDto> customerDtoModel = dtoModelAssembler.toDtoModel(dto);
 
         return ResponseEntity
                 .created(customerDtoModel.getRequiredLink(IanaLinkRelations.SELF).toUri())

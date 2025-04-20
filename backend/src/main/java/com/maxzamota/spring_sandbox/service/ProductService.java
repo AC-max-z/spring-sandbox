@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.mapping.PropertyReferenceException;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
@@ -23,7 +22,7 @@ import static net.logstash.logback.argument.StructuredArguments.keyValue;
 
 @Service
 @Slf4j
-public class ProductService {
+public class ProductService implements EntityService<Integer, ProductEntity> {
     private final ProductRepository repository;
 
     @Autowired
@@ -35,6 +34,7 @@ public class ProductService {
         return SecurityContextHolder.getContext().getAuthentication().getName();
     }
 
+    @Override
     public ProductEntity getById(Integer id) {
         String username = getUsername();
         log.info("Attempt to fetch Product by id {} by user {}",
@@ -48,6 +48,7 @@ public class ProductService {
                 });
     }
 
+    @Override
     public ProductEntity save(ProductEntity product) {
         String username = getUsername();
         log.info("Attempt to save Product {} by user {}", product, keyValue("username", username));
@@ -63,6 +64,7 @@ public class ProductService {
         return savedProduct;
     }
 
+    @Override
     public String deleteById(Integer id) {
         String username = getUsername();
         log.info("Attempt to soft-delete Product by id {} by user {}",
@@ -72,6 +74,7 @@ public class ProductService {
                 .formatted(id);
     }
 
+    @Override
     public ProductEntity update(ProductEntity product) {
         String username = getUsername();
         log.info("Attempt to update Product {} by user {}",
@@ -117,6 +120,7 @@ public class ProductService {
         return this.repository.saveAll(products);
     }
 
+    @Override
     public Page<ProductEntity> getAll(Pageable pageable) {
         String username = getUsername();
         log.info("Attempt to fetch all Products with pageable {} by user {}",

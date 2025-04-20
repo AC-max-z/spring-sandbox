@@ -15,47 +15,56 @@ import java.util.Collection;
 import java.util.Optional;
 
 @Service
-public class UserService {
-    private UserRepository repository;
+public class UserService implements EntityService<Integer, UserEntity> {
+    private final UserRepository REPO;
 
     @Autowired
     public UserService(UserRepository repository) {
-        this.repository = repository;
+        this.REPO = repository;
     }
 
-    public Page<UserEntity> findAll(Pageable pageable) {
-        try {
-            return this.repository.findAll(pageable);
-        } catch (PropertyReferenceException e) {
-            throw new BadRequestException(e.getMessage());
-        }
-    }
-
-    public UserEntity getById(int id) {
-        return repository.findById(id)
+    @Override
+    public UserEntity getById(Integer id) {
+        return REPO.findById(id)
                 .orElseThrow(() ->
                         new ResourceNotFoundException("User with id={%s} not found!".formatted(id))
                 );
     }
 
     public Collection<UserEntity> getAllByEmail(String email) {
-        return repository.findAllByEmail(email);
+        return REPO.findAllByEmail(email);
     }
 
     public Optional<UserEntity> getByEmail(String email) {
-        return repository.findByEmail(email);
+        return REPO.findByEmail(email);
     }
 
+    @Override
     public UserEntity save(UserEntity user) {
-        if (repository.existsByEmail(user.getEmail())) {
+        if (REPO.existsByEmail(user.getEmail())) {
             throw new DuplicateResourceException("Entity with email={%s} already exists"
                     .formatted(user.getEmail()));
         }
-        return repository.save(user);
+        return REPO.save(user);
     }
 
+    @Override
+    public UserEntity update(UserEntity entity) {
+        return null;
+    }
+
+    @Override
+    public Page<UserEntity> getAll(Pageable pageable) {
+        try {
+            return this.REPO.findAll(pageable);
+        } catch (PropertyReferenceException e) {
+            throw new BadRequestException(e.getMessage());
+        }
+    }
+
+    @Override
     public String deleteById(Integer id) {
-        this.repository.deleteById(id);
+        this.REPO.deleteById(id);
         return "Entity with id={%s} is deleted or ignored if it did not exist".formatted(id);
     }
 }

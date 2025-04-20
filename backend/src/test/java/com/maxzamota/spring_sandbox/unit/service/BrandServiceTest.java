@@ -172,7 +172,7 @@ public class BrandServiceTest {
         step("Call getBrandById() service layer method");
         BrandEntity actual = null;
         try {
-            actual = this.brandService.getBrandByIdOrThrow(id);
+            actual = this.brandService.getById(id);
         } catch (ResourceNotFoundException ignored) {
         }
 
@@ -206,7 +206,7 @@ public class BrandServiceTest {
         step("Call getBrandById()");
         BrandEntity actual = null;
         try {
-            actual = this.brandService.getBrandByIdOrThrow(id);
+            actual = this.brandService.getById(id);
         } catch (ResourceNotFoundException ignored) {
         }
 
@@ -216,7 +216,7 @@ public class BrandServiceTest {
         step("Verify that mock is called");
         verify(this.brandRepository).findById(id);
         step("Verify that exception is thrown");
-        assertThatThrownBy(() -> this.brandService.getBrandByIdOrThrow(id))
+        assertThatThrownBy(() -> this.brandService.getById(id))
                 .isInstanceOf(ResourceNotFoundException.class)
                 .hasMessage("Brand with id={%s} not found!".formatted(id));
     }
@@ -243,7 +243,7 @@ public class BrandServiceTest {
         step("Call save() method");
         var savedBrand = this.brandService.save(brand);
         step("Call getBrandById() method");
-        var retrievedBrand = this.brandService.getBrandByIdOrThrow(brand.getId());
+        var retrievedBrand = this.brandService.getById(brand.getId());
         // Assert
         step("Verify mock was called");
         verify(this.brandRepository).save(brand);
@@ -358,7 +358,7 @@ public class BrandServiceTest {
         step("Call update() method");
         var updateCall = this.brandService.update(updatedBrand);
         step("Call getById() method");
-        var getByIdCall = this.brandService.getBrandByIdOrThrow(updatedBrand.getId());
+        var getByIdCall = this.brandService.getById(updatedBrand.getId());
         // Assert
         step("Verify mock was called");
         verify(this.brandRepository, atLeast(1)).save(any());

@@ -19,7 +19,7 @@ import java.util.Objects;
 
 @Service
 @Scope(value = ConfigurableBeanFactory.SCOPE_SINGLETON)
-public class CustomerService {
+public class CustomerService implements EntityService<Integer, CustomerEntity> {
     private final CustomerRepository customerRepository;
 
     @Autowired
@@ -27,6 +27,7 @@ public class CustomerService {
         this.customerRepository = customerRepository;
     }
 
+    @Override
     public Page<CustomerEntity> getAll(Pageable pageable) {
         try {
             return this.customerRepository.findAll(pageable);
@@ -35,13 +36,16 @@ public class CustomerService {
         }
     }
 
+    @Override
     public CustomerEntity getById(Integer id) {
         return this.customerRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Customer with id={%s} not found!"
                         .formatted(id)));
     }
 
+    @Override
     public CustomerEntity save(CustomerEntity customerEntity) {
+        customerEntity.setId(null);
         if (this.customerRepository.existsByEmail(customerEntity.getEmail())) {
             throw new DuplicateResourceException(
                     "Customer with email={%s} already exists!".formatted(customerEntity.getEmail())
@@ -50,12 +54,14 @@ public class CustomerService {
         return this.customerRepository.save(customerEntity);
     }
 
+    @Override
     public String deleteById(Integer id) {
         this.customerRepository.deleteById(id);
         return "Entity with id={%s} successfully deleted (or ignored if it did not exist in the first place)!"
                 .formatted(id);
     }
 
+    @Override
     public CustomerEntity update(CustomerEntity customerEntity) {
         if (!this.customerRepository.existsById(customerEntity.getId())) {
             throw new ResourceNotFoundException("Customer with id={%s} not found!"

@@ -13,7 +13,9 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @Component
-public class UserModelAssembler implements RepresentationModelAssembler<UserEntity, EntityModel<UserEntity>> {
+public class UserModelAssembler implements
+        RepresentationModelAssembler<UserEntity, EntityModel<UserEntity>>,
+        DtoAssembler<UserDto> {
     @Override
     public CollectionModel<EntityModel<UserEntity>> toCollectionModel(Iterable<? extends UserEntity> entities) {
         return RepresentationModelAssembler.super.toCollectionModel(entities);
@@ -28,6 +30,7 @@ public class UserModelAssembler implements RepresentationModelAssembler<UserEnti
         );
     }
 
+    @Override
     public EntityModel<UserDto> toDtoModel(UserDto dto) {
         return EntityModel.of(
                 dto,

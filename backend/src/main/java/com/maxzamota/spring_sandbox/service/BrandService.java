@@ -23,7 +23,7 @@ import static net.logstash.logback.argument.StructuredArguments.keyValue;
 
 @Service
 @Slf4j
-public class BrandService {
+public class BrandService implements EntityService<Integer, BrandEntity> {
     private final BrandRepository repository;
 
     @Autowired
@@ -36,7 +36,8 @@ public class BrandService {
         return Objects.nonNull(authentication) ? authentication.getName() : "anonymous";
     }
 
-    public BrandEntity getBrandByIdOrThrow(Integer id) {
+    @Override
+    public BrandEntity getById(Integer id) {
         String username = getUsername();
         log.info("Attempt to fetch Brand by id {} by user {}", id, keyValue("username", username));
         return this.repository.findById(id)
@@ -49,6 +50,7 @@ public class BrandService {
                 });
     }
 
+    @Override
     public BrandEntity save(BrandEntity brand) {
         String username = getUsername();
         log.info("Attempt to save Brand {} by user {}", brand, keyValue("username", username));
@@ -67,6 +69,7 @@ public class BrandService {
         return savedBrand;
     }
 
+    @Override
     public String deleteById(Integer id) {
         String username = getUsername();
         log.info("Attempt to soft-delete Brand by id {} by user {}",
@@ -79,6 +82,7 @@ public class BrandService {
                 .formatted(id);
     }
 
+    @Override
     public BrandEntity update(BrandEntity brand) {
         String username = getUsername();
         log.info("Attempt to update Brand {}, by user {}", brand, keyValue("username", username));
@@ -125,6 +129,7 @@ public class BrandService {
         return this.repository.saveAll(brands);
     }
 
+    @Override
     public Page<BrandEntity> getAll(Pageable pageable) {
         String username = getUsername();
         log.info("Attempt to fetch all Brands with pageable {} by user {}",
